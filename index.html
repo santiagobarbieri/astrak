@@ -256,7 +256,7 @@
         query: 'https://news.google.com/rss/headlines/section/topic/WORLD?hl=es-419&gl=AR&ceid=AR:es-419',
       },
       {
-        id: 'MEDIA',
+        id: 'ENTRETENIMIENTO',
         color: '#ff4d8d',
         query: 'https://news.google.com/rss/search?q=musica%20OR%20m%C3%BAsica%20OR%20cine%20OR%20pel%C3%ADculas%20OR%20series%20OR%20streaming%20when%3A7d&hl=es-419&gl=AR&ceid=AR:es-419',
       },
@@ -530,51 +530,156 @@
     /* =========================================================
        COMPONENTES DE PRESENTACIÓN
     ========================================================= */
-    function Header({ categories, activeCategoryId, onCategoryChange, time }) {
+    function Header({
+      categories,
+      activeCategoryId,
+      onCategoryChange,
+      time,
+      isMobileFiltersOpen,
+      setIsMobileFiltersOpen,
+    }) {
       return (
-        <header className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between border-b border-black/5 bg-black/90 px-6 py-2 text-white backdrop-blur-xl">
-          <div className="flex items-center gap-6">
-            <h1 className="text-lg font-black uppercase italic tracking-tighter">Astrak</h1>
+        <>
+          <header className="fixed top-0 left-0 right-0 z-[100] border-b border-white/10 bg-black/90 text-white backdrop-blur-xl">
+            <div className="px-4 py-3 md:px-6">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex min-w-0 items-center gap-3 md:gap-4">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <img
+                      src="logo.png"
+                      alt="Astrak"
+                      className="h-7 w-7 shrink-0 object-contain"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                    <h1 className="shrink-0 text-lg font-black uppercase italic tracking-tighter">Astrak</h1>
+                  </div>
 
-            <nav className="no-scrollbar flex max-w-[62vw] items-center gap-0.5 overflow-x-auto whitespace-nowrap md:max-w-none" aria-label="Categorías de noticias">
-              {categories.map((category) => {
-                const isActive = activeCategoryId === category.id;
-
-                return (
-                  <button
-                    key={category.id}
-                    type="button"
-                    onClick={() => onCategoryChange(category)}
-                    className={`relative z-10 px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.2em] transition-all md:px-3 ${
-                      isActive ? 'text-black' : 'text-neutral-400 hover:text-black'
-                    }`}
+                  <nav
+                    className="no-scrollbar hidden items-center gap-2 overflow-x-auto whitespace-nowrap md:flex"
+                    aria-label="Categorías de noticias"
                   >
-                    {category.id}
-                    {isActive && (
-                      <motion.div
-                        layoutId="activePill"
-                        className="absolute inset-0 z-[-1] rounded-full"
-                        style={{ backgroundColor: category.color }}
-                      />
-                    )}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
+                    {categories.map((category) => {
+                      const isActive = activeCategoryId === category.id;
 
-          <div className="flex items-center gap-4 text-[9px] font-black uppercase tracking-widest opacity-60">
-            <span>{getGreetingLabel(time)}</span>
-            <span className="h-3 w-px bg-black/10"></span>
-            <span>
-              {time.toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-              })}
-            </span>
-          </div>
-        </header>
+                      return (
+                        <button
+                          key={category.id}
+                          type="button"
+                          onClick={() => onCategoryChange(category)}
+                          className={`shrink-0 rounded-full border px-3.5 py-2 text-[10px] font-black uppercase tracking-[0.18em] transition-colors duration-200 ${
+                            isActive
+                              ? 'border-transparent text-black'
+                              : 'border-white/10 text-neutral-400 hover:border-white/20 hover:text-white'
+                          }`}
+                          style={isActive ? { backgroundColor: category.color } : undefined}
+                          aria-pressed={isActive}
+                        >
+                          {category.id}
+                        </button>
+                      );
+                    })}
+                  </nav>
+                </div>
+
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsMobileFiltersOpen(true)}
+                    className="rounded-full border border-white/15 px-4 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-white md:hidden"
+                  >
+                    Filters
+                  </button>
+
+                  <div className="hidden items-center gap-4 text-[9px] font-black uppercase tracking-widest opacity-70 sm:flex">
+                    <span>{getGreetingLabel(time)}</span>
+                    <span className="h-3 w-px bg-white/15"></span>
+                    <span>
+                      {time.toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                      })}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-1 flex items-center justify-between gap-3 text-[8px] font-black uppercase tracking-widest opacity-70 sm:hidden">
+                <div className="flex items-center gap-3">
+                  <span>{getGreetingLabel(time)}</span>
+                  <span className="h-3 w-px bg-white/15"></span>
+                  <span>
+                    {time.toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit',
+                    })}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <AnimatePresence>
+            {isMobileFiltersOpen && (
+              <>
+                <motion.button
+                  type="button"
+                  className="mobile-filters-backdrop md:hidden"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsMobileFiltersOpen(false)}
+                  aria-label="Cerrar filtros"
+                />
+                <motion.div
+                  className="mobile-filters-sheet md:hidden"
+                  initial={{ opacity: 0, y: -12, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                >
+                  <div className="mb-4 flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] opacity-50">Filters</span>
+                    <button
+                      type="button"
+                      onClick={() => setIsMobileFiltersOpen(false)}
+                      className="text-[10px] font-black uppercase tracking-[0.18em] opacity-70"
+                    >
+                      Close
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    {categories.map((category) => {
+                      const isActive = activeCategoryId === category.id;
+
+                      return (
+                        <button
+                          key={category.id}
+                          type="button"
+                          onClick={() => {
+                            onCategoryChange(category);
+                            setIsMobileFiltersOpen(false);
+                          }}
+                          className={`rounded-2xl border px-3 py-3 text-[10px] font-black uppercase tracking-[0.15em] transition-colors ${
+                            isActive
+                              ? 'border-transparent text-black'
+                              : 'border-white/10 text-white'
+                          }`}
+                          style={isActive ? { backgroundColor: category.color } : undefined}
+                        >
+                          {category.id}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
+        </>
       );
     }
 
@@ -591,7 +696,7 @@
 
       useEffect(() => {
         if (!headline) return;
-        setHeroImageSrc(headline.imageUrl || headline.fallbackImage);
+        setHeroImageSrc(headline.imageUrl || '');
       }, [headline?.id]);
 
       if (!headline) return null;
@@ -621,35 +726,37 @@
             </div>
 
             <div className="flex flex-col gap-6 xl:col-span-5 xl:items-end">
-              <a
-                href={headline.url}
-                target="_blank"
-                rel="noreferrer"
-                className="group relative block w-full overflow-hidden rounded-[28px] border border-white/10 bg-black shadow-[0_20px_80px_rgba(0,0,0,0.55)] xl:max-w-md"
-                aria-label={`Abrir noticia: ${headline.title}`}
-              >
-                <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/78 via-black/28 to-black/10"></div>
-                <img
-                  src={heroImageSrc}
-                  alt={headline.title}
-                  className="h-[240px] w-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-[1.03] md:h-[280px]"
-                  loading="eager"
-                  referrerPolicy="no-referrer"
-                  onError={() => setHeroImageSrc(headline.fallbackImage)}
-                />
-                <div className="absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-4 px-5 py-4 text-white">
-                  <div className="min-w-0">
-                    <div className="mb-1 text-[8px] font-black uppercase tracking-[0.35em] opacity-70">Headline Visual</div>
-                    <div className="truncate text-[10px] font-bold uppercase tracking-[0.18em] opacity-90">{headline.source}</div>
+              {heroImageSrc && (
+                <a
+                  href={headline.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group relative block w-full overflow-hidden rounded-[28px] border border-white/10 bg-black shadow-[0_20px_80px_rgba(0,0,0,0.55)] xl:max-w-md"
+                  aria-label={`Abrir noticia: ${headline.title}`}
+                >
+                  <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/78 via-black/28 to-black/10"></div>
+                  <img
+                    src={heroImageSrc}
+                    alt={headline.title}
+                    className="h-[240px] w-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-[1.03] md:h-[280px]"
+                    loading="eager"
+                    referrerPolicy="no-referrer"
+                    onError={() => setHeroImageSrc('')}
+                  />
+                  <div className="absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-4 px-5 py-4 text-white">
+                    <div className="min-w-0">
+                      <div className="mb-1 text-[8px] font-black uppercase tracking-[0.35em] opacity-70">Headline Visual</div>
+                      <div className="truncate text-[10px] font-bold uppercase tracking-[0.18em] opacity-90">{headline.source}</div>
+                    </div>
+                    <div
+                      className="shrink-0 px-3 py-1 text-[8px] font-black uppercase tracking-[0.28em]"
+                      style={{ backgroundColor: headline.color, color: '#000000' }}
+                    >
+                      {headline.category}
+                    </div>
                   </div>
-                  <div
-                    className="shrink-0 px-3 py-1 text-[8px] font-black uppercase tracking-[0.28em]"
-                    style={{ backgroundColor: headline.color, color: '#000000' }}
-                  >
-                    {headline.category}
-                  </div>
-                </div>
-              </a>
+                </a>
+              )}
 
               <div className="flex flex-col items-start space-y-6 text-left xl:items-end xl:text-right">
                 <div
@@ -900,6 +1007,7 @@
       const [currentTime, setCurrentTime] = useState(new Date());
       const [isLoading, setIsLoading] = useState(true);
             const [headlineImageError, setHeadlineImageError] = useState(false);
+      const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
       const weather = useUserWeather(currentTime);
 
       useEffect(() => {
@@ -952,6 +1060,8 @@
             activeCategoryId={activeCategory.id}
             onCategoryChange={setActiveCategory}
             time={currentTime}
+            isMobileFiltersOpen={isMobileFiltersOpen}
+            setIsMobileFiltersOpen={setIsMobileFiltersOpen}
           />
 
           <main>
