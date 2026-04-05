@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20fill%3D%27black%27/%3E%3Ccircle%20cx%3D%2732%27%20cy%3D%2732%27%20r%3D%2714%27%20fill%3D%27white%27%20opacity%3D%270.9%27/%3E%3C/svg%3E" />
   <title>Astrak</title>
 
   <!-- Dependencias -->
@@ -297,7 +297,77 @@
     }
 
     function stripHtml(text = '') {
-      return text.replace(/<[^>]*>?/gm, '').trim();
+      return text.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim();
+    }
+
+    function escapeSvgText(text = '') {
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function createFallbackImage(categoryId, color) {
+      const safeCategory = escapeSvgText(categoryId || 'ASTRAK');
+      const safeColor = color || '#ffffff';
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900">
+          <defs>
+            <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0%" stop-color="#000000"/>
+              <stop offset="100%" stop-color="#111111"/>
+            </linearGradient>
+          </defs>
+          <rect width="1200" height="900" fill="url(#bg)"/>
+          <circle cx="960" cy="180" r="220" fill="${safeColor}" opacity="0.18"/>
+          <circle cx="180" cy="760" r="260" fill="${safeColor}" opacity="0.12"/>
+          <rect x="72" y="72" width="1056" height="756" rx="28" fill="none" stroke="rgba(255,255,255,0.16)"/>
+          <text x="90" y="140" fill="white" opacity="0.48" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="8">ASTRAK</text>
+          <text x="90" y="760" fill="${safeColor}" font-family="Inter, Arial, sans-serif" font-size="84" font-weight="900" letter-spacing="3">${safeCategory}</text>
+          <text x="90" y="820" fill="white" opacity="0.62" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="500">Live headline visual unavailable</text>
+        </svg>
+      `;
+      return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+    }
+
+    function extractImageFromDescription(description = '') {
+      const imageMatch = description.match(/<img[^>]+src=["']([^"']+)["']/i);
+      return imageMatch?.[1] || null;
+    }
+
+    function extractImageUrl(item = {}) {
+      return (
+        item.thumbnail ||
+        item.enclosure?.link ||
+        item.enclosure?.url ||
+        item['media:content']?.url ||
+        item['media:thumbnail']?.url ||
+        extractImageFromDescription(item.description) ||
+        null
+      );
+    }
+
+    function cleanExcerpt(description = '', title = '', source = '') {
+      let text = stripHtml(description || '');
+      const unwanted = [title, source, `${title} - ${source}`, `${source} - ${title}`].filter(Boolean);
+
+      unwanted.forEach((chunk) => {
+        const safe = chunk.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        text = text.replace(new RegExp(safe, 'ig'), ' ');
+      });
+
+      text = text
+        .replace(/^\s*[•\-:|]+\s*/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      if (!text || text.length < 24) {
+        return 'Actualización rápida curada desde la señal principal de Astrak.';
+      }
+
+      return text.slice(0, 170).trim();
     }
 
     function buildNewsItem(item, category) {
@@ -307,9 +377,11 @@
       return {
         id: item.guid || item.link || `${category.id}-${Math.random().toString(36).slice(2, 11)}`,
         title: cleanTitle,
-        excerpt: stripHtml(item.description).slice(0, 160),
+        excerpt: cleanExcerpt(item.description, cleanTitle, source),
         source,
         url: item.link,
+        imageUrl: extractImageUrl(item),
+        fallbackImage: createFallbackImage(category.id, category.color),
         category: category.id,
         color: category.color,
         pubDate: publicationDate,
@@ -515,6 +587,13 @@
     }
 
     function HeroSection({ headline, time, weather }) {
+      const [heroImageSrc, setHeroImageSrc] = useState('');
+
+      useEffect(() => {
+        if (!headline) return;
+        setHeroImageSrc(headline.imageUrl || headline.fallbackImage);
+      }, [headline?.id]);
+
       if (!headline) return null;
 
       return (
@@ -522,12 +601,12 @@
           key={headline.id}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="relative flex min-h-[90vh] flex-col justify-end overflow-hidden px-8 pb-24 pt-40 md:px-16"
+          className="relative flex min-h-[90vh] flex-col justify-end overflow-hidden bg-black px-8 pb-24 pt-40 md:px-16"
         >
           <Atmosphere time={time} weather={weather} />
 
-          <div className="relative z-30 grid grid-cols-1 items-end gap-12 lg:grid-cols-12">
-            <div className="max-w-4xl lg:col-span-8">
+          <div className="relative z-30 grid grid-cols-1 items-end gap-10 xl:grid-cols-12 xl:gap-12">
+            <div className="max-w-4xl xl:col-span-7">
               <span className="mb-4 block text-[10px] font-bold uppercase italic tracking-[0.3em] opacity-40">
                 Priority Transmission _
               </span>
@@ -537,33 +616,65 @@
               </h2>
 
               <p className="max-w-xl text-sm font-medium italic leading-relaxed text-neutral-300 opacity-80 md:text-base">
-                {headline.excerpt}...
+                {headline.excerpt}
               </p>
             </div>
 
-            <div className="flex flex-col items-start space-y-6 text-left lg:col-span-4 lg:items-end lg:text-right">
-              <div
-                className="px-4 py-1 text-[9px] font-black uppercase tracking-[0.3em]"
-                style={{ backgroundColor: headline.color, color: '#000000' }}
-              >
-                {headline.category}
-              </div>
-
-              <div className="space-y-1">
-                <div className="text-[10px] font-bold uppercase italic tracking-widest opacity-50">
-                  via {headline.source} • {headline.timeAgo}
-                </div>
-                <div className="text-[8px] font-medium uppercase opacity-30">Status: Verified Signal</div>
-              </div>
-
+            <div className="flex flex-col gap-6 xl:col-span-5 xl:items-end">
               <a
                 href={headline.url}
                 target="_blank"
                 rel="noreferrer"
-                className="border-b-2 border-white/20 pb-1 text-[10px] font-black uppercase tracking-tighter transition-all hover:border-white"
+                className="group relative block w-full overflow-hidden rounded-[28px] border border-white/10 bg-black shadow-[0_20px_80px_rgba(0,0,0,0.55)] xl:max-w-md"
+                aria-label={`Abrir noticia: ${headline.title}`}
               >
-                Open Preview ↗
+                <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/78 via-black/28 to-black/10"></div>
+                <img
+                  src={heroImageSrc}
+                  alt={headline.title}
+                  className="h-[240px] w-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-[1.03] md:h-[280px]"
+                  loading="eager"
+                  referrerPolicy="no-referrer"
+                  onError={() => setHeroImageSrc(headline.fallbackImage)}
+                />
+                <div className="absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-4 px-5 py-4 text-white">
+                  <div className="min-w-0">
+                    <div className="mb-1 text-[8px] font-black uppercase tracking-[0.35em] opacity-70">Headline Visual</div>
+                    <div className="truncate text-[10px] font-bold uppercase tracking-[0.18em] opacity-90">{headline.source}</div>
+                  </div>
+                  <div
+                    className="shrink-0 px-3 py-1 text-[8px] font-black uppercase tracking-[0.28em]"
+                    style={{ backgroundColor: headline.color, color: '#000000' }}
+                  >
+                    {headline.category}
+                  </div>
+                </div>
               </a>
+
+              <div className="flex flex-col items-start space-y-6 text-left xl:items-end xl:text-right">
+                <div
+                  className="px-4 py-1 text-[9px] font-black uppercase tracking-[0.3em]"
+                  style={{ backgroundColor: headline.color, color: '#000000' }}
+                >
+                  {headline.category}
+                </div>
+
+                <div className="space-y-1">
+                  <div className="text-[10px] font-bold uppercase italic tracking-widest opacity-50">
+                    via {headline.source} • {headline.timeAgo}
+                  </div>
+                  <div className="text-[8px] font-medium uppercase opacity-30">Status: Verified Signal</div>
+                </div>
+
+                <a
+                  href={headline.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="border-b-2 border-white/20 pb-1 text-[10px] font-black uppercase tracking-tighter transition-all hover:border-white"
+                >
+                  Open Preview ↗
+                </a>
+              </div>
             </div>
           </div>
         </motion.section>
@@ -788,6 +899,7 @@
       const [activeCategory, setActiveCategory] = useState(CATEGORIES[0]);
       const [currentTime, setCurrentTime] = useState(new Date());
       const [isLoading, setIsLoading] = useState(true);
+            const [headlineImageError, setHeadlineImageError] = useState(false);
       const weather = useUserWeather(currentTime);
 
       useEffect(() => {
