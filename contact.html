@@ -11,7 +11,6 @@
     :root {
       --astrak-black: #000000;
       --astrak-white: #ffffff;
-      --astrak-accent: #e2ff00;
       --bg-current: #000;
     }
 
@@ -73,7 +72,6 @@
       font-size: 8px;
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.4em;
       color: rgba(255,255,255,0.3);
       display: block;
       margin-bottom: 0.5rem;
@@ -94,14 +92,13 @@
     }
 
     .input-terminal:focus {
-      border-bottom-color: var(--astrak-accent);
+      border-bottom-color: rgba(255,255,255,0.8);
     }
 
     .btn-small {
       font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.4em;
       border: 1px solid rgba(255,255,255,0.2);
       padding: 12px 24px;
       width: 100%;
@@ -115,7 +112,6 @@
       background: white;
       color: black;
       border-color: white;
-      letter-spacing: 0.6em;
     }
 
     .nav-mini {
@@ -124,12 +120,11 @@
       font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.3em;
       opacity: 0.4;
       transition: opacity 0.3s;
       z-index: 100;
     }
-    .nav-mini:hover { opacity: 1; color: var(--astrak-accent); }
+    .nav-mini:hover { opacity: 1; color: var(--astrak-white); }
 
     #status-msg {
       margin-top: 2rem;
@@ -137,7 +132,6 @@
       font-size: 8px;
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.3em;
       color: rgba(255,255,255,0.2);
     }
 
@@ -148,7 +142,7 @@
       transform: translate(-50%, -50%);
       width: 60vw;
       height: 60vw;
-      background: radial-gradient(circle, rgba(226, 255, 0, 0.03) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
       filter: blur(60px);
       pointer-events: none;
       z-index: 1;
@@ -247,7 +241,7 @@
       e.preventDefault();
       const status = document.getElementById('status-msg');
       status.innerText = "ENVIANDO PAQUETES DE DATOS...";
-      status.style.color = "var(--astrak-accent)";
+      status.style.color = "rgba(255,255,255,0.8)";
       
       setTimeout(() => {
         status.innerText = "TRANSMISIÓN COMPLETADA. CONEXIÓN CERRADA.";

@@ -11,7 +11,6 @@
     :root {
       --astrak-black: #000000;
       --astrak-white: #ffffff;
-      --astrak-accent: #e2ff00;
       --bg-current: #000;
     }
 
@@ -70,7 +69,6 @@
       font-size: 8px;
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.4em;
       color: rgba(255,255,255,0.3);
       display: block;
       margin-bottom: 0.5rem;
@@ -91,14 +89,13 @@
     }
 
     .input-terminal:focus {
-      border-bottom-color: var(--astrak-accent);
+      border-bottom-color: rgba(255,255,255,0.8);
     }
 
     .btn-small {
       font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.4em;
       border: 1px solid rgba(255,255,255,0.2);
       padding: 12px 24px;
       width: 100%;
@@ -112,7 +109,6 @@
       background: white;
       color: black;
       border-color: white;
-      letter-spacing: 0.6em;
     }
 
     .nav-mini {
@@ -121,12 +117,11 @@
       font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.3em;
       opacity: 0.4;
       transition: opacity 0.3s;
       z-index: 100;
     }
-    .nav-mini:hover { opacity: 1; color: var(--astrak-accent); }
+    .nav-mini:hover { opacity: 1; color: var(--astrak-white); }
 
     #status-msg {
       margin-top: 2rem;
@@ -134,7 +129,6 @@
       font-size: 8px;
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.3em;
       color: rgba(255,255,255,0.2);
     }
 
@@ -145,7 +139,7 @@
       transform: translate(-50%, -50%);
       width: 60vw;
       height: 60vw;
-      background: radial-gradient(circle, rgba(226, 255, 0, 0.03) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
       filter: blur(60px);
       pointer-events: none;
       z-index: 1;
@@ -167,10 +161,9 @@
     .section-kicker {
       display: block;
       margin-bottom: 1rem;
-      color: var(--astrak-accent);
+      color: rgba(255,255,255,0.45);
       font-size: 8px;
       font-weight: 900;
-      letter-spacing: 0.45em;
       text-transform: uppercase;
     }
 
@@ -179,7 +172,6 @@
       font-size: clamp(3rem, 10vw, 10rem);
       font-weight: 900;
       line-height: 0.9;
-      letter-spacing: -0.08em;
       text-transform: uppercase;
     }
 
@@ -195,7 +187,7 @@
     .video-preset {
       min-height: clamp(420px, 70vh, 760px);
       background:
-        linear-gradient(135deg, rgba(226,255,0,0.12), transparent 35%),
+        linear-gradient(135deg, rgba(255,255,255,0.1), transparent 35%),
         radial-gradient(circle at center, rgba(255,255,255,0.12), transparent 45%),
         #050505;
       display: grid;
@@ -206,11 +198,10 @@
     }
 
     .video-preset::after {
-      content: "VIDEO PLACEHOLDER";
+      content: "ASTRAK SIGNAL REEL";
       color: rgba(255,255,255,0.25);
       font-size: 9px;
       font-weight: 900;
-      letter-spacing: 0.5em;
       text-transform: uppercase;
     }
 
@@ -227,7 +218,6 @@
       margin: 0 0 0.5rem;
       font-size: clamp(12px, 1.6vw, 22px);
       font-weight: 900;
-      letter-spacing: 0.25em;
       text-transform: uppercase;
     }
 
@@ -243,7 +233,6 @@
       display: block;
       font-size: 9px;
       font-weight: 900;
-      letter-spacing: 0.3em;
       padding: 1rem;
       text-align: center;
       text-transform: uppercase;
@@ -251,8 +240,8 @@
     }
 
     .social-link:hover {
-      border-color: var(--astrak-accent);
-      color: var(--astrak-accent);
+      border-color: rgba(255,255,255,0.65);
+      color: var(--astrak-white);
     }
 
     @media (max-width: 860px) {
@@ -276,16 +265,16 @@
   <div class="content-layer">
     <header class="text-center mb-16">
       <div class="w-4 h-4 bg-white rounded-full mx-auto mb-6 opacity-80"></div>
-      <h1 class="text-[10px] font-black uppercase tracking-[0.8em] opacity-40">Uplink_de_Señal</h1>
+      <h1 class="text-[10px] font-black uppercase opacity-40">About ASTRAK</h1>
     </header>
 
     <main id="about-content" class="about-stack">
       <section class="about-section">
-        <div class="video-preset" aria-label="Video placeholder"></div>
+        <div class="video-preset" aria-label="ASTRAK signal reel"></div>
         <div>
           <span class="section-kicker">Header</span>
           <h2 class="section-title">ASTRAK</h2>
-          <p class="section-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer signal vitae justo non tempor. ASTRAK conecta cultura, clima y noticias en una interfaz viva.</p>
+          <p class="section-copy">ASTRAK es una interfaz editorial viva: reúne noticias, cultura, tecnología, cine, música, economía e internacional en una experiencia visual marcada por clima, noche, ruido analógico y lectura rápida.</p>
         </div>
       </section>
 
@@ -293,7 +282,7 @@
         <span class="section-kicker">About Section</span>
         <div>
           <h2 class="section-title">About</h2>
-          <p class="section-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+          <p class="section-copy">El sitio funciona como un radar de señales. Toma titulares recientes por categoría, los presenta como transmisiones y combina una estética oscura con movimiento atmosférico para que cada visita se sienta como una emisión en tiempo real.</p>
         </div>
       </section>
 
@@ -302,25 +291,25 @@
         <div>
           <h2 class="section-title">FAQ</h2>
           <div class="faq-item">
-            <h3 class="faq-question">Lorem ipsum dolor sit amet?</h3>
-            <p class="section-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent vitae eros eget tellus tristique bibendum.</p>
+            <h3 class="faq-question">Que es ASTRAK?</h3>
+            <p class="section-copy">ASTRAK es una web de descubrimiento de noticias y cultura con una capa visual experimental. Su foco es ordenar señales externas y mostrarlas con una identidad propia.</p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">Consectetur adipiscing elit?</h3>
-            <p class="section-copy">Donec rutrum congue leo eget malesuada. Curabitur aliquet quam id dui posuere blandit.</p>
+            <h3 class="faq-question">De donde salen las noticias?</h3>
+            <p class="section-copy">La portada consulta feeds públicos por categorías como global, política, tecnología, cine, música, economía, internacional y cultura, y luego muestra fuente, sincronización y enlace de lectura.</p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">Integer signal vitae?</h3>
-            <p class="section-copy">Vivamus suscipit tortor eget felis porttitor volutpat. Nulla quis lorem ut libero malesuada feugiat.</p>
+            <h3 class="faq-question">Por que cambia el ambiente?</h3>
+            <p class="section-copy">La experiencia visual incluye lluvia, relámpagos, ruido y variaciones entre día y noche. Esa capa convierte el feed en una transmisión más inmersiva, no solo en una lista de enlaces.</p>
           </div>
         </div>
       </section>
 
       <section class="about-section">
-        <span class="section-kicker">Placeholder para un blog</span>
+        <span class="section-kicker">Blog</span>
         <div>
           <h2 class="section-title">COMING SOON: BLOG</h2>
-          <p class="section-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Blog entries, dispatches and archive signals will live here.</p>
+          <p class="section-copy">El blog va a funcionar como archivo editorial de ASTRAK: notas propias, selección de señales, contexto sobre cultura digital y registros de cambios del sistema visual.</p>
         </div>
       </section>
 
@@ -336,7 +325,7 @@
 
       <footer class="about-section">
         <span class="section-kicker">Footer</span>
-        <p class="section-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit. ASTRAK / Buenos Aires / Argentina / 2026.</p>
+        <p class="section-copy">ASTRAK / Buenos Aires / Argentina / 2026. Interfaz experimental de señales, cultura y noticias. Powered by dopple.</p>
       </footer>
     </main>
 
