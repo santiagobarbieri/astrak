@@ -163,10 +163,34 @@
 
   <!-- Navegación -->
   <a href="index.html" class="nav-mini left-10">Home</a>
-  <a href="about.html" class="nav-mini right-10">Contact</a>
+  <a href="contact.html" class="nav-mini right-10">Contact</a>
 
   <div class="content-layer">
-    <h1>WELCOME</h1>
+    <header class="text-center mb-16">
+      <div class="w-4 h-4 bg-white rounded-full mx-auto mb-6 opacity-80"></div>
+      <h1 class="text-[10px] font-black uppercase tracking-[0.8em] opacity-40">Uplink_de_Señal</h1>
+    </header>
+
+    <form id="uplink-form">
+      <div class="input-group">
+        <label class="label-terminal">Identificador_Host</label>
+        <input type="text" class="input-terminal" placeholder="USER_UNKNOWN" required>
+      </div>
+
+      <div class="input-group">
+        <label class="label-terminal">Canal_de_Retorno</label>
+        <input type="email" class="input-terminal" placeholder="EMAIL@NETWORK.SYS" required>
+      </div>
+
+      <div class="input-group">
+        <label class="label-terminal">Paquete_de_Datos</label>
+        <textarea class="input-terminal" rows="1" placeholder="ESCRIBE TU MENSAJE..." required style="resize: none;"></textarea>
+      </div>
+
+      <button type="submit" class="btn-small">Transmitir Datos</button>
+    </form>
+
+    <div id="status-msg">SISTEMA EN ESPERA // READY</div>
   </div>
 
   <script>
