@@ -100,7 +100,7 @@
     }
 
     /* --- UI DE TERMINAL --- */
-    .content-layer { position: relative; z-index: 10; width: 100%; max-width: 1280px; padding: 0 clamp(1.5rem, 5vw, 5rem) 2rem; margin: 0 auto; }
+    .content-layer { position: relative; z-index: 10; width: 100%; max-width: 1280px; padding: 0 clamp(1.5rem, 5vw, 5rem) 0; margin: 0 auto; }
 
     .input-group { margin-bottom: 2.5rem; position: relative; }
 
@@ -163,7 +163,7 @@
     .nav-mini:hover { opacity: 1; color: var(--astrak-white); }
 
     #status-msg {
-      margin-top: 2rem;
+      margin: 2rem 0 0;
       text-align: center;
       font-size: 8px;
       font-weight: 900;
@@ -391,6 +391,7 @@
       padding: clamp(8rem, 14vw, 14rem) clamp(1.5rem, 5vw, 5rem) 4rem;
       background:
         linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.86) 30%, #000 58%, #000 100%);
+      align-content: end;
     }
 
     .footer-section::before {
@@ -625,11 +626,9 @@
 
       <footer class="about-section footer-section">
         <p class="section-copy">ASTRAK / Buenos Aires / Argentina / 2026. Interfaz experimental de señales, cultura y noticias. Powered by dopple.</p>
+        <div id="status-msg">Powered by dopple®, Buenos Aires - Argentina, 2026</div>
       </footer>
     </main>
-
-
-    <div id="status-msg">Powered by dopple®, Buenos Aires - Argentina, 2026</div>
   </div>
 
   <script>
