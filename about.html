@@ -664,9 +664,48 @@
     const DOPPLE_ARTICLE = 'https://doppelganger-eta.vercel.app/article.html';
 
     const TYPE_LABEL = { articulo: 'article', resena: 'review', archivo: 'archive' };
+    const ASTRAK_BUILD_ENTRY = {
+      id: 'astrak-build-001',
+      title: 'ASTRAK Build 001: radar editorial para señales vivas',
+      author: 'dopple',
+      year: 2026,
+      status: 'published',
+      postType: 'articulo',
+      sites: ['astrak'],
+      slug: 'astrak-build-001.html',
+      projectUrl: 'https://doppelganger-eta.vercel.app/article.html',
+      technologies: 'HTML, Tailwind CDN, React, Framer Motion, RSS2JSON, Google News RSS, Canvas weather system, Dopple entries API',
+      excerpt: 'Primera bitácora del build: ASTRAK se ordena como un radar editorial con portada de señales RSS, clima visual, hero inmersivo, about expandido y blog conectado al archivo dopple.',
+      body: `# ASTRAK Build 001: radar editorial para señales vivas
+
+ASTRAK nace como una interfaz editorial oscura para leer señales de noticias y cultura sin caer en la estructura clásica de portal. La portada toma feeds públicos por categoría, los convierte en despachos y les suma una capa visual de clima, ruido, noche y relámpagos.
+
+En este build se trabajó la página About como una pieza de identidad: un hero de video a pantalla completa, slogan editorial, transición en gradiente hacia el resto del landing, secciones sin cards, métricas del sistema y una FAQ que explica la lógica de la web.
+
+La decisión visual fue reducir el lenguaje de terminal y quitar acentos de color para dejar una estética más cruda: blanco, negro, grillas, atmósfera y jerarquía tipográfica. También se conectó el Blog al archivo de dopple para que ASTRAK pueda publicar notas propias además de consumir señales externas.
+
+Datos del sistema: 8 categorías activas, ciclo visual de 24 horas, fuentes RSS externas, canvas climático y publicación editorial vía dopple.`
+    };
+
+    function renderBlogEntries(entries) {
+      const list = document.getElementById('blogList');
+      list.innerHTML = entries.map((e, i) => {
+        const href = e.id === ASTRAK_BUILD_ENTRY.id ? '#blog' : `${DOPPLE_ARTICLE}?id=${e.id}`;
+        const target = e.id === ASTRAK_BUILD_ENTRY.id ? '' : ' target="_blank"';
+        return `
+          <a class="blog-item" href="${href}"${target}>
+            <div class="blog-item-num">${String(i + 1).padStart(2, '0')}</div>
+            <div class="blog-item-body">
+              <div class="blog-item-type">${TYPE_LABEL[e.postType] || e.postType || 'article'}</div>
+              <div class="blog-item-title">${e.title}</div>
+              ${e.excerpt ? `<div class="blog-item-excerpt">${e.excerpt}</div>` : ''}
+            </div>
+            <div class="blog-item-meta">${e.year || ''} ${e.author ? '— ' + e.author : ''}</div>
+          </a>`;
+      }).join('');
+    }
 
     async function loadBlog() {
-      const list = document.getElementById('blogList');
       try {
         const res = await fetch(DOPPLE_API);
         if (!res.ok) throw new Error('api error');
@@ -680,23 +719,14 @@
         );
 
         if (!entries.length) {
-          list.innerHTML = '<div class="blog-empty">No entries yet.</div>';
+          renderBlogEntries([ASTRAK_BUILD_ENTRY]);
           return;
         }
 
-        list.innerHTML = entries.map((e, i) => `
-          <a class="blog-item" href="${DOPPLE_ARTICLE}?id=${e.id}" target="_blank">
-            <div class="blog-item-num">${String(i + 1).padStart(2, '0')}</div>
-            <div class="blog-item-body">
-              <div class="blog-item-type">${TYPE_LABEL[e.postType] || e.postType || 'article'}</div>
-              <div class="blog-item-title">${e.title}</div>
-              ${e.excerpt ? `<div class="blog-item-excerpt">${e.excerpt}</div>` : ''}
-            </div>
-            <div class="blog-item-meta">${e.year || ''} ${e.author ? '— ' + e.author : ''}</div>
-          </a>`).join('');
+        renderBlogEntries(entries);
 
       } catch(err) {
-        list.innerHTML = '<div class="blog-empty">Could not load entries.</div>';
+        renderBlogEntries([ASTRAK_BUILD_ENTRY]);
       }
     }
 
