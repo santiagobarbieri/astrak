@@ -9,17 +9,50 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
 
+    @property --weather-base {
+      syntax: '<color>';
+      inherits: true;
+      initial-value: #000000;
+    }
+
+    @property --weather-haze {
+      syntax: '<color>';
+      inherits: true;
+      initial-value: rgba(0,0,0,0.82);
+    }
+
+    @property --weather-glow {
+      syntax: '<color>';
+      inherits: true;
+      initial-value: rgba(255,255,255,0.08);
+    }
+
+    @property --weather-rim {
+      syntax: '<color>';
+      inherits: true;
+      initial-value: rgba(255,255,255,0.14);
+    }
+
     :root {
       --astrak-black: #000000;
       --astrak-white: #ffffff;
       --bg-current: #000;
+      --weather-base: #000000;
+      --weather-haze: rgba(0,0,0,0.82);
+      --weather-glow: rgba(255,255,255,0.08);
+      --weather-rim: rgba(255,255,255,0.14);
+      transition:
+        --weather-base 2s ease,
+        --weather-haze 2s ease,
+        --weather-glow 2s ease,
+        --weather-rim 2s ease;
     }
 
     * { box-sizing: border-box;}
 
     body {
       margin: 0;
-      background-color: var(--astrak-black);
+      background-color: var(--weather-base);
       color: var(--astrak-white);
       font-family: 'Inter', sans-serif;
       overflow-x: hidden;
@@ -251,34 +284,55 @@
     .video-preset {
       min-height: 100vh;
       background:
-        linear-gradient(135deg, rgba(255,255,255,0.16), transparent 28%),
-        radial-gradient(circle at 70% 20%, rgba(255,255,255,0.16), transparent 28%),
-        linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.82)),
+        linear-gradient(135deg, rgba(255,255,255,0.16), transparent 30%),
+        radial-gradient(circle at 70% 20%, var(--weather-glow), transparent 32%),
+        linear-gradient(180deg, rgba(0,0,0,0.08), var(--weather-haze) 72%, var(--weather-base)),
+        url("back.gif") center / cover no-repeat,
         #050505;
       display: grid;
       place-items: center;
       position: relative;
       overflow: hidden;
+      transition:
+        background 2s ease,
+        filter 2s ease,
+        --weather-base 2s ease,
+        --weather-haze 2s ease,
+        --weather-glow 2s ease;
     }
 
     .video-preset::before {
       content: "";
       position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, var(--weather-base) 0%, transparent 18%, transparent 82%, var(--weather-base) 100%),
+        linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 46%, var(--weather-base) 100%),
+        radial-gradient(circle at 50% 82%, var(--weather-glow), transparent 38%);
+      opacity: 0.92;
+      pointer-events: none;
+      transition: background 2s ease, opacity 2s ease;
+    }
+
+    .video-preset::after {
+      content: "";
+      position: absolute;
       inset: 1.25rem;
-      border: 1px solid rgba(255,255,255,0.13);
+      border: 1px solid var(--weather-rim);
       background:
         repeating-linear-gradient(0deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 56px),
         repeating-linear-gradient(90deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 56px);
       opacity: 0.35;
+      pointer-events: none;
+      transition: border-color 2s ease, opacity 2s ease;
     }
 
-    .video-preset::after {
-      content: "ASTRAK SIGNAL REEL";
+    .video-preset-label {
       color: rgba(255,255,255,0.25);
       font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
-      z-index: 1;
+      z-index: 2;
     }
 
     .hero-copy {
@@ -511,7 +565,9 @@
   <div class="content-layer">
     <main id="about-content" class="about-stack">
       <section class="about-section hero-section">
-        <div class="video-preset" aria-label="ASTRAK signal reel"></div>
+        <div class="video-preset" aria-label="ASTRAK signal reel">
+          <span class="video-preset-label">ASTRAK SIGNAL REEL</span>
+        </div>
         <div class="hero-copy">
           <span class="hero-slogan">Radar editorial para señales vivas</span>
           <h2 class="section-title">ASTRAK</h2>
@@ -592,7 +648,25 @@
     function updateEnvironment() {
       const hour = new Date().getHours();
       isNight = hour >= 19 || hour < 6;
-      document.body.style.backgroundColor = isNight ? '#000' : '#0d1117';
+      const weatherTheme = isNight
+        ? {
+            base: '#000000',
+            haze: 'rgba(0,0,0,0.88)',
+            glow: 'rgba(255,255,255,0.08)',
+            rim: 'rgba(255,255,255,0.14)'
+          }
+        : {
+            base: '#0d1117',
+            haze: 'rgba(13,17,23,0.72)',
+            glow: 'rgba(168,196,255,0.16)',
+            rim: 'rgba(200,220,255,0.18)'
+          };
+
+      document.body.style.backgroundColor = weatherTheme.base;
+      document.documentElement.style.setProperty('--weather-base', weatherTheme.base);
+      document.documentElement.style.setProperty('--weather-haze', weatherTheme.haze);
+      document.documentElement.style.setProperty('--weather-glow', weatherTheme.glow);
+      document.documentElement.style.setProperty('--weather-rim', weatherTheme.rim);
       
       // Simulación de clima
       if(Math.random() > 0.6) {
