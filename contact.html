@@ -30,6 +30,9 @@
       transition: background-color 2s ease;
     }
 
+        .content-layer { position: relative; z-index: 10; }
+
+
     /* --- CAPA ATMOSFÉRICA --- */
     #weather-canvas {
       position: fixed;
@@ -161,7 +164,8 @@
   <div class="noise"></div>
   <div class="bg-glow"></div>
 
-<!-- Navegación Superior -->
+   <div class="content-layer">
+    <!-- Navegación Superior -->
     <nav class="fixed top-0 w-full p-8 md:p-12 flex justify-between items-center z-[100]">
       <a href="index.html" class="group">
         <div class="w-5 h-5 bg-white rounded-full group-hover:scale-125 transition-transform"></div>
