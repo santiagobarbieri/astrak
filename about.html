@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Astrak | Manifiesto de la Señal</title>
+  <title>About</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
@@ -12,8 +12,7 @@
       --astrak-black: #000000;
       --astrak-white: #ffffff;
       --astrak-accent: #e2ff00;
-      --bg-day: #0d1117;
-      --bg-night: #000000;
+      --bg-current: #000;
     }
 
     * { box-sizing: border-box; cursor: crosshair; }
@@ -23,11 +22,15 @@
       background-color: var(--astrak-black);
       color: var(--astrak-white);
       font-family: 'Inter', sans-serif;
-      overflow-x: hidden;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: screen;
       transition: background-color 2s ease;
     }
 
-    /* --- ATMÓSFERA REACTIVA --- */
+    /* --- CAPA ATMOSFÉRICA --- */
     #weather-canvas {
       position: fixed;
       inset: 0;
@@ -45,7 +48,7 @@
 
     @keyframes flash {
       0%, 98%, 100% { opacity: 0; }
-      99% { opacity: 0.25; background: white; }
+      99% { opacity: 0.2; background: white; }
     }
 
     .storm-active .lightning-layer {
@@ -61,152 +64,109 @@
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
-    /* --- COMPONENTES DE INTERFAZ --- */
-    .content-layer { position: relative; z-index: 10; }
+    /* --- UI DE TERMINAL --- */
+    .content-layer { position: relative; z-index: 10; width: 100%; max-width: 500px; padding: 2rem; }
 
-    .label-tech {
+    .input-group { margin-bottom: 2.5rem; position: relative; }
+
+    .label-terminal {
       font-size: 8px;
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.5em;
-      color: var(--astrak-accent);
-      margin-bottom: 1rem;
+      letter-spacing: 0.4em;
+      color: rgba(255,255,255,0.3);
       display: block;
+      margin-bottom: 0.5rem;
     }
 
-    .hero-title {
-      font-weight: 900;
-      font-size: clamp(3rem, 10vw, 8rem);
-      line-height: 0.85;
-      letter-spacing: -0.05em;
+    .input-terminal {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 0.75rem 0;
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      outline: none;
+      transition: all 0.3s;
       text-transform: uppercase;
     }
 
-    .text-outline {
-      color: transparent;
-      -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+    .input-terminal:focus {
+      border-bottom-color: var(--astrak-accent);
     }
 
-    .btn-minimal {
+    .btn-small {
       font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.4em;
       border: 1px solid rgba(255,255,255,0.2);
-      padding: 12px 28px;
-      transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-      display: inline-block;
+      padding: 12px 24px;
+      width: 100%;
+      background: transparent;
+      color: white;
+      transition: all 0.3s;
+      margin-top: 1rem;
     }
 
-    .btn-minimal:hover {
+    .btn-small:hover {
       background: white;
       color: black;
       border-color: white;
       letter-spacing: 0.6em;
-      transform: translateY(-2px);
     }
 
     .nav-mini {
+      position: fixed;
+      top: 40px;
       font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.3em;
       opacity: 0.4;
       transition: opacity 0.3s;
+      z-index: 100;
     }
     .nav-mini:hover { opacity: 1; color: var(--astrak-accent); }
 
-    /* Scroll Reveal */
-    .reveal { opacity: 0; transform: translateY(30px); transition: 1.2s all cubic-bezier(0.2, 0.8, 0.2, 1); }
-    .reveal.active { opacity: 1; transform: translateY(0); }
-
-    .scroll-indicator {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
+    #status-msg {
+      margin-top: 2rem;
+      text-align: center;
       font-size: 8px;
       font-weight: 900;
-      letter-spacing: 0.5em;
       text-transform: uppercase;
-      opacity: 0.3;
-      animation: pulse 2s infinite;
+      letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.2);
     }
 
-    @keyframes pulse { 0%, 100% { opacity: 0.1; } 50% { opacity: 0.5; } }
-
-    ::-webkit-scrollbar { width: 2px; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
+    .bg-glow {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60vw;
+      height: 60vw;
+      background: radial-gradient(circle, rgba(226, 255, 0, 0.03) 0%, transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
   <canvas id="weather-canvas"></canvas>
   <div class="lightning-layer"></div>
   <div class="noise"></div>
+  <div class="bg-glow"></div>
+
+  <!-- Navegación -->
+  <a href="index.html" class="nav-mini left-10">Home</a>
+  <a href="about.html" class="nav-mini right-10">Contact</a>
 
   <div class="content-layer">
-    <!-- Navegación Superior -->
-    <nav class="fixed top-0 w-full p-8 md:p-12 flex justify-between items-center z-[100]">
-      <a href="index.html" class="group">
-        <div class="w-5 h-5 bg-white rounded-full group-hover:scale-125 transition-transform"></div>
-      </a>
-      <div class="flex gap-8">
-        <a href="index.html" class="nav-mini">Home</a>
-        <a href="contact.html" class="nav-mini">Contact</a>
-      </div>
-    </nav>
-
-    <!-- Sección Hero -->
-    <section class="min-h-screen flex flex-col justify-center px-6 md:px-24 relative">
-      <div class="reveal active">
-        <span class="label-tech" id="env-status">Sincronizando_Atmósfera</span>
-        <h1 class="hero-title">
-          Curaduría <br>
-          <span class="text-outline">Sintética</span> <br>
-          Extrema.
-        </h1>
-        <p class="max-w-md mt-10 text-neutral-500 text-xs md:text-sm leading-relaxed uppercase tracking-[0.2em] opacity-80">
-          Astrak opera en el vacío entre el exceso de información y la relevancia absoluta. No somos un medio, somos un filtro.
-        </p>
-        <div class="mt-12">
-          <a href="contact.html" class="btn-minimal">Solicitar Acceso</a>
-        </div>
-      </div>
-      <div class="scroll-indicator">Scroll_Down</div>
-    </section>
-
-    <!-- Sección de Información 01 -->
-    <section class="py-40 px-6 md:px-24 grid grid-cols-1 md:grid-cols-2 gap-20">
-      <div class="reveal">
-        <span class="label-tech">Módulo_01 // Filtrado</span>
-        <h2 class="text-3xl md:text-5xl font-black uppercase italic mb-8 leading-none">Menos es <br>Supervivencia.</h2>
-        <p class="text-neutral-400 text-sm leading-loose max-w-sm">
-          En la era de la IA, el contenido es infinito. Lo que falta es la intención humana. 
-          En Astrak seleccionamos manualmente cada señal antes de transmitirla a tu terminal.
-        </p>
-      </div>
-      <div class="flex items-center justify-end reveal">
-        <div class="w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-      </div>
-    </section>
-
-    <!-- Sección de Información 02 -->
-    <section class="py-40 px-6 md:px-24 flex justify-center text-center reveal">
-      <div class="max-w-2xl">
-        <span class="label-tech">Módulo_02 // Estética</span>
-        <h2 class="text-3xl md:text-5xl font-black uppercase italic mb-10">La función <br><span class="text-outline">es la belleza</span></h2>
-        <p class="text-neutral-500 text-xs md:text-sm uppercase tracking-widest leading-relaxed mb-12">
-          Diseñamos para la claridad cognitiva. Nuestra interfaz reactiva al clima no es un adorno, es una conexión con el mundo físico fuera de la pantalla.
-        </p>
-        <div class="w-px h-24 bg-white/10 mx-auto"></div>
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="p-12 md:p-20 border-t border-white/5 flex flex-col md:flex-row justify-between items-center opacity-30">
-      <span class="text-[8px] font-black uppercase tracking-[0.5em]">Astrak Synthesis Lab</span>
-      <span class="text-[8px] font-black uppercase tracking-[0.5em] mt-4 md:mt-0">© 2024 // Protocolo V.4.1</span>
-    </footer>
+    <h1>WELCOME</h1>
   </div>
 
   <script>
@@ -215,19 +175,14 @@
     let drops = [];
     let isNight = false;
 
-    // Sincronización de Entorno
+    // Sincronizar ciclo día/noche y clima
     function updateEnvironment() {
       const hour = new Date().getHours();
       isNight = hour >= 19 || hour < 6;
+      document.body.style.backgroundColor = isNight ? '#000' : '#0d1117';
       
-      // Cambio de fondo fluido
-      document.body.style.backgroundColor = isNight ? 'var(--bg-night)' : 'var(--bg-day)';
-      
-      const status = document.getElementById('env-status');
-      status.innerText = isNight ? 'Estado: Nocturno // Transmisión_Estable' : 'Estado: Diurno // Transmisión_Estable';
-
-      // Simulación de tormenta ocasional
-      if(Math.random() > 0.7) {
+      // Simulación de clima
+      if(Math.random() > 0.6) {
         document.body.classList.add('storm-active');
       }
     }
@@ -235,15 +190,15 @@
     function initCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      drops = Array.from({length: 50}, () => ({
+      drops = Array.from({length: 40}, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        speed: Math.random() * 12 + 6,
-        len: Math.random() * 25 + 10
+        speed: Math.random() * 12 + 8,
+        len: Math.random() * 25 + 15
       }));
     }
 
-    function draw() {
+    function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.strokeStyle = isNight ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)';
       ctx.lineWidth = 1;
@@ -256,33 +211,34 @@
         
         d.y += d.speed;
         if (d.y > canvas.height) {
-          d.y = -d.len;
+          d.y = -20;
           d.x = Math.random() * canvas.width;
         }
       });
-      requestAnimationFrame(draw);
+      requestAnimationFrame(animate);
     }
 
-    // Scroll Reveal Logic
-    function handleReveal() {
-      const reveals = document.querySelectorAll('.reveal');
-      reveals.forEach(el => {
-        const top = el.getBoundingClientRect().top;
-        if (top < window.innerHeight - 100) {
-          el.classList.add('active');
-        }
-      });
-    }
+    // Manejo del Formulario
+    document.getElementById('uplink-form').onsubmit = (e) => {
+      e.preventDefault();
+      const status = document.getElementById('status-msg');
+      status.innerText = "ENVIANDO PAQUETES DE DATOS...";
+      status.style.color = "var(--astrak-accent)";
+      
+      setTimeout(() => {
+        status.innerText = "TRANSMISIÓN COMPLETADA. CONEXIÓN CERRADA.";
+        document.getElementById('uplink-form').style.opacity = "0.1";
+        document.getElementById('uplink-form').style.pointerEvents = "none";
+      }, 2000);
+    };
 
     window.onload = () => {
       updateEnvironment();
       initCanvas();
-      draw();
-      handleReveal();
+      animate();
     };
 
     window.onresize = initCanvas;
-    window.onscroll = handleReveal;
   </script>
 </body>
 </html>

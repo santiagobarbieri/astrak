@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Astrak | Uplink de Señal</title>
+  <title>Contact</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
@@ -29,9 +29,6 @@
       min-height: screen;
       transition: background-color 2s ease;
     }
-
-        .content-layer { position: relative; z-index: 10; }
-
 
     /* --- CAPA ATMOSFÉRICA --- */
     #weather-canvas {
@@ -164,41 +161,33 @@
   <div class="noise"></div>
   <div class="bg-glow"></div>
 
-   <div class="content-layer">
-    <!-- Navegación Superior -->
-    <nav class="fixed top-0 w-full p-8 md:p-12 flex justify-between items-center z-[100]">
-      <a href="index.html" class="group">
-        <div class="w-5 h-5 bg-white rounded-full group-hover:scale-125 transition-transform"></div>
-      </a>
-      <div class="flex gap-8">
-        <a href="index.html" class="nav-mini">Home</a>
-        <a href="about.html" class="nav-mini">About</a>
-      </div>
+  <!-- Navegación -->
+  <a href="index.html" class="nav-mini left-10">Home</a>
+  <a href="about.html" class="nav-mini right-10">About</a>
 
-    </nav>
   <div class="content-layer">
     <header class="text-center mb-16">
       <div class="w-4 h-4 bg-white rounded-full mx-auto mb-6 opacity-80"></div>
-      <h1 class="text-[10px] font-black uppercase tracking-[0.8em] opacity-40">Uplink_de_Señal</h1>
+      <h1 class="text-[10px] font-black uppercase opacity-40">SEND A SIGNAL</h1>
     </header>
 
     <form id="uplink-form">
       <div class="input-group">
-        <label class="label-terminal">Identificador_Host</label>
+        <label class="label-terminal">Name</label>
         <input type="text" class="input-terminal" placeholder="USER_UNKNOWN" required>
       </div>
 
       <div class="input-group">
-        <label class="label-terminal">Canal_de_Retorno</label>
+        <label class="label-terminal">Mail</label>
         <input type="email" class="input-terminal" placeholder="EMAIL@NETWORK.SYS" required>
       </div>
 
       <div class="input-group">
-        <label class="label-terminal">Paquete_de_Datos</label>
+        <label class="label-terminal">Message</label>
         <textarea class="input-terminal" rows="1" placeholder="ESCRIBE TU MENSAJE..." required style="resize: none;"></textarea>
       </div>
 
-      <button type="submit" class="btn-small">Transmitir Datos</button>
+      <button type="submit" class="btn-small">SEND SIGNAL</button>
     </form>
 
     <div id="status-msg">SISTEMA EN ESPERA // READY</div>
