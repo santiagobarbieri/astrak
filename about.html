@@ -50,12 +50,17 @@
 
     * { box-sizing: border-box;}
 
+    html {
+      overscroll-behavior-y: none;
+    }
+
     body {
       margin: 0;
       background-color: var(--weather-base);
       color: var(--astrak-white);
       font-family: 'Inter', sans-serif;
       overflow-x: hidden;
+      overscroll-behavior-y: none;
       min-height: 100vh;
       transition: background-color 2s ease;
     }
@@ -319,9 +324,6 @@
       position: absolute;
       inset: 1.25rem;
       border: 1px solid var(--weather-rim);
-      background:
-        repeating-linear-gradient(0deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 56px),
-        repeating-linear-gradient(90deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 56px);
       opacity: 0.35;
       pointer-events: none;
       transition: border-color 2s ease, opacity 2s ease;
@@ -643,6 +645,16 @@
     const ctx = canvas.getContext('2d');
     let drops = [];
     let isNight = false;
+    let touchStartY = 0;
+
+    window.addEventListener('touchstart', (event) => {
+      touchStartY = event.touches[0].clientY;
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (event) => {
+      const isPullingPastHero = window.scrollY <= 0 && event.touches[0].clientY > touchStartY;
+      if (isPullingPastHero) event.preventDefault();
+    }, { passive: false });
 
     // Sincronizar ciclo día/noche y clima
     function updateEnvironment() {
