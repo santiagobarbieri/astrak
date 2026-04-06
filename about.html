@@ -289,15 +289,12 @@
     .video-preset {
       min-height: 100vh;
       background:
-        linear-gradient(135deg, rgba(255,255,255,0.16), transparent 30%),
-        radial-gradient(circle at 70% 20%, var(--weather-glow), transparent 32%),
-        linear-gradient(180deg, rgba(0,0,0,0.08), var(--weather-haze) 72%, var(--weather-base)),
-        url("back.gif") center / cover no-repeat,
-        #050505;
-      display: grid;
-      place-items: center;
+        radial-gradient(circle at 24% 18%, var(--weather-glow), transparent 28%),
+        linear-gradient(180deg, rgba(0,0,0,0.1), var(--weather-haze) 62%, var(--weather-base)),
+        var(--weather-base);
       position: relative;
       overflow: hidden;
+      isolation: isolate;
       transition:
         background 2s ease,
         filter 2s ease,
@@ -310,31 +307,27 @@
       content: "";
       position: absolute;
       inset: 0;
-      background:
-        linear-gradient(90deg, var(--weather-base) 0%, transparent 18%, transparent 82%, var(--weather-base) 100%),
-        linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 46%, var(--weather-base) 100%),
-        radial-gradient(circle at 50% 82%, var(--weather-glow), transparent 38%);
-      opacity: 0.92;
+      z-index: -1;
+      background: url("back.gif") center / cover no-repeat;
+      filter: saturate(0.45) contrast(0.82) brightness(0.52) blur(1px);
+      opacity: 0.32;
+      mix-blend-mode: screen;
+      transform: scale(1.04);
       pointer-events: none;
-      transition: background 2s ease, opacity 2s ease;
+      transition: opacity 2s ease, filter 2s ease;
     }
 
     .video-preset::after {
       content: "";
       position: absolute;
-      inset: 1.25rem;
-      border: 1px solid var(--weather-rim);
-      opacity: 0.35;
+      inset: 0;
+      background:
+        linear-gradient(90deg, var(--weather-base) 0%, transparent 22%, transparent 78%, var(--weather-base) 100%),
+        linear-gradient(180deg, var(--weather-base) 0%, transparent 24%, rgba(0,0,0,0.18) 52%, var(--weather-base) 100%),
+        radial-gradient(circle at 50% 58%, transparent 0%, rgba(0,0,0,0.32) 48%, var(--weather-base) 92%);
+      opacity: 0.96;
       pointer-events: none;
-      transition: border-color 2s ease, opacity 2s ease;
-    }
-
-    .video-preset-label {
-      color: rgba(255,255,255,0.25);
-      font-size: 9px;
-      font-weight: 900;
-      text-transform: uppercase;
-      z-index: 2;
+      transition: background 2s ease, opacity 2s ease;
     }
 
     .hero-copy {
@@ -567,9 +560,7 @@
   <div class="content-layer">
     <main id="about-content" class="about-stack">
       <section class="about-section hero-section">
-        <div class="video-preset" aria-label="ASTRAK signal reel">
-          <span class="video-preset-label">ASTRAK SIGNAL REEL</span>
-        </div>
+        <div class="video-preset" aria-hidden="true"></div>
         <div class="hero-copy">
           <span class="hero-slogan">Radar editorial para señales vivas</span>
           <h2 class="section-title">ASTRAK</h2>
