@@ -186,13 +186,13 @@
 
     .about-stack {
       display: grid;
-      gap: clamp(4rem, 9vw, 9rem);
+      gap: clamp(3rem, 7vw, 7rem);
     }
 
     .about-section {
       display: grid;
-      grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
-      gap: clamp(2rem, 6vw, 7rem);
+      grid-template-columns: 1fr;
+      gap: clamp(1.5rem, 4vw, 4rem);
       align-items: start;
       position: relative;
     }
@@ -221,53 +221,24 @@
     }
 
     .signal-section {
-      grid-template-columns: minmax(180px, 0.45fr) minmax(0, 1.55fr);
-      min-height: 42vh;
+      min-height: auto;
     }
 
     .faq-section {
-      grid-template-columns: minmax(180px, 0.35fr) minmax(0, 1.65fr);
       min-height: auto;
     }
 
     .blog-section {
-      grid-template-columns: 1fr;
-      min-height: 50vh;
-    }
-
-    .footer-section {
-      grid-template-columns: minmax(160px, 0.35fr) minmax(0, 1.65fr);
       min-height: auto;
     }
 
-    .section-kicker {
-      display: block;
-      margin-bottom: 1rem;
-      color: rgba(255,255,255,0.45);
-      font-size: 8px;
-      font-weight: 900;
-      text-transform: uppercase;
-    }
-
-    .about-section > .section-kicker {
-      position: sticky;
-      top: 7rem;
-    }
-
-    .section-kicker::before {
-      content: "";
-      display: inline-block;
-      width: 0.55rem;
-      height: 0.55rem;
-      margin-right: 0.6rem;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.65);
-      vertical-align: middle;
+    .footer-section {
+      min-height: auto;
     }
 
     .section-title {
       margin: 0 0 1rem;
-      font-size: clamp(3rem, 10vw, 10rem);
+      font-size: clamp(2.5rem, 7.5vw, 7rem);
       font-weight: 900;
       line-height: 0.9;
       text-transform: uppercase;
@@ -276,10 +247,10 @@
     .section-copy {
       margin: 0;
       color: rgba(255,255,255,0.55);
-      font-size: clamp(13px, 1.4vw, 18px);
-      line-height: 1.8;
+      font-size: clamp(11px, 1vw, 14px);
+      line-height: 1.65;
       text-transform: uppercase;
-      max-width: 760px;
+      max-width: 640px;
     }
 
     .section-copy + .section-copy {
@@ -365,22 +336,41 @@
       max-width: 700px;
     }
 
+    .signal-section > div,
+    .blog-section > div {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.65fr) minmax(0, 1.35fr);
+      gap: clamp(1.5rem, 5vw, 6rem);
+      align-items: start;
+    }
+
+    .signal-section .section-title,
+    .blog-section .section-title {
+      margin: 0;
+    }
+
+    .signal-section .section-copy,
+    .blog-section .section-copy {
+      grid-column: 2;
+    }
+
     .signal-meta {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 1rem;
-      margin-top: 2.5rem;
-      max-width: 760px;
+      grid-column: 2;
+      margin-top: 0.5rem;
+      max-width: 680px;
     }
 
     .signal-stat {
       border-top: 1px solid rgba(255,255,255,0.16);
-      padding-top: 1rem;
+      padding-top: 0.85rem;
     }
 
     .signal-stat strong {
       display: block;
-      font-size: clamp(1.75rem, 4vw, 4rem);
+      font-size: clamp(1.35rem, 3vw, 3rem);
       line-height: 0.9;
       font-weight: 900;
       text-transform: uppercase;
@@ -388,19 +378,32 @@
 
     .signal-stat span {
       display: block;
-      margin-top: 0.75rem;
+      margin-top: 0.6rem;
       color: rgba(255,255,255,0.38);
-      font-size: 10px;
+      font-size: 8px;
       font-weight: 900;
       text-transform: uppercase;
+    }
+
+    .faq-section > div {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.45fr) minmax(0, 1.55fr);
+      gap: clamp(1.5rem, 5vw, 6rem);
+      align-items: start;
+    }
+
+    .faq-section .section-title {
+      grid-row: 1 / span 3;
+      margin: 0;
     }
 
     .faq-item {
       border-top: 1px solid rgba(255,255,255,0.1);
       display: grid;
-      grid-template-columns: minmax(180px, 0.7fr) minmax(0, 1.3fr);
-      gap: clamp(1rem, 4vw, 4rem);
-      padding: clamp(1.5rem, 4vw, 3.5rem) 0;
+      grid-column: 2;
+      grid-template-columns: minmax(160px, 0.55fr) minmax(0, 1.45fr);
+      gap: clamp(1rem, 3vw, 3rem);
+      padding: clamp(1.1rem, 3vw, 2.4rem) 0;
     }
 
     .faq-item:last-child {
@@ -409,23 +412,42 @@
 
     .faq-question {
       margin: 0;
-      font-size: clamp(12px, 1.6vw, 22px);
+      font-size: clamp(11px, 1.2vw, 16px);
       font-weight: 900;
       text-transform: uppercase;
     }
 
     .blog-title {
       max-width: 980px;
-      font-size: clamp(4rem, 13vw, 12rem);
+      font-size: clamp(3rem, 9vw, 8rem);
     }
 
     .blog-section .section-copy {
-      margin-left: auto;
-      max-width: 560px;
+      max-width: 520px;
+    }
+
+    .blog-list {
+      grid-column: 2;
     }
 
     .footer-section {
-      padding-bottom: 4rem;
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      padding: clamp(8rem, 14vw, 14rem) clamp(1.5rem, 5vw, 5rem) 4rem;
+      background:
+        linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.86) 30%, #000 58%, #000 100%);
+    }
+
+    .footer-section::before {
+      display: none;
+    }
+
+    .footer-section .section-copy {
+      max-width: 760px;
+      margin-left: auto;
+      color: rgba(255,255,255,0.42);
+      font-size: clamp(10px, 0.9vw, 12px);
+      text-align: right;
     }
 
     @media (max-width: 860px) {
@@ -443,8 +465,28 @@
         grid-template-columns: 1fr;
       }
 
-      .about-section > .section-kicker {
-        position: static;
+      .signal-section > div,
+      .blog-section > div,
+      .faq-section > div {
+        grid-template-columns: 1fr;
+      }
+
+      .signal-section .section-copy,
+      .blog-section .section-copy,
+      .blog-list,
+      .signal-meta {
+        grid-column: auto;
+      }
+
+      .faq-section .section-title,
+      .faq-item {
+        grid-column: auto;
+        grid-row: auto;
+      }
+
+      .footer-section .section-copy {
+        margin-left: 0;
+        text-align: left;
       }
 
       .hero-section {
@@ -577,7 +619,6 @@
       </section>
 
       <section class="about-section signal-section">
-        <span class="section-kicker">About Section</span>
         <div>
           <h2 class="section-title">About</h2>
           <p class="section-copy">El sitio funciona como un radar de señales. Toma titulares recientes por categoría, los presenta como transmisiones y combina una estética oscura con movimiento atmosférico para que cada visita se sienta como una emisión en tiempo real.</p>
@@ -600,7 +641,6 @@
       </section>
 
       <section class="about-section faq-section">
-        <span class="section-kicker">Frequent Questions</span>
         <div>
           <h2 class="section-title">FAQ</h2>
           <div class="faq-item">
@@ -619,7 +659,6 @@
       </section>
 
       <section class="about-section blog-section" id="blog">
-        <span class="section-kicker">Blog</span>
         <div>
           <h2 class="section-title blog-title">BLOG</h2>
           <p class="section-copy">Archivo editorial de ASTRAK: notas propias, señales, contexto sobre cultura digital y registros del sistema visual.</p>
@@ -630,7 +669,6 @@
       </section>
 
       <footer class="about-section footer-section">
-        <span class="section-kicker">Footer</span>
         <p class="section-copy">ASTRAK / Buenos Aires / Argentina / 2026. Interfaz experimental de señales, cultura y noticias. Powered by dopple.</p>
       </footer>
     </main>
