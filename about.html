@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20fill%3D%27black%27/%3E%3Ccircle%20cx%3D%2732%27%20cy%3D%2732%27%20r%3D%2714%27%20fill%3D%27white%27%20opacity%3D%270.9%27/%3E%3C/svg%3E" />
   <title>About</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -61,7 +62,7 @@
     }
 
     /* --- UI DE TERMINAL --- */
-    .content-layer { position: relative; z-index: 10; width: 100%; max-width: 1280px; padding: 7rem clamp(1.5rem, 5vw, 5rem) 2rem; margin: 0 auto; }
+    .content-layer { position: relative; z-index: 10; width: 100%; max-width: 1280px; padding: 0 clamp(1.5rem, 5vw, 5rem) 2rem; margin: 0 auto; }
 
     .input-group { margin-bottom: 2.5rem; position: relative; }
 
@@ -147,15 +148,73 @@
 
     .about-stack {
       display: grid;
-      gap: clamp(5rem, 10vw, 10rem);
+      gap: clamp(4rem, 9vw, 9rem);
+      counter-reset: about-section;
     }
 
     .about-section {
+      counter-increment: about-section;
       display: grid;
       grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
       gap: clamp(2rem, 6vw, 7rem);
       align-items: start;
-      min-height: 60vh;
+      position: relative;
+    }
+
+    .about-section::before {
+      content: "";
+      position: absolute;
+      top: -2rem;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.18), transparent 70%);
+    }
+
+    .about-section::after {
+      content: "0" counter(about-section);
+      position: absolute;
+      top: -0.45em;
+      right: -0.08em;
+      z-index: -1;
+      color: rgba(255,255,255,0.04);
+      font-size: clamp(5rem, 18vw, 18rem);
+      font-weight: 900;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .hero-section {
+      display: block;
+      width: 100vw;
+      min-height: 100vh;
+      margin-left: calc(50% - 50vw);
+      position: relative;
+    }
+
+    .hero-section::before,
+    .hero-section::after {
+      display: none;
+    }
+
+    .signal-section {
+      grid-template-columns: minmax(180px, 0.45fr) minmax(0, 1.55fr);
+      min-height: 42vh;
+    }
+
+    .faq-section {
+      grid-template-columns: minmax(180px, 0.35fr) minmax(0, 1.65fr);
+      min-height: auto;
+    }
+
+    .blog-section {
+      grid-template-columns: 1fr;
+      min-height: 50vh;
+    }
+
+    .footer-section {
+      grid-template-columns: minmax(160px, 0.35fr) minmax(0, 1.65fr);
+      min-height: auto;
     }
 
     .section-kicker {
@@ -165,6 +224,22 @@
       font-size: 8px;
       font-weight: 900;
       text-transform: uppercase;
+    }
+
+    .about-section > .section-kicker {
+      position: sticky;
+      top: 7rem;
+    }
+
+    .section-kicker::before {
+      content: "";
+      display: inline-block;
+      width: 0.55rem;
+      height: 0.55rem;
+      margin-right: 0.6rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.65);
+      vertical-align: middle;
     }
 
     .section-title {
@@ -184,17 +259,32 @@
       max-width: 760px;
     }
 
+    .section-copy + .section-copy {
+      margin-top: 1.5rem;
+    }
+
     .video-preset {
-      min-height: clamp(420px, 70vh, 760px);
+      min-height: 100vh;
       background:
-        linear-gradient(135deg, rgba(255,255,255,0.1), transparent 35%),
-        radial-gradient(circle at center, rgba(255,255,255,0.12), transparent 45%),
+        linear-gradient(135deg, rgba(255,255,255,0.16), transparent 28%),
+        radial-gradient(circle at 70% 20%, rgba(255,255,255,0.16), transparent 28%),
+        linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.82)),
         #050505;
       display: grid;
       place-items: center;
-      margin-bottom: 2rem;
       position: relative;
       overflow: hidden;
+    }
+
+    .video-preset::before {
+      content: "";
+      position: absolute;
+      inset: 1.25rem;
+      border: 1px solid rgba(255,255,255,0.13);
+      background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 56px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 56px);
+      opacity: 0.35;
     }
 
     .video-preset::after {
@@ -203,11 +293,72 @@
       font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
+      z-index: 1;
+    }
+
+    .hero-copy {
+      position: absolute;
+      left: clamp(1.5rem, 5vw, 5rem);
+      right: clamp(1.5rem, 5vw, 5rem);
+      bottom: clamp(4rem, 10vh, 8rem);
+      z-index: 2;
+      max-width: 980px;
+    }
+
+    .hero-slogan {
+      display: block;
+      margin-bottom: 1rem;
+      color: rgba(255,255,255,0.62);
+      font-size: clamp(0.9rem, 1.8vw, 1.6rem);
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .hero-copy .section-title {
+      font-size: clamp(4.8rem, 18vw, 18rem);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-copy .section-copy {
+      max-width: 700px;
+    }
+
+    .signal-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 2.5rem;
+      max-width: 760px;
+    }
+
+    .signal-stat {
+      border-top: 1px solid rgba(255,255,255,0.16);
+      padding-top: 1rem;
+    }
+
+    .signal-stat strong {
+      display: block;
+      font-size: clamp(1.75rem, 4vw, 4rem);
+      line-height: 0.9;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .signal-stat span {
+      display: block;
+      margin-top: 0.75rem;
+      color: rgba(255,255,255,0.38);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
     }
 
     .faq-item {
       border-top: 1px solid rgba(255,255,255,0.1);
-      padding: 2rem 0;
+      display: grid;
+      grid-template-columns: minmax(180px, 0.7fr) minmax(0, 1.3fr);
+      gap: clamp(1rem, 4vw, 4rem);
+      padding: clamp(1.5rem, 4vw, 3.5rem) 0;
     }
 
     .faq-item:last-child {
@@ -215,40 +366,155 @@
     }
 
     .faq-question {
-      margin: 0 0 0.5rem;
+      margin: 0;
       font-size: clamp(12px, 1.6vw, 22px);
       font-weight: 900;
       text-transform: uppercase;
     }
 
-    .social-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 1rem;
+    .blog-title {
+      max-width: 980px;
+      font-size: clamp(4rem, 13vw, 12rem);
     }
 
-    .social-link {
-      border: 1px solid rgba(255,255,255,0.12);
-      color: rgba(255,255,255,0.7);
-      display: block;
-      font-size: 9px;
-      font-weight: 900;
-      padding: 1rem;
-      text-align: center;
-      text-transform: uppercase;
-      transition: all 0.3s;
+    .blog-section .section-copy {
+      margin-left: auto;
+      max-width: 560px;
     }
 
-    .social-link:hover {
-      border-color: rgba(255,255,255,0.65);
-      color: var(--astrak-white);
+    .footer-section {
+      padding-bottom: 4rem;
     }
 
     @media (max-width: 860px) {
-      .about-section {
+      .about-section,
+      .hero-section,
+      .signal-section,
+      .faq-section,
+      .footer-section {
         grid-template-columns: 1fr;
         min-height: auto;
       }
+
+      .faq-item,
+      .signal-meta {
+        grid-template-columns: 1fr;
+      }
+
+      .about-section > .section-kicker {
+        position: static;
+      }
+
+      .about-section::after {
+        right: 0;
+        font-size: clamp(4rem, 28vw, 9rem);
+      }
+
+      .hero-section {
+        min-height: 100vh;
+      }
+
+      .hero-copy {
+        bottom: 3rem;
+      }
+    }
+
+    /* --- BLOG LIST --- */
+    .blog-list {
+      margin-top: 3rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .blog-loading {
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.15em;
+      padding: 2rem 0;
+    }
+
+    .blog-item {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: 1.5rem;
+      align-items: start;
+      padding: 1.5rem 0;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      cursor: pointer;
+      transition: opacity 0.15s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .blog-item:last-child {
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .blog-item:hover { opacity: 0.55; }
+
+    .blog-item-num {
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.18);
+      letter-spacing: 0.1em;
+      padding-top: 3px;
+    }
+
+    .blog-item-body { display: flex; flex-direction: column; gap: 6px; }
+
+    .blog-item-type {
+      font-size: 8px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      letter-spacing: 0.14em;
+    }
+
+    .blog-item-title {
+      font-size: clamp(14px, 1.4vw, 20px);
+      font-weight: 700;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.88);
+      line-height: 1.2;
+    }
+
+    .blog-item-excerpt {
+      font-size: 12px;
+      font-weight: 400;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.6;
+      max-width: 560px;
+      margin-top: 2px;
+    }
+
+    .blog-item-meta {
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.18);
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      padding-top: 3px;
+    }
+
+    .blog-empty {
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.15);
+      letter-spacing: 0.14em;
+      padding: 2rem 0;
+    }
+
+    @media (max-width: 860px) {
+      .blog-item {
+        grid-template-columns: 48px 1fr;
+      }
+      .blog-item-meta { display: none; }
     }
   </style>
 </head>
@@ -263,30 +529,40 @@
   <a href="contact.html" class="nav-mini right-10">Contact</a>
 
   <div class="content-layer">
-    <header class="text-center mb-16">
-      <div class="w-4 h-4 bg-white rounded-full mx-auto mb-6 opacity-80"></div>
-      <h1 class="text-[10px] font-black uppercase opacity-40">About ASTRAK</h1>
-    </header>
-
     <main id="about-content" class="about-stack">
-      <section class="about-section">
+      <section class="about-section hero-section">
         <div class="video-preset" aria-label="ASTRAK signal reel"></div>
-        <div>
-          <span class="section-kicker">Header</span>
+        <div class="hero-copy">
+          <span class="hero-slogan">Radar editorial para señales vivas</span>
           <h2 class="section-title">ASTRAK</h2>
           <p class="section-copy">ASTRAK es una interfaz editorial viva: reúne noticias, cultura, tecnología, cine, música, economía e internacional en una experiencia visual marcada por clima, noche, ruido analógico y lectura rápida.</p>
         </div>
       </section>
 
-      <section class="about-section">
+      <section class="about-section signal-section">
         <span class="section-kicker">About Section</span>
         <div>
           <h2 class="section-title">About</h2>
           <p class="section-copy">El sitio funciona como un radar de señales. Toma titulares recientes por categoría, los presenta como transmisiones y combina una estética oscura con movimiento atmosférico para que cada visita se sienta como una emisión en tiempo real.</p>
+          <p class="section-copy">No busca parecer un portal tradicional. ASTRAK traduce feeds, tiempo, ruido y jerarquía visual en una pieza de navegación editorial más seca, oscura y directa.</p>
+          <div class="signal-meta">
+            <div class="signal-stat">
+              <strong>08</strong>
+              <span>Categorías activas</span>
+            </div>
+            <div class="signal-stat">
+              <strong>24H</strong>
+              <span>Ciclo visual</span>
+            </div>
+            <div class="signal-stat">
+              <strong>RSS</strong>
+              <span>Señales externas</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section class="about-section">
+      <section class="about-section faq-section">
         <span class="section-kicker">Frequent Questions</span>
         <div>
           <h2 class="section-title">FAQ</h2>
@@ -305,25 +581,18 @@
         </div>
       </section>
 
-      <section class="about-section">
+      <section class="about-section blog-section" id="blog">
         <span class="section-kicker">Blog</span>
         <div>
-          <h2 class="section-title">COMING SOON: BLOG</h2>
-          <p class="section-copy">El blog va a funcionar como archivo editorial de ASTRAK: notas propias, selección de señales, contexto sobre cultura digital y registros de cambios del sistema visual.</p>
+          <h2 class="section-title blog-title">BLOG</h2>
+          <p class="section-copy">Archivo editorial de ASTRAK: notas propias, señales, contexto sobre cultura digital y registros del sistema visual.</p>
+          <div id="blogList" class="blog-list">
+            <div class="blog-loading">loading…</div>
+          </div>
         </div>
       </section>
 
-      <section class="about-section">
-        <span class="section-kicker">Socials</span>
-        <div class="social-grid">
-          <a href="#" class="social-link">Instagram</a>
-          <a href="#" class="social-link">Twitter</a>
-          <a href="#" class="social-link">YouTube</a>
-          <a href="#" class="social-link">TikTok</a>
-        </div>
-      </section>
-
-      <footer class="about-section">
+      <footer class="about-section footer-section">
         <span class="section-kicker">Footer</span>
         <p class="section-copy">ASTRAK / Buenos Aires / Argentina / 2026. Interfaz experimental de señales, cultura y noticias. Powered by dopple.</p>
       </footer>
@@ -389,6 +658,50 @@
     };
 
     window.onresize = initCanvas;
+
+    /* ── BLOG: fetch from dopple API ── */
+    const DOPPLE_API = 'https://doppelganger-eta.vercel.app/api/entries';
+    const DOPPLE_ARTICLE = 'https://doppelganger-eta.vercel.app/article.html';
+
+    const TYPE_LABEL = { articulo: 'article', resena: 'review', archivo: 'archive' };
+
+    async function loadBlog() {
+      const list = document.getElementById('blogList');
+      try {
+        const res = await fetch(DOPPLE_API);
+        if (!res.ok) throw new Error('api error');
+        const all = await res.json();
+
+        // Filter: published + tagged for atlas
+        const entries = all.filter(e =>
+          e.status === 'published' &&
+          Array.isArray(e.sites) &&
+          e.sites.includes('astrak')
+        );
+
+        if (!entries.length) {
+          list.innerHTML = '<div class="blog-empty">No entries yet.</div>';
+          return;
+        }
+
+        list.innerHTML = entries.map((e, i) => `
+          <a class="blog-item" href="${DOPPLE_ARTICLE}?id=${e.id}" target="_blank">
+            <div class="blog-item-num">${String(i + 1).padStart(2, '0')}</div>
+            <div class="blog-item-body">
+              <div class="blog-item-type">${TYPE_LABEL[e.postType] || e.postType || 'article'}</div>
+              <div class="blog-item-title">${e.title}</div>
+              ${e.excerpt ? `<div class="blog-item-excerpt">${e.excerpt}</div>` : ''}
+            </div>
+            <div class="blog-item-meta">${e.year || ''} ${e.author ? '— ' + e.author : ''}</div>
+          </a>`).join('');
+
+      } catch(err) {
+        list.innerHTML = '<div class="blog-empty">Could not load entries.</div>';
+      }
+    }
+
+    loadBlog();
+
   </script>
 </body>
 </html>
