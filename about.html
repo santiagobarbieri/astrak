@@ -282,9 +282,12 @@
       text-transform: uppercase;
     }
 
-    .hero-copy .section-title {
-      font-size: clamp(4.8rem, 18vw, 18rem);
-      margin-bottom: 1.5rem;
+    .hero-logo {
+      display: block;
+      width: min(78vw, 760px);
+      height: auto;
+      margin: 0 0 1.5rem;
+      filter: brightness(0) invert(1);
     }
 
     .hero-copy .section-copy {
@@ -569,7 +572,7 @@
         <div class="video-preset" aria-hidden="true"></div>
         <div class="hero-copy">
           <span class="hero-slogan">Radar editorial para señales vivas</span>
-          <h2 class="section-title">ASTRAK</h2>
+          <img class="hero-logo" src="img/logo.png" alt="ASTRAK">
           <p class="section-copy">ASTRAK es una interfaz editorial viva: reúne noticias, cultura, tecnología, cine, música, economía e internacional en una experiencia visual marcada por clima, noche, ruido analógico y lectura rápida.</p>
         </div>
       </section>
@@ -625,7 +628,6 @@
       </section>
 
       <footer class="about-section footer-section">
-        <p class="section-copy">ASTRAK / Buenos Aires / Argentina / 2026. Interfaz experimental de señales, cultura y noticias. Powered by dopple.</p>
         <div id="status-msg">Powered by dopple®, Buenos Aires - Argentina, 2026</div>
       </footer>
     </main>
