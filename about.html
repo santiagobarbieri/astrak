@@ -306,13 +306,21 @@
     .video-preset::before {
       content: "";
       position: absolute;
-      inset: 0;
+      inset: -12vh 0 -18vh;
       z-index: -1;
       background: url("back.gif") center / cover no-repeat;
-      filter: saturate(0.45) contrast(0.82) brightness(0.52) blur(1px);
-      opacity: 0.32;
-      mix-blend-mode: screen;
-      transform: scale(1.04);
+      filter: saturate(0) contrast(0.72) brightness(0.36) blur(2px);
+      opacity: 0.18;
+      mix-blend-mode: luminosity;
+      transform: scale(1.08);
+      mask-image:
+        linear-gradient(180deg, transparent 0%, #000 28%, #000 58%, transparent 88%),
+        radial-gradient(ellipse at 50% 48%, #000 0%, #000 36%, transparent 74%);
+      mask-composite: intersect;
+      -webkit-mask-image:
+        linear-gradient(180deg, transparent 0%, #000 28%, #000 58%, transparent 88%),
+        radial-gradient(ellipse at 50% 48%, #000 0%, #000 36%, transparent 74%);
+      -webkit-mask-composite: source-in;
       pointer-events: none;
       transition: opacity 2s ease, filter 2s ease;
     }
@@ -322,10 +330,10 @@
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(90deg, var(--weather-base) 0%, transparent 22%, transparent 78%, var(--weather-base) 100%),
-        linear-gradient(180deg, var(--weather-base) 0%, transparent 24%, rgba(0,0,0,0.18) 52%, var(--weather-base) 100%),
-        radial-gradient(circle at 50% 58%, transparent 0%, rgba(0,0,0,0.32) 48%, var(--weather-base) 92%);
-      opacity: 0.96;
+        linear-gradient(90deg, var(--weather-base) 0%, transparent 28%, transparent 72%, var(--weather-base) 100%),
+        linear-gradient(180deg, var(--weather-base) 0%, transparent 34%, rgba(0,0,0,0.28) 54%, var(--weather-base) 82%),
+        radial-gradient(circle at 50% 48%, transparent 0%, rgba(0,0,0,0.36) 42%, var(--weather-base) 86%);
+      opacity: 0.98;
       pointer-events: none;
       transition: background 2s ease, opacity 2s ease;
     }
