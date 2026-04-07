@@ -45,17 +45,84 @@
       97% { opacity: 0.9; background: #f0f9ff; }
     }
     @keyframes scanline { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
+    @keyframes chroma-drift { 0% { transform: translate3d(-2%, -2%, 0) scale(1); } 50% { transform: translate3d(3%, 2%, 0) scale(1.08); } 100% { transform: translate3d(-2%, -2%, 0) scale(1); } }
+    @keyframes halo-breathe { 0%, 100% { opacity: 0.46; filter: blur(42px) saturate(1.25); } 50% { opacity: 0.72; filter: blur(58px) saturate(1.7); } }
 
     .rain-drop { position: absolute; width: 1.5px; height: 120px; background: linear-gradient(transparent, rgba(255, 255, 255, 0.25)); animation: rain-fall 0.7s linear infinite; pointer-events: none; }
     .lightning-effect { position: absolute; inset: 0; z-index: 5; pointer-events: none; animation: lightning-bolt 10s ease-in-out infinite; }
-    .analog-noise { position: absolute; inset: 0; z-index: 20; pointer-events: none; opacity: 0.07; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+    .analog-noise { position: absolute; inset: 0; z-index: 20; pointer-events: none; opacity: 0.055; mix-blend-mode: screen; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
     .scanline { position: absolute; top: 0; left: 0; width: 100%; height: 120px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.03), transparent); animation: scanline 10s linear infinite; z-index: 21; pointer-events: none; }
-    
+
+    .atmosphere-base {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 10% 12%, rgba(255,255,255,0.13), transparent 18%),
+        radial-gradient(circle at 85% 8%, rgba(var(--signal-rgb), 0.52), transparent 28%),
+        linear-gradient(140deg, var(--weather-base) 0%, #070a12 42%, #101827 100%);
+    }
+
+    .atmosphere-base::before,
+    .atmosphere-base::after {
+      content: "";
+      position: absolute;
+      inset: -18%;
+      pointer-events: none;
+    }
+
+    .atmosphere-base::before {
+      z-index: 1;
+      opacity: 0.84;
+      mix-blend-mode: screen;
+      animation: chroma-drift 18s ease-in-out infinite;
+      background:
+        radial-gradient(ellipse at 18% 70%, rgba(var(--signal-rgb), 0.42), transparent 34%),
+        radial-gradient(ellipse at 76% 28%, rgba(77,171,255,0.32), transparent 30%),
+        radial-gradient(ellipse at 54% 88%, rgba(226,255,0,0.16), transparent 24%),
+        conic-gradient(from 215deg at 50% 50%, transparent 0deg, rgba(255,122,77,0.12) 68deg, rgba(192,132,252,0.2) 146deg, transparent 248deg);
+    }
+
+    .atmosphere-base::after {
+      z-index: 2;
+      opacity: 0.68;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.08), transparent 28%, rgba(255,255,255,0.05) 72%, transparent),
+        radial-gradient(circle at 50% 55%, rgba(255,255,255,0.12), transparent 42%);
+    }
+
+    .atmosphere-halo {
+      position: absolute;
+      inset: 5% 8% auto auto;
+      z-index: 3;
+      width: min(58vw, 720px);
+      height: min(58vw, 720px);
+      border-radius: 999px;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      animation: halo-breathe 9s ease-in-out infinite;
+      background:
+        radial-gradient(circle, rgba(var(--signal-rgb), 0.76) 0%, rgba(var(--signal-rgb), 0.28) 32%, transparent 68%);
+    }
+
+    .atmosphere-day-wash {
+      position: absolute;
+      inset: 0;
+      z-index: 14;
+      pointer-events: none;
+      background:
+        linear-gradient(115deg, rgba(255,255,255,0.1) 0%, transparent 36%),
+        radial-gradient(ellipse at 28% 18%, rgba(255,255,255,0.2), transparent 32%);
+    }
+
     .hero-depth-gradient { 
-      background: linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.7) 60%, #000 100%);
       position: absolute;
       inset: 0;
       z-index: 15;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.02) 0%, transparent 24%, rgba(0,0,0,0.54) 68%, rgba(255,255,255,0.92) 100%),
+        radial-gradient(ellipse at 16% 80%, rgba(var(--signal-rgb), 0.2), transparent 38%);
     }
 
     .astrak-font-black { font-weight: 900; }
@@ -111,10 +178,26 @@
       </div>
     );
 
-    const Atmosphere = ({ weather }) => {
+    const hexToRgb = (hex) => {
+      const safeHex = hex?.replace('#', '') || 'e2ff00';
+      const value = parseInt(safeHex.length === 3
+        ? safeHex.split('').map(char => char + char).join('')
+        : safeHex, 16);
+
+      if (!Number.isFinite(value)) return '226, 255, 0';
+
+      return `${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255}`;
+    };
+
+    const Atmosphere = ({ weather, color }) => {
       const drops = useMemo(() => Array.from({ length: weather.intensity }), [weather.intensity]);
       return (
-        <div className="absolute inset-0 z-0 transition-colors duration-[3000ms]" style={{ background: weather.isNight ? '#000' : '#0d111a' }}>
+        <div
+          className="atmosphere-base transition-colors duration-[3000ms]"
+          style={{ '--signal-rgb': hexToRgb(color), '--weather-base': weather.isNight ? '#000' : '#0d111a' }}
+        >
+          <div className="atmosphere-halo" />
+          <div className="atmosphere-day-wash" />
           <div className="lightning-effect" style={{ display: weather.condition === 'storm' ? 'block' : 'none' }} />
           {drops.map((_, i) => (
             <div key={i} className="rain-drop" style={{ 
@@ -342,7 +425,7 @@
                   
                   {headline && (
                     <section className="relative h-screen flex flex-col justify-end px-6 md:px-16 pb-20 overflow-hidden text-white">
-                      <Atmosphere weather={weather} />
+                      <Atmosphere weather={weather} color={headline.color} />
                       
                       <div className="relative z-30 max-w-3xl">
                         <motion.div initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, ease: "easeOut" }}>
