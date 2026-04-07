@@ -47,6 +47,7 @@
     @keyframes scanline { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
     @keyframes chroma-drift { 0% { transform: translate3d(-2%, -2%, 0) scale(1); } 50% { transform: translate3d(3%, 2%, 0) scale(1.08); } 100% { transform: translate3d(-2%, -2%, 0) scale(1); } }
     @keyframes halo-breathe { 0%, 100% { opacity: 0.46; filter: blur(42px) saturate(1.25); } 50% { opacity: 0.72; filter: blur(58px) saturate(1.7); } }
+    @keyframes celestial-float { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); } 50% { transform: translate3d(-10px, 8px, 0) scale(1.04); } }
 
     .rain-drop { position: absolute; width: 1.5px; height: 120px; background: linear-gradient(transparent, rgba(255, 255, 255, 0.25)); animation: rain-fall 0.7s linear infinite; pointer-events: none; }
     .lightning-effect { position: absolute; inset: 0; z-index: 5; pointer-events: none; animation: lightning-bolt 10s ease-in-out infinite; }
@@ -59,9 +60,9 @@
       z-index: 0;
       overflow: hidden;
       background:
-        radial-gradient(circle at 10% 12%, rgba(255,255,255,0.13), transparent 18%),
-        radial-gradient(circle at 85% 8%, rgba(var(--signal-rgb), 0.52), transparent 28%),
-        linear-gradient(140deg, var(--weather-base) 0%, #070a12 42%, #101827 100%);
+        radial-gradient(circle at 10% 12%, var(--sky-glow), transparent 20%),
+        radial-gradient(circle at 85% 8%, rgba(var(--signal-rgb), 0.38), transparent 30%),
+        linear-gradient(140deg, var(--sky-top) 0%, var(--sky-mid) 46%, var(--sky-bottom) 100%);
     }
 
     .atmosphere-base::before,
@@ -74,22 +75,67 @@
 
     .atmosphere-base::before {
       z-index: 1;
-      opacity: 0.84;
+      opacity: var(--chroma-opacity);
       mix-blend-mode: screen;
       animation: chroma-drift 18s ease-in-out infinite;
       background:
-        radial-gradient(ellipse at 18% 70%, rgba(var(--signal-rgb), 0.42), transparent 34%),
-        radial-gradient(ellipse at 76% 28%, rgba(77,171,255,0.32), transparent 30%),
-        radial-gradient(ellipse at 54% 88%, rgba(226,255,0,0.16), transparent 24%),
-        conic-gradient(from 215deg at 50% 50%, transparent 0deg, rgba(255,122,77,0.12) 68deg, rgba(192,132,252,0.2) 146deg, transparent 248deg);
+        radial-gradient(ellipse at 18% 70%, rgba(var(--signal-rgb), 0.38), transparent 34%),
+        radial-gradient(ellipse at 76% 28%, var(--weather-blue), transparent 30%),
+        radial-gradient(ellipse at 54% 88%, var(--weather-gold), transparent 24%),
+        conic-gradient(from 215deg at 50% 50%, transparent 0deg, rgba(255,122,77,0.12) 68deg, rgba(192,132,252,0.18) 146deg, transparent 248deg);
     }
 
     .atmosphere-base::after {
       z-index: 2;
       opacity: 0.68;
       background:
-        linear-gradient(90deg, rgba(255,255,255,0.08), transparent 28%, rgba(255,255,255,0.05) 72%, transparent),
-        radial-gradient(circle at 50% 55%, rgba(255,255,255,0.12), transparent 42%);
+        linear-gradient(90deg, var(--horizon-sheen), transparent 28%, rgba(255,255,255,0.05) 72%, transparent),
+        radial-gradient(circle at 50% 55%, var(--air-haze), transparent 42%);
+    }
+
+    .celestial-body {
+      position: absolute;
+      top: clamp(5rem, 12vh, 8rem);
+      right: clamp(2rem, 8vw, 8rem);
+      z-index: 4;
+      width: clamp(5.75rem, 12vw, 10.5rem);
+      height: clamp(5.75rem, 12vw, 10.5rem);
+      border-radius: 999px;
+      pointer-events: none;
+      animation: celestial-float 11s ease-in-out infinite;
+    }
+
+    .celestial-body.sun {
+      background:
+        radial-gradient(circle at 36% 32%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.48) 12%, transparent 24%),
+        radial-gradient(circle, rgba(255,231,128,0.96) 0%, rgba(255,122,77,0.66) 42%, rgba(255,122,77,0) 70%);
+      box-shadow:
+        0 0 60px rgba(255,214,102,0.42),
+        0 0 150px rgba(255,122,77,0.24),
+        0 0 260px rgba(var(--signal-rgb), 0.14);
+      mix-blend-mode: screen;
+    }
+
+    .celestial-body.moon {
+      background:
+        radial-gradient(circle at 38% 34%, rgba(255,255,255,0.98) 0%, rgba(226,232,240,0.9) 42%, rgba(148,163,184,0.22) 70%);
+      box-shadow:
+        0 0 42px rgba(255,255,255,0.3),
+        0 0 120px rgba(120,160,255,0.18),
+        0 0 220px rgba(var(--signal-rgb), 0.14);
+      mix-blend-mode: screen;
+    }
+
+    .celestial-body.moon::after {
+      content: "";
+      position: absolute;
+      top: -8%;
+      left: 28%;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--sky-top);
+      box-shadow: -12px 8px 36px rgba(0,0,0,0.14);
     }
 
     .atmosphere-halo {
@@ -112,8 +158,8 @@
       z-index: 14;
       pointer-events: none;
       background:
-        linear-gradient(115deg, rgba(255,255,255,0.1) 0%, transparent 36%),
-        radial-gradient(ellipse at 28% 18%, rgba(255,255,255,0.2), transparent 32%);
+        linear-gradient(115deg, var(--day-wash) 0%, transparent 36%),
+        radial-gradient(ellipse at 28% 18%, var(--air-haze), transparent 32%);
     }
 
     .hero-depth-gradient { 
@@ -191,12 +237,39 @@
 
     const Atmosphere = ({ weather, color }) => {
       const drops = useMemo(() => Array.from({ length: weather.intensity }), [weather.intensity]);
+      const skyTheme = weather.isNight
+        ? {
+            '--sky-top': '#000000',
+            '--sky-mid': '#070a12',
+            '--sky-bottom': '#101827',
+            '--sky-glow': 'rgba(180,205,255,0.16)',
+            '--weather-blue': 'rgba(77,171,255,0.3)',
+            '--weather-gold': 'rgba(226,255,0,0.12)',
+            '--horizon-sheen': 'rgba(255,255,255,0.08)',
+            '--air-haze': 'rgba(255,255,255,0.11)',
+            '--day-wash': 'rgba(255,255,255,0.08)',
+            '--chroma-opacity': 0.82
+          }
+        : {
+            '--sky-top': '#0d111a',
+            '--sky-mid': '#243449',
+            '--sky-bottom': '#f5f0dd',
+            '--sky-glow': 'rgba(255,231,128,0.26)',
+            '--weather-blue': 'rgba(77,171,255,0.22)',
+            '--weather-gold': 'rgba(255,214,102,0.26)',
+            '--horizon-sheen': 'rgba(255,255,255,0.22)',
+            '--air-haze': 'rgba(255,255,255,0.2)',
+            '--day-wash': 'rgba(255,255,255,0.2)',
+            '--chroma-opacity': 0.58
+          };
+
       return (
         <div
           className="atmosphere-base transition-colors duration-[3000ms]"
-          style={{ '--signal-rgb': hexToRgb(color), '--weather-base': weather.isNight ? '#000' : '#0d111a' }}
+          style={{ '--signal-rgb': hexToRgb(color), ...skyTheme }}
         >
           <div className="atmosphere-halo" />
+          <div className={`celestial-body ${weather.isNight ? 'moon' : 'sun'}`} />
           <div className="atmosphere-day-wash" />
           <div className="lightning-effect" style={{ display: weather.condition === 'storm' ? 'block' : 'none' }} />
           {drops.map((_, i) => (
