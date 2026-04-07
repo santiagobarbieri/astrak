@@ -40,19 +40,19 @@
     @keyframes rain-fall { 0% { transform: translateY(-120vh) rotate(15deg); } 100% { transform: translateY(120vh) rotate(15deg); } }
     @keyframes lightning-bolt { 
       0%, 94%, 100% { opacity: 0; } 
-      95% { opacity: 1; background: #000000; }
+      95% { opacity: 1; background: #ffffff; }
       96% { opacity: 0.3; } 
-      97% { opacity: 0.9; background: #111827; }
+      97% { opacity: 0.9; background: #f0f9ff; }
     }
     @keyframes scanline { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
 
-    .rain-drop { position: absolute; width: 1.5px; height: 120px; background: linear-gradient(transparent, rgba(0, 0, 0, 0.22)); animation: rain-fall 0.7s linear infinite; pointer-events: none; }
+    .rain-drop { position: absolute; width: 1.5px; height: 120px; background: linear-gradient(transparent, rgba(255, 255, 255, 0.25)); animation: rain-fall 0.7s linear infinite; pointer-events: none; }
     .lightning-effect { position: absolute; inset: 0; z-index: 5; pointer-events: none; animation: lightning-bolt 10s ease-in-out infinite; }
     .analog-noise { position: absolute; inset: 0; z-index: 20; pointer-events: none; opacity: 0.07; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-    .scanline { position: absolute; top: 0; left: 0; width: 100%; height: 120px; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.04), transparent); animation: scanline 10s linear infinite; z-index: 21; pointer-events: none; }
+    .scanline { position: absolute; top: 0; left: 0; width: 100%; height: 120px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.03), transparent); animation: scanline 10s linear infinite; z-index: 21; pointer-events: none; }
     
     .hero-depth-gradient { 
-      background: linear-gradient(to bottom, transparent 30%, rgba(255,255,255,0.72) 60%, #fff 100%);
+      background: linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.7) 60%, #000 100%);
       position: absolute;
       inset: 0;
       z-index: 15;
@@ -66,21 +66,28 @@
   <div id="root"></div>
 
   <script type="text/babel">
-    const { useState, useEffect, useMemo } = React;
+    const { useState, useEffect, useMemo, useRef } = React;
     const MotionLib = window.FramerMotion || window.Motion;
     const { motion, AnimatePresence } = MotionLib;
 
     const RSS_TO_JSON_API = 'https://api.rss2json.com/v1/api.json?rss_url=';
 
     const CATEGORIES = [
-      { id: 'ALL', name: 'Global', color: '#e2ff00', query: 'https://news.google.com/rss?hl=es-419&gl=AR&ceid=AR:es-419' },
+      { id: 'ALL', name: 'Global', color: '#e2ff00' },
       { id: 'POLITICS', name: 'Política', color: '#4dabff', query: 'https://news.google.com/rss/headlines/section/topic/POLITICS?hl=es-419&gl=AR&ceid=AR:es-419' },
       { id: 'TECH', name: 'Tecnología', color: '#c084fc', query: 'https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=es-419&gl=AR&ceid=AR:es-419' },
-      { id: 'CINE', name: 'Cine', color: '#ff4d4d', query: 'https://news.google.com/rss/headlines/section/topic/ENTERTAINMENT?hl=es-419&gl=AR&ceid=AR:es-419' },
-      { id: 'MUSIC', name: 'Música', color: '#ffd700', query: 'https://news.google.com/rss/headlines/section/topic/ENTERTAINMENT?hl=es-419&gl=AR&ceid=AR:es-419' },
+      {
+        id: 'ENTERTAINMENT',
+        name: 'Cine/Música',
+        color: '#ff7a4d',
+        queries: [
+          'https://news.google.com/rss/search?q=peliculas%20internacionales%20OR%20Hollywood%20OR%20Oscars%20OR%20Cannes%20OR%20streaming&hl=es-419&gl=US&ceid=US:es-419',
+          'https://news.google.com/rss/search?q=musica%20popular%20OR%20pop%20OR%20album%20OR%20tour%20OR%20Billboard&hl=es-419&gl=US&ceid=US:es-419'
+        ]
+      },
       { id: 'ECONOMY', name: 'Economía', color: '#34d399', query: 'https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=es-419&gl=AR&ceid=AR:es-419' },
       { id: 'WORLD', name: 'Internacional', color: '#fbbf24', query: 'https://news.google.com/rss/headlines/section/topic/WORLD?hl=es-419&gl=AR&ceid=AR:es-419' },
-      { id: 'CULTURE', name: 'Cultura', color: '#f472b6', query: 'https://news.google.com/rss/headlines/section/topic/HEALTH?hl=es-419&gl=AR&ceid=AR:es-419' },
+      { id: 'CULTURE', name: 'Cultura', color: '#f472b6', query: 'https://news.google.com/rss/search?q=cultura%20arte%20literatura%20Argentina&hl=es-419&gl=AR&ceid=AR:es-419' },
     ];
 
     const AstrakLogo = ({ className }) => (
@@ -107,7 +114,7 @@
     const Atmosphere = ({ weather }) => {
       const drops = useMemo(() => Array.from({ length: weather.intensity }), [weather.intensity]);
       return (
-        <div className="absolute inset-0 z-0 transition-colors duration-[3000ms]" style={{ background: weather.isNight ? '#ffffff' : '#f4f6f8' }}>
+        <div className="absolute inset-0 z-0 transition-colors duration-[3000ms]" style={{ background: weather.isNight ? '#000' : '#0d111a' }}>
           <div className="lightning-effect" style={{ display: weather.condition === 'storm' ? 'block' : 'none' }} />
           {drops.map((_, i) => (
             <div key={i} className="rain-drop" style={{ 
@@ -204,6 +211,7 @@
       const [time, setTime] = useState(new Date());
       const [loading, setLoading] = useState(true);
       const [weather, setWeather] = useState({ condition: 'storm', intensity: 45, isNight: false });
+      const requestSeq = useRef(0);
 
       useEffect(() => {
         const timer = setInterval(() => setTime(new Date()), 1000);
@@ -212,24 +220,56 @@
       }, []);
 
       useEffect(() => {
+        const requestId = requestSeq.current + 1;
+        requestSeq.current = requestId;
+        const controller = new AbortController();
+
         setLoading(true);
         const load = async () => {
           try {
             let results = [];
+            const getQueries = (cat) => cat.queries || (cat.query ? [cat.query] : []);
+            const interleave = (groups) => {
+              const mixed = [];
+              const maxLength = Math.max(0, ...groups.map(group => group.length));
+
+              for (let i = 0; i < maxLength; i++) {
+                groups.forEach(group => {
+                  if (group[i]) mixed.push(group[i]);
+                });
+              }
+
+              return mixed;
+            };
+            const dedupeItems = (items) => {
+              const seen = new Set();
+              return items.filter(item => {
+                const key = item.id || item.url || item.title;
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
+              });
+            };
+            const latestItemTime = (items) => {
+              const time = items[0]?.pubDate ? new Date(items[0].pubDate).getTime() : 0;
+              return Number.isFinite(time) ? time : 0;
+            };
             const buildItem = (item, cat) => {
-              const parts = item.title.split(' - ');
+              const parts = (item.title || '').split(' - ');
+              const publishedAt = item.pubDate ? new Date(item.pubDate) : new Date();
               return {
                 id: item.guid || item.link,
                 title: parts[0]?.trim() || 'Sin título',
                 source: parts[parts.length - 1]?.trim() || 'Desconocido',
-                excerpt: item.description?.replace(/<[^>]*>?/gm, ' ').slice(0, 150) + '...',
+                excerpt: `${item.description?.replace(/<[^>]*>?/gm, ' ').slice(0, 150) || 'Sin resumen disponible'}...`,
                 url: item.link,
                 color: cat.color,
                 category: cat.name,
                 pubDate: item.pubDate,
                 timeAgo: (() => {
-                  const d = new Date() - new Date(item.pubDate);
-                  const m = Math.floor(d / 60000);
+                  const d = Date.now() - publishedAt.getTime();
+                  if (!Number.isFinite(d)) return 'Ahora';
+                  const m = Math.max(0, Math.floor(d / 60000));
                   if (m < 60) return `${m}m`;
                   const h = Math.floor(m / 60);
                   if (h < 24) return `${h}h`;
@@ -237,28 +277,56 @@
                 })()
               };
             };
+            const fetchCategory = async (cat) => {
+              const queryResults = await Promise.all(getQueries(cat).map(async (query) => {
+                try {
+                  const res = await fetch(`${RSS_TO_JSON_API}${encodeURIComponent(query)}`, { signal: controller.signal });
+                  if (!res.ok) throw new Error(`rss status ${res.status}`);
+                  const data = await res.json();
+                  return Array.isArray(data.items)
+                    ? data.items.map(item => buildItem(item, cat))
+                    : [];
+                } catch (e) {
+                  if (e.name === 'AbortError') throw e;
+                  console.error(e);
+                  return [];
+                }
+              }));
 
-            const query = activeCat.query;
-            const res = await fetch(`${RSS_TO_JSON_API}${encodeURIComponent(query)}`);
-            const data = await res.json();
-            
-            results = data.items.map(item => buildItem(item, activeCat));
-            
-            // Si es Cine o Música, intentamos filtrar o priorizar términos relacionados si el RSS es compartido
-            if (activeCat.id === 'CINE') {
-                // Simulación de filtrado más específico para reviews si fuera necesario
+              return dedupeItems(interleave(queryResults));
+            };
+
+            if (activeCat.id === 'ALL') {
+              const sourceCategories = CATEGORIES.filter(cat => cat.id !== 'ALL');
+              const categoryResults = await Promise.all(sourceCategories.map(fetchCategory));
+              const latestFirst = [...categoryResults].sort((a, b) => latestItemTime(b) - latestItemTime(a));
+              results = dedupeItems(interleave(latestFirst));
+            } else {
+              results = await fetchCategory(activeCat);
             }
-            
+
+            if (requestSeq.current !== requestId) return;
+
             setHeadline(results[0]);
             setNews(results.slice(1, 16));
           } catch(e) {
-            console.error(e);
+            if (e.name !== 'AbortError') {
+              console.error(e);
+              if (requestSeq.current === requestId) {
+                setHeadline(null);
+                setNews([]);
+              }
+            }
           } finally {
-            setLoading(false);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (requestSeq.current === requestId) {
+              setLoading(false);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
           }
         };
         load();
+
+        return () => controller.abort();
       }, [activeCat]);
 
       return (
@@ -273,15 +341,15 @@
                 <motion.div key={activeCat.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   
                   {headline && (
-                    <section className="relative h-screen flex flex-col justify-end px-6 md:px-16 pb-20 overflow-hidden">
+                    <section className="relative h-screen flex flex-col justify-end px-6 md:px-16 pb-20 overflow-hidden text-white">
                       <Atmosphere weather={weather} />
                       
                       <div className="relative z-30 max-w-3xl">
                         <motion.div initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, ease: "easeOut" }}>
                           <div className="flex items-center gap-4 mb-10">
-                            <div className="px-2.5 py-0.5 border border-black/20 text-[8px] font-black uppercase bg-black/5">Señal {activeCat.id}</div>
-                            <div className="w-2 h-2 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.28)] animate-pulse" style={{backgroundColor: headline.color}} />
-                            <span className="text-[10px] font-black uppercase text-black/60">{headline.category}</span>
+                            <div className="px-2.5 py-0.5 border border-white/20 text-[8px] font-black uppercase bg-white/5">Señal {activeCat.id}</div>
+                            <div className="w-2 h-2 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.4)] animate-pulse" style={{backgroundColor: headline.color}} />
+                            <span className="text-[10px] font-black uppercase text-white/60">{headline.category}</span>
                           </div>
                           
                           <h2 className="astrak-font-black text-3xl md:text-3xl lg:text-4xl uppercase astrak-leading-tightest mb-10">
@@ -290,14 +358,14 @@
                           
                           <div className="flex items-center gap-8">
                             <div className="flex flex-col">
-                              <span className="text-[8px] font-black uppercase text-black/30 mb-1">Origen</span>
-                              <span className="text-[10px] font-bold uppercase text-black/80">{headline.source}</span>
+                              <span className="text-[8px] font-black uppercase text-white/30 mb-1">Origen</span>
+                              <span className="text-[10px] font-bold uppercase text-white/80">{headline.source}</span>
                             </div>
                             <div className="flex flex-col">
-                              <span className="text-[8px] font-black uppercase text-black/30 mb-1">Sincronización</span>
-                              <span className="text-[10px] font-bold uppercase text-black/80">Hace {headline.timeAgo}</span>
+                              <span className="text-[8px] font-black uppercase text-white/30 mb-1">Sincronización</span>
+                              <span className="text-[10px] font-bold uppercase text-white/80">Hace {headline.timeAgo}</span>
                             </div>
-                            <a href={headline.url} target="_blank" className="ml-4 p-3 rounded-full border border-black/10 hover:bg-black hover:text-white transition-all">
+                            <a href={headline.url} target="_blank" className="ml-4 p-3 rounded-full border border-white/10 hover:bg-white hover:text-black transition-all">
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                             </a>
                           </div>
