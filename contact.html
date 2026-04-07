@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20fill%3D%27black%27/%3E%3Ccircle%20cx%3D%2732%27%20cy%3D%2732%27%20r%3D%2714%27%20fill%3D%27white%27%20opacity%3D%270.9%27/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20fill%3D%27white%27/%3E%3Ccircle%20cx%3D%2732%27%20cy%3D%2732%27%20r%3D%2714%27%20fill%3D%27black%27%20opacity%3D%270.9%27/%3E%3C/svg%3E" />
   <title>Contact</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
 
     :root {
-      --astrak-black: #000000;
-      --astrak-white: #ffffff;
-      --bg-current: #000;
+      --astrak-black: #ffffff;
+      --astrak-white: #000000;
+      --bg-current: #fff;
     }
 
     * { box-sizing: border-box;}
@@ -48,7 +48,7 @@
 
     @keyframes flash {
       0%, 98%, 100% { opacity: 0; }
-      99% { opacity: 0.2; background: white; }
+      99% { opacity: 0.14; background: black; }
     }
 
     .storm-active .lightning-layer {
@@ -73,7 +73,7 @@
       font-size: 8px;
       font-weight: 900;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.3);
+      color: rgba(0,0,0,0.3);
       display: block;
       margin-bottom: 0.5rem;
     }
@@ -82,9 +82,9 @@
       width: 100%;
       background: transparent;
       border: none;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(0,0,0,0.1);
       padding: 0.75rem 0;
-      color: white;
+      color: black;
       font-size: 14px;
       font-weight: 500;
       outline: none;
@@ -93,26 +93,26 @@
     }
 
     .input-terminal:focus {
-      border-bottom-color: rgba(255,255,255,0.8);
+      border-bottom-color: rgba(0,0,0,0.8);
     }
 
     .btn-small {
       font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
-      border: 1px solid rgba(255,255,255,0.2);
+      border: 1px solid rgba(0,0,0,0.2);
       padding: 12px 24px;
       width: 100%;
       background: transparent;
-      color: white;
+      color: black;
       transition: all 0.3s;
       margin-top: 1rem;
     }
 
     .btn-small:hover {
-      background: white;
-      color: black;
-      border-color: white;
+      background: black;
+      color: white;
+      border-color: black;
     }
 
     .nav-mini {
@@ -133,7 +133,7 @@
       font-size: 8px;
       font-weight: 900;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.2);
+      color: rgba(0,0,0,0.2);
     }
 
     .bg-glow {
@@ -143,7 +143,7 @@
       transform: translate(-50%, -50%);
       width: 60vw;
       height: 60vw;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(0, 0, 0, 0.04) 0%, transparent 70%);
       filter: blur(60px);
       pointer-events: none;
       z-index: 1;
@@ -162,7 +162,7 @@
 
   <div class="content-layer">
     <header class="text-center mb-16">
-      <div class="w-4 h-4 bg-white rounded-full mx-auto mb-6 opacity-80"></div>
+      <div class="w-4 h-4 bg-black rounded-full mx-auto mb-6 opacity-80"></div>
       <h1 class="text-[10px] font-black uppercase opacity-40">SEND A SIGNAL</h1>
     </header>
 
@@ -198,7 +198,7 @@
     function updateEnvironment() {
       const hour = new Date().getHours();
       isNight = hour >= 19 || hour < 6;
-      document.body.style.backgroundColor = isNight ? '#000' : '#0d1117';
+      document.body.style.backgroundColor = isNight ? '#ffffff' : '#f4f6f8';
       
       // Simulación de clima
       if(Math.random() > 0.6) {
@@ -219,7 +219,7 @@
 
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = isNight ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)';
+      ctx.strokeStyle = isNight ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.18)';
       ctx.lineWidth = 1;
       
       drops.forEach(d => {
@@ -242,7 +242,7 @@
       e.preventDefault();
       const status = document.getElementById('status-msg');
       status.innerText = "ENVIANDO PAQUETES DE DATOS...";
-      status.style.color = "rgba(255,255,255,0.8)";
+      status.style.color = "rgba(0,0,0,0.8)";
       
       setTimeout(() => {
         status.innerText = "TRANSMISIÓN COMPLETADA. CONEXIÓN CERRADA.";
