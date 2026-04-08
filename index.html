@@ -301,6 +301,25 @@
       const titlePattern = new RegExp(`^${escapeRegExp(cleanTitle)}[:\\s\\-.,;|]*`, 'i');
       return cleanText.replace(titlePattern, '').trim();
     };
+    const getBestSummaryText = (item, title) => {
+      const candidates = [
+        item.description,
+        item.content,
+        item.contentSnippet,
+        item.summary,
+        item.full_content
+      ];
+
+      for (const candidate of candidates) {
+        const cleaned = removeTitleFromText(candidate || '', title);
+        const normalized = normalizeText(cleaned);
+        if (cleaned && normalized && normalized !== normalizeText(title) && cleaned.length >= 24) {
+          return cleaned;
+        }
+      }
+
+      return '';
+    };
     const buildExcerpt = (description, title) => {
       const cleanDescription = removeTitleFromText(description, title);
       if (!cleanDescription) return null;
@@ -645,7 +664,7 @@
               const parts = (item.title || '').split(' - ');
               const publishedAt = item.pubDate ? new Date(item.pubDate) : new Date();
               const title = parts[0]?.trim() || 'Sin título';
-              const cleanDescription = removeTitleFromText(item.description || '', title);
+              const cleanDescription = getBestSummaryText(item, title);
               const excerpt = buildExcerpt(cleanDescription, title);
               return {
                 id: item.guid || item.link,
