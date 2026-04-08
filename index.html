@@ -292,8 +292,17 @@
 
     const stripHtml = (value = '') => value.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim();
     const normalizeText = (value = '') => stripHtml(value).toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, '').trim();
+    const escapeRegExp = (value = '') => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const removeTitleFromText = (text, title) => {
+      const cleanText = stripHtml(text);
+      const cleanTitle = stripHtml(title);
+      if (!cleanText || !cleanTitle) return cleanText;
+
+      const titlePattern = new RegExp(`^${escapeRegExp(cleanTitle)}[:\\s\\-.,;|]*`, 'i');
+      return cleanText.replace(titlePattern, '').trim();
+    };
     const buildExcerpt = (description, title) => {
-      const cleanDescription = stripHtml(description);
+      const cleanDescription = removeTitleFromText(description, title);
       if (!cleanDescription) return null;
 
       const normalizedTitle = normalizeText(title);
@@ -636,14 +645,16 @@
               const parts = (item.title || '').split(' - ');
               const publishedAt = item.pubDate ? new Date(item.pubDate) : new Date();
               const title = parts[0]?.trim() || 'Sin título';
-              const cleanDescription = stripHtml(item.description || '');
+              const cleanDescription = removeTitleFromText(item.description || '', title);
               const excerpt = buildExcerpt(cleanDescription, title);
               return {
                 id: item.guid || item.link,
                 title,
                 source: parts[parts.length - 1]?.trim() || 'Desconocido',
                 excerpt,
-                quickRead: cleanDescription || 'Sin resumen disponible para esta fuente.',
+                quickRead: cleanDescription && normalizeText(cleanDescription) !== normalizeText(title)
+                  ? cleanDescription
+                  : 'Sin resumen disponible para esta fuente.',
                 url: item.link,
                 color: cat.color,
                 category: cat.name,
@@ -786,17 +797,17 @@
                             <span className="text-[9px] font-bold text-black/20 uppercase">{item.timeAgo}</span>
                           </div>
                           
-                          <h3 className="text-xl font-black uppercase leading-[1.2] mb-5 group-hover:text-black/70 transition-colors">
+                          <h3 className="text-xl font-black uppercase leading-[1.28] tracking-[-0.01em] mb-4 group-hover:text-black/70 transition-colors">
                             {item.title}
                           </h3>
                           
                           {item.excerpt && (
-                            <p className="text-[12px] leading-relaxed text-neutral-600 font-medium italic line-clamp-3 opacity-60 group-hover:opacity-100 transition-opacity">
+                            <p className="text-[12px] leading-[1.75] text-neutral-600 font-medium italic line-clamp-3 opacity-70 group-hover:opacity-100 transition-opacity">
                               {item.excerpt}
                             </p>
                           )}
                           
-                          <div className="mt-6 text-[9px] font-black uppercase text-black/20 group-hover:text-black transition-colors">
+                          <div className="mt-7 text-[9px] font-black uppercase tracking-[0.14em] text-black/20 group-hover:text-black transition-colors">
                             Quick Read →
                           </div>
                         </motion.article>
@@ -829,7 +840,7 @@
                                 </span>
                                 <span className="text-[9px] font-bold uppercase text-black/30">{selectedArticle.timeAgo}</span>
                               </div>
-                              <h3 className="text-2xl md:text-3xl font-black uppercase leading-[1.08]">
+                              <h3 className="text-2xl md:text-3xl font-black uppercase leading-[1.16] tracking-[-0.01em]">
                                 {selectedArticle.title}
                               </h3>
                             </div>
@@ -841,7 +852,7 @@
                             </button>
                           </div>
 
-                          <p className="text-[13px] leading-7 text-neutral-700 mb-8">
+                          <p className="text-[13px] md:text-[14px] leading-[1.9] text-neutral-700 mb-8 max-w-[62ch]">
                             {selectedArticle.quickRead}
                           </p>
 
