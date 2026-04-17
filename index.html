@@ -442,6 +442,8 @@
         intensity,
         isNight,
         isStorm,
+        weatherCode,
+        isDay,
         temperature,
         location: 'Buenos Aires, AR',
         ...getCelestialPosition(hour, isNight)
@@ -649,7 +651,6 @@
       const [headline, setHeadline] = useState(null);
       const [activeCat, setActiveCat] = useState(CATEGORIES[0]);
       const [selectedArticle, setSelectedArticle] = useState(null);
-      const [time, setTime] = useState(new Date());
       const [loading, setLoading] = useState(true);
       const [weather, setWeather] = useState(() => getWeatherState());
       const [timeLabel, setTimeLabel] = useState(() => {
@@ -661,7 +662,6 @@
       useEffect(() => {
         const timer = setInterval(() => {
           const now = new Date();
-          setTime(now);
           const parts = getBuenosAiresTimeParts(now);
           setTimeLabel([parts.hour, parts.minute, parts.second].map(value => String(value || 0).padStart(2, '0')).join(':'));
           setWeather(prev => ({
