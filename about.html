@@ -3,722 +3,1053 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20fill%3D%27white%27/%3E%3Ccircle%20cx%3D%2732%27%20cy%3D%2732%27%20r%3D%2714%27%20fill%3D%27black%27%20opacity%3D%270.9%27/%3E%3C/svg%3E" />
-  <title>About</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <title>ASTRAK — Editorial Signal Interface</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-
-    @property --weather-base {
-      syntax: '<color>';
-      inherits: true;
-      initial-value: #ffffff;
-    }
-
-    @property --weather-haze {
-      syntax: '<color>';
-      inherits: true;
-      initial-value: rgba(255,255,255,0.82);
-    }
-
-    @property --weather-glow {
-      syntax: '<color>';
-      inherits: true;
-      initial-value: rgba(0,0,0,0.08);
-    }
-
-    @property --weather-rim {
-      syntax: '<color>';
-      inherits: true;
-      initial-value: rgba(0,0,0,0.14);
-    }
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&display=swap');
 
     :root {
-      --astrak-black: #ffffff;
-      --astrak-white: #000000;
-      --bg-current: #fff;
-      --weather-base: #ffffff;
-      --weather-haze: rgba(255,255,255,0.82);
-      --weather-glow: rgba(0,0,0,0.08);
-      --weather-rim: rgba(0,0,0,0.14);
-      transition:
-        --weather-base 2s ease,
-        --weather-haze 2s ease,
-        --weather-glow 2s ease,
-        --weather-rim 2s ease;
+      --bg: #f0ede6;
+      --dark: #0d0d0d;
+      --accent: #ff6200;
+      --panel: rgba(255, 255, 255, 0.5);
+      --panel-strong: rgba(255, 255, 255, 0.72);
+      --text: #05070b;
+      --muted: rgba(5, 7, 11, 0.55);
+      --line: rgba(5, 7, 11, 0.12);
+      --acid: #e2ff00;
+      --sky-top: #0d111a;
+      --sky-mid: #243449;
+      --sky-bottom: #f5f0dd;
+      --sun: rgba(255, 231, 128, 0.58);
+      --flare: rgba(255, 122, 77, 0.18);
+      --blue-rim: rgba(77, 171, 255, 0.16);
+      --shadow: 0 30px 80px rgba(0, 0, 0, 0.08);
     }
 
-    * { box-sizing: border-box;}
-
-    html {
-      overscroll-behavior-y: none;
-    }
-
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--bg); }
     body {
       margin: 0;
-      background-color: var(--weather-base);
-      color: var(--astrak-white);
-      font-family: 'Inter', sans-serif;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255, 231, 128, 0.32), transparent 18%),
+        radial-gradient(circle at 82% 18%, rgba(77, 171, 255, 0.14), transparent 26%),
+        radial-gradient(circle at 50% 88%, rgba(255, 122, 77, 0.12), transparent 22%),
+        linear-gradient(160deg, #eef1f5 0%, #f8f3e1 45%, #fffdfa 100%);
+      -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
-      overscroll-behavior-y: none;
-      min-height: 100vh;
-      transition: background-color 2s ease;
     }
 
-    /* --- CAPA ATMOSFÉRICA --- */
-    #weather-canvas {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    .noise,
+    .scanline,
+    .hero-atmosphere,
+    .hero-atmosphere::before,
+    .hero-atmosphere::after {
       pointer-events: none;
-    }
-
-    .lightning-layer {
-      position: fixed;
-      inset: 0;
-      z-index: 2;
-      pointer-events: none;
-      opacity: 0;
-    }
-
-    @keyframes flash {
-      0%, 98%, 100% { opacity: 0; }
-      99% { opacity: 0.14; background: black; }
-    }
-
-    .storm-active .lightning-layer {
-      animation: flash 10s infinite;
     }
 
     .noise {
       position: fixed;
       inset: 0;
-      z-index: 3;
+      z-index: 2;
       opacity: 0.04;
-      pointer-events: none;
+      mix-blend-mode: multiply;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
-    /* --- UI DE TERMINAL --- */
-    .content-layer { position: relative; z-index: 10; width: 100%; max-width: 1280px; padding: 0 clamp(1.5rem, 5vw, 5rem) 0; margin: 0 auto; }
-
-    .input-group { margin-bottom: 2.5rem; position: relative; }
-
-    .label-terminal {
-      font-size: 8px;
-      font-weight: 900;
-      text-transform: uppercase;
-      color: rgba(0,0,0,0.3);
-      display: block;
-      margin-bottom: 0.5rem;
-    }
-
-    .input-terminal {
-      width: 100%;
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-      padding: 0.75rem 0;
-      color: black;
-      font-size: 14px;
-      font-weight: 500;
-      outline: none;
-      transition: all 0.3s;
-      text-transform: uppercase;
-    }
-
-    .input-terminal:focus {
-      border-bottom-color: rgba(0,0,0,0.8);
-    }
-
-    .btn-small {
-      font-size: 9px;
-      font-weight: 900;
-      text-transform: uppercase;
-      border: 1px solid rgba(0,0,0,0.2);
-      padding: 12px 24px;
-      width: 100%;
-      background: transparent;
-      color: black;
-      transition: all 0.3s;
-      margin-top: 1rem;
-    }
-
-    .btn-small:hover {
-      background: black;
-      color: white;
-      border-color: black;
-    }
-
-    .nav-mini {
+    .scanline {
       position: fixed;
-      top: 40px;
-      font-size: 9px;
-      font-weight: 900;
-      text-transform: uppercase;
-      opacity: 0.4;
-      transition: opacity 0.3s;
-      z-index: 100;
-    }
-    .nav-mini:hover { opacity: 1; color: var(--astrak-white); }
-
-    #status-msg {
-      margin: 2rem 0 0;
-      text-align: center;
-      font-size: 8px;
-      font-weight: 900;
-      text-transform: uppercase;
-      color: rgba(0,0,0,0.2);
-    }
-
-    .bg-glow {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 60vw;
-      height: 60vw;
-      background: radial-gradient(circle, rgba(0, 0, 0, 0.04) 0%, transparent 70%);
-      filter: blur(60px);
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .about-stack {
-      display: grid;
-      gap: clamp(3rem, 7vw, 7rem);
-    }
-
-    .about-section {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: clamp(1.5rem, 4vw, 4rem);
-      align-items: start;
-      position: relative;
-    }
-
-    .about-section::before {
-      content: "";
-      position: absolute;
-      top: -2rem;
+      top: 0;
       left: 0;
       width: 100%;
-      height: 1px;
-      background: linear-gradient(90deg, rgba(0,0,0,0.18), transparent 70%);
+      height: 140px;
+      z-index: 3;
+      opacity: 0.22;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.16), transparent 72%);
+      animation: scanline 11s linear infinite;
     }
 
-    .hero-section {
-      display: block;
-      width: 100vw;
-      min-height: 100vh;
-      margin-left: calc(50% - 50vw);
+    @keyframes scanline {
+      0% { transform: translateY(-120%); }
+      100% { transform: translateY(100vh); }
+    }
+
+    @keyframes floatSlow {
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      50% { transform: translate3d(-14px, 12px, 0); }
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .site-shell {
       position: relative;
+      z-index: 5;
+      width: min(1240px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 20px 0 48px;
     }
 
-    .hero-section::before,
-    .hero-section::after {
-      display: none;
+    .topbar {
+      position: sticky;
+      top: 18px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      border: 1px solid rgba(5, 7, 11, 0.08);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
     }
 
-    .signal-section {
-      min-height: auto;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
     }
 
-    .faq-section {
-      min-height: auto;
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 36% 36%, #fff 0 16%, rgba(255,255,255,0) 18%),
+        radial-gradient(circle, #000 0 46%, rgba(0,0,0,0) 48%);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      flex: 0 0 auto;
     }
 
-    .blog-section {
-      min-height: auto;
-    }
-
-    .footer-section {
-      min-height: auto;
-    }
-
-    .section-title {
-      margin: 0 0 1rem;
-      font-size: clamp(2.5rem, 7.5vw, 7rem);
+    .brand-copy strong,
+    .nav-link,
+    .chip,
+    .eyebrow,
+    .stat-label,
+    .faq-label,
+    .form-label,
+    .microcopy,
+    .footer-copy,
+    .blog-label {
+      text-transform: uppercase;
       font-weight: 900;
-      line-height: 0.9;
-      text-transform: uppercase;
+      letter-spacing: 0.12em;
     }
 
-    .section-copy {
-      margin: 0;
-      color: rgba(0,0,0,0.55);
-      font-size: clamp(11px, 1vw, 14px);
-      line-height: 1.65;
-      text-transform: uppercase;
-      max-width: 640px;
+    .brand-copy strong {
+      display: block;
+      font-size: 10px;
+      line-height: 1.1;
     }
 
-    .section-copy + .section-copy {
-      margin-top: 1.5rem;
+    .brand-copy span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.2;
     }
 
-    .video-preset {
-      min-height: 100vh;
-      background: transparent;
+    .topbar-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-link,
+    .app-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      font-size: 10px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      transition: 180ms ease;
+    }
+
+    .nav-link:hover,
+    .app-link:hover {
+      border-color: rgba(5, 7, 11, 0.28);
+      background: rgba(5, 7, 11, 0.04);
+    }
+
+    .app-link {
+      background: #0a0d14;
+      color: white;
+      border-color: #0a0d14;
+      box-shadow: 0 14px 32px rgba(10, 13, 20, 0.18);
+    }
+
+    .hero {
       position: relative;
+      min-height: calc(100vh - 110px);
+      border-radius: 36px;
       overflow: hidden;
+      isolation: isolate;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0) 24%),
+        linear-gradient(160deg, var(--sky-top) 0%, var(--sky-mid) 50%, var(--sky-bottom) 100%);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-atmosphere {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 16% 18%, var(--sun), transparent 18%),
+        radial-gradient(circle at 82% 18%, var(--blue-rim), transparent 28%),
+        radial-gradient(circle at 50% 88%, rgba(255,255,255,0.24), transparent 30%);
+    }
+
+    .hero-atmosphere::before {
+      content: "";
+      position: absolute;
+      inset: -12%;
+      opacity: 0.9;
+      mix-blend-mode: screen;
+      background:
+        radial-gradient(ellipse at 24% 30%, rgba(255,255,255,0.18), transparent 26%),
+        radial-gradient(ellipse at 62% 16%, rgba(255,244,214,0.16), transparent 30%),
+        radial-gradient(ellipse at 78% 32%, rgba(255,255,255,0.12), transparent 26%);
+      animation: floatSlow 24s ease-in-out infinite alternate;
+    }
+
+    .hero-atmosphere::after {
+      content: "";
+      position: absolute;
+      top: 12%;
+      left: 67%;
+      width: clamp(86px, 9vw, 132px);
+      height: clamp(86px, 9vw, 132px);
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 38% 34%, rgba(255,255,255,0.84) 0%, rgba(255,255,255,0.22) 16%, transparent 26%),
+        radial-gradient(circle at 62% 68%, rgba(255,255,255,0.42), transparent 40%);
+      animation: glowPulse 6s ease-in-out infinite;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      align-items: center;
+      padding: clamp(40px, 10vw, 80px);
+      gap: clamp(24px, 6vw, 60px);
     }
 
     .hero-copy {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: min(88vw, 980px);
-      transform: translate(-50%, -50%);
-      z-index: 2;
-      text-align: center;
-    }
-
-    .hero-slogan {
-      display: block;
-      margin-bottom: 1rem;
-      color: rgba(0,0,0,0.62);
-      font-size: clamp(0.9rem, 1.8vw, 1.6rem);
-      font-weight: 900;
-      text-transform: uppercase;
-    }
-
-    .hero-logo {
-      display: block;
-      width: min(78vw, 760px);
-      height: auto;
-      margin: 0 auto 1.5rem;
-      filter: brightness(0);
-    }
-
-    .hero-copy .section-copy {
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    .signal-section > div,
-    .blog-section > div {
-      display: grid;
-      grid-template-columns: minmax(220px, 0.65fr) minmax(0, 1.35fr);
-      gap: clamp(1.5rem, 5vw, 6rem);
-      align-items: start;
-    }
-
-    .signal-section .section-title,
-    .blog-section .section-title {
-      margin: 0;
-    }
-
-    .signal-section .section-copy,
-    .blog-section .section-copy {
-      grid-column: 2;
-    }
-
-    .signal-meta {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-      grid-column: 2;
-      margin-top: 0.5rem;
-      max-width: 680px;
-    }
-
-    .signal-stat {
-      border-top: 1px solid rgba(0,0,0,0.16);
-      padding-top: 0.85rem;
-    }
-
-    .signal-stat strong {
-      display: block;
-      font-size: clamp(1.35rem, 3vw, 3rem);
-      line-height: 0.9;
-      font-weight: 900;
-      text-transform: uppercase;
-    }
-
-    .signal-stat span {
-      display: block;
-      margin-top: 0.6rem;
-      color: rgba(0,0,0,0.38);
-      font-size: 8px;
-      font-weight: 900;
-      text-transform: uppercase;
-    }
-
-    .faq-section > div {
-      display: grid;
-      grid-template-columns: minmax(180px, 0.45fr) minmax(0, 1.55fr);
-      gap: clamp(1.5rem, 5vw, 6rem);
-      align-items: start;
-    }
-
-    .faq-section .section-title {
-      grid-row: 1 / span 3;
-      margin: 0;
-    }
-
-    .faq-item {
-      border-top: 1px solid rgba(0,0,0,0.1);
-      display: grid;
-      grid-column: 2;
-      grid-template-columns: minmax(160px, 0.55fr) minmax(0, 1.45fr);
-      gap: clamp(1rem, 3vw, 3rem);
-      padding: clamp(1.1rem, 3vw, 2.4rem) 0;
-    }
-
-    .faq-item:last-child {
-      padding-bottom: 0;
-    }
-
-    .faq-question {
-      margin: 0;
-      font-size: clamp(11px, 1.2vw, 16px);
-      font-weight: 900;
-      text-transform: uppercase;
-    }
-
-    .blog-title {
-      max-width: 980px;
-      font-size: clamp(3rem, 9vw, 8rem);
-    }
-
-    .blog-section .section-copy {
-      max-width: 520px;
-    }
-
-    .blog-list {
-      grid-column: 2;
-    }
-
-    .footer-section {
-      width: 100vw;
-      margin-left: calc(50% - 50vw);
-      padding: clamp(8rem, 14vw, 14rem) clamp(1.5rem, 5vw, 5rem) 4rem;
-      background:
-        linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.88) 30%, #fff 58%, #fff 100%);
-      align-content: end;
-    }
-
-    .footer-section::before {
-      display: none;
-    }
-
-    .footer-section .section-copy {
-      max-width: 760px;
-      margin-left: auto;
-      color: rgba(0,0,0,0.42);
-      font-size: clamp(10px, 0.9vw, 12px);
-      text-align: right;
-    }
-
-    @media (max-width: 860px) {
-      .about-section,
-      .hero-section,
-      .signal-section,
-      .faq-section,
-      .footer-section {
-        grid-template-columns: 1fr;
-        min-height: auto;
-      }
-
-      .faq-item,
-      .signal-meta {
-        grid-template-columns: 1fr;
-      }
-
-      .signal-section > div,
-      .blog-section > div,
-      .faq-section > div {
-        grid-template-columns: 1fr;
-      }
-
-      .signal-section .section-copy,
-      .blog-section .section-copy,
-      .blog-list,
-      .signal-meta {
-        grid-column: auto;
-      }
-
-      .faq-section .section-title,
-      .faq-item {
-        grid-column: auto;
-        grid-row: auto;
-      }
-
-      .footer-section .section-copy {
-        margin-left: 0;
-        text-align: left;
-      }
-
-      .hero-section {
-        min-height: 100vh;
-      }
-
-      .hero-copy {
-        width: min(88vw, 720px);
-      }
-    }
-
-    /* --- BLOG LIST --- */
-    .blog-list {
-      margin-top: 3rem;
       display: flex;
       flex-direction: column;
+      gap: 20px;
     }
 
-    .blog-loading {
-      font-size: 9px;
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      color: rgba(255, 255, 255, 0.68);
+    }
+
+    .hero-title {
+      margin: 0;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 8vw, 5.2rem);
+      font-weight: 900;
+      line-height: 1.05;
+      color: white;
+      animation: slideUp 0.8s ease-out;
+    }
+
+    .hero-text {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.78);
+      max-width: 520px;
+      animation: slideUp 0.8s ease-out 0.1s both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      animation: slideUp 0.8s ease-out 0.2s both;
+    }
+
+    .hero-primary,
+    .hero-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: 180ms ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .hero-primary {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 12px 32px rgba(255, 98, 0, 0.24);
+    }
+
+    .hero-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(255, 98, 0, 0.32);
+    }
+
+    .hero-secondary {
+      background: rgba(255, 255, 255, 0.18);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-secondary:hover {
+      background: rgba(255, 255, 255, 0.28);
+      border-color: rgba(255, 255, 255, 0.42);
+    }
+
+    .hero-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .telemetry {
+      padding: 24px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat strong {
+      font-size: 14px;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.95);
+    }
+
+    .stat-label {
+      font-size: 8px;
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    .highlight-card {
+      padding: 24px;
+      border-radius: 20px;
+      background: rgba(255, 98, 0, 0.12);
+      border: 1px solid rgba(255, 98, 0, 0.24);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px;
+      background: var(--accent);
+      color: white;
+      border-radius: 999px;
+      font-size: 8px;
+      width: fit-content;
+    }
+
+    .highlight-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+      line-height: 1.3;
+    }
+
+    .highlight-text {
+      margin: 0;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.68);
+      line-height: 1.5;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+      gap: 24px;
+      margin-top: 32px;
+    }
+
+    .content-card,
+    .contact-card {
+      padding: 40px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    }
+
+    .section-kicker {
+      display: block;
+      font-size: 10px;
       font-weight: 900;
       text-transform: uppercase;
-      color: rgba(0,0,0,0.2);
-      letter-spacing: 0.15em;
-      padding: 2rem 0;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      margin: 0 0 16px 0;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--text);
+    }
+
+    .section-text {
+      margin: 0 0 16px 0;
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+
+    .section-text:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .feature-list {
+      display: grid;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .feature {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .feature strong {
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text);
+    }
+
+    .feature p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .signal-grid {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .signal {
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: 180ms ease;
+    }
+
+    .signal:hover {
+      background: rgba(255, 255, 255, 0.5);
+      border-color: var(--accent);
+    }
+
+    .signal strong {
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text);
+    }
+
+    .signal span {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── BLOG STYLES ── */
+    .blog-section {
+      grid-column: 1 / -1;
+    }
+
+    .blog-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 20px;
     }
 
     .blog-item {
       display: grid;
-      grid-template-columns: 80px 1fr auto;
-      gap: 1.5rem;
-      align-items: start;
-      padding: 1.5rem 0;
-      border-top: 1px solid rgba(0,0,0,0.07);
-      cursor: pointer;
-      transition: opacity 0.15s;
-      text-decoration: none;
-      color: inherit;
+      grid-template-columns: 48px 1fr 140px;
+      gap: 18px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.3);
+      transition: 180ms ease;
+      align-items: center;
     }
 
-    .blog-item:last-child {
-      border-bottom: 1px solid rgba(0,0,0,0.07);
+    .blog-item:hover {
+      background: rgba(255, 255, 255, 0.5);
+      border-color: var(--accent);
+      transform: translateX(4px);
     }
-
-    .blog-item:hover { opacity: 0.55; }
 
     .blog-item-num {
       font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
-      color: rgba(0,0,0,0.18);
+      color: rgba(5, 7, 11, 0.18);
       letter-spacing: 0.1em;
-      padding-top: 3px;
     }
 
-    .blog-item-body { display: flex; flex-direction: column; gap: 6px; }
+    .blog-item-body {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
 
     .blog-item-type {
       font-size: 8px;
       font-weight: 900;
       text-transform: uppercase;
-      color: rgba(0,0,0,0.25);
+      color: var(--accent);
       letter-spacing: 0.14em;
     }
 
     .blog-item-title {
-      font-size: clamp(14px, 1.4vw, 20px);
+      font-size: 14px;
       font-weight: 700;
       text-transform: uppercase;
-      color: rgba(0,0,0,0.88);
+      color: var(--text);
       line-height: 1.2;
+      margin: 0;
     }
 
     .blog-item-excerpt {
       font-size: 12px;
       font-weight: 400;
-      text-transform: uppercase;
-      color: rgba(0,0,0,0.35);
-      line-height: 1.6;
-      max-width: 560px;
-      margin-top: 2px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 2px 0 0 0;
     }
 
     .blog-item-meta {
       font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
-      color: rgba(0,0,0,0.18);
+      color: rgba(5, 7, 11, 0.18);
       letter-spacing: 0.08em;
       white-space: nowrap;
-      padding-top: 3px;
+      text-align: right;
     }
 
+    .blog-loading,
     .blog-empty {
       font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
-      color: rgba(0,0,0,0.15);
+      color: var(--muted);
       letter-spacing: 0.14em;
       padding: 2rem 0;
+      text-align: center;
     }
 
-    @media (max-width: 860px) {
-      .blog-item {
-        grid-template-columns: 48px 1fr;
+    /* ── FAQ STYLES ── */
+    .faq-stack {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .faq-item {
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.3);
+      transition: 180ms ease;
+    }
+
+    .faq-item:hover {
+      background: rgba(255, 255, 255, 0.5);
+      border-color: var(--accent);
+    }
+
+    .faq-label {
+      display: block;
+      font-size: 9px;
+      color: rgba(5, 7, 11, 0.18);
+      margin-bottom: 6px;
+    }
+
+    .faq-question {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      text-transform: uppercase;
+      line-height: 1.4;
+    }
+
+    .faq-answer {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── CONTACT FORM ── */
+    .contact-form {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .form-row {
+      display: grid;
+      gap: 6px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .input,
+    .textarea {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.6);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      transition: 180ms ease;
+      outline: none;
+    }
+
+    .input:focus,
+    .textarea:focus {
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .submit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .submit-btn {
+      padding: 12px 24px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 900;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: 180ms ease;
+      box-shadow: 0 8px 16px rgba(255, 98, 0, 0.18);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(255, 98, 0, 0.28);
+    }
+
+    .microcopy {
+      font-size: 8px;
+      color: var(--muted);
+    }
+
+    .contact-meta {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .footer {
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-copy {
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 8px;
+    }
+
+    @media (max-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        padding: clamp(30px, 8vw, 60px);
       }
-      .blog-item-meta { display: none; }
+
+      .hero-panel {
+        order: -1;
+      }
+
+      .feature {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .blog-item {
+        grid-template-columns: 40px 1fr;
+      }
+
+      .blog-item-meta {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero,
+      .content-card,
+      .contact-card {
+        border-radius: 20px;
+      }
+
+      .hero-grid {
+        min-height: auto;
+        padding: 20px;
+      }
+
+      .submit-row,
+      .footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .contact-meta {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
 <body>
-  <canvas id="weather-canvas"></canvas>
-  <div class="lightning-layer"></div>
   <div class="noise"></div>
-  <div class="bg-glow"></div>
+  <div class="scanline"></div>
 
-  <!-- Navegación -->
-  <a href="index.html" class="nav-mini left-10">Home</a>
-  <a href="contact.html" class="nav-mini right-10">Contact</a>
+  <div class="site-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div class="brand-copy">
+          <strong>ASTRAK</strong>
+          <span>Editorial Signals / Buenos Aires</span>
+        </div>
+      </div>
 
-  <div class="content-layer">
-    <main id="about-content" class="about-stack">
-      <section class="about-section hero-section">
-        <div class="video-preset" aria-hidden="true"></div>
-        <div class="hero-copy">
-          <span class="hero-slogan">Radar editorial para señales vivas</span>
-          <img class="hero-logo" src="img/logo.png" alt="ASTRAK">
-          <p class="section-copy">ASTRAK es una interfaz editorial viva: reúne noticias, cultura, tecnología, cine, música, economía e internacional en una experiencia visual marcada por clima, noche, ruido analógico y lectura rápida.</p>
+      <nav class="topbar-nav">
+        <a class="nav-link" href="landing.html">Landing</a>
+        <a class="nav-link" href="#about">About</a>
+        <a class="nav-link" href="#signals">Signals</a>
+        <a class="nav-link" href="#blog">Blog</a>
+        <a class="nav-link" href="#faq">FAQ</a>
+        <a class="nav-link" href="#contact">Contact</a>
+        <a class="app-link" href="index.html">Open App</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="top">
+        <div class="hero-atmosphere"></div>
+
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow">Real-time Editorial Interface</div>
+            <h1 class="hero-title">Transmisión editorial viva</h1>
+            <p class="hero-text">
+              ASTRAK convierte feeds en una experiencia visual reactiva. Noticias, cultura, tecnología y clima en una sola interfaz. Diseño atmosférico. Lectura rápida. Sistema en tiempo real.
+            </p>
+
+            <div class="hero-actions">
+              <a class="hero-primary" href="index.html">Entrar al App →</a>
+              <a class="hero-secondary" href="#contact">Enviar una señal</a>
+            </div>
+          </div>
+
+          <aside class="hero-panel">
+            <div class="telemetry">
+              <div class="telemetry-grid">
+                <div class="stat">
+                  <strong>24H</strong>
+                  <span class="stat-label">Ciclo visual</span>
+                </div>
+                <div class="stat">
+                  <strong>RSS</strong>
+                  <span class="stat-label">Feeds activos</span>
+                </div>
+                <div class="stat">
+                  <strong>AR</strong>
+                  <span class="stat-label">Base editorial</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="highlight-card">
+              <span class="chip">Live System</span>
+              <h2 class="highlight-title">Diseño que reacciona</h2>
+              <p class="highlight-text">
+                La interfaz cambia con clima, hora y transmisión. No es un sitio estático: es un radar editorial que se siente vivo.
+              </p>
+            </div>
+          </aside>
         </div>
       </section>
 
-      <section class="about-section signal-section">
-        <div>
-          <h2 class="section-title">About</h2>
-          <p class="section-copy">El sitio funciona como un radar de señales. Toma titulares recientes por categoría, los presenta como transmisiones y combina una estética oscura con movimiento atmosférico para que cada visita se sienta como una emisión en tiempo real.</p>
-          <p class="section-copy">No busca parecer un portal tradicional. ASTRAK traduce feeds, tiempo, ruido y jerarquía visual en una pieza de navegación editorial más seca, oscura y directa.</p>
-          <div class="signal-meta">
-            <div class="signal-stat">
-              <strong>08</strong>
-              <span>Categorías activas</span>
-            </div>
-            <div class="signal-stat">
-              <strong>24H</strong>
-              <span>Ciclo visual</span>
-            </div>
-            <div class="signal-stat">
-              <strong>RSS</strong>
-              <span>Señales externas</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      <div class="content-grid">
+        <section class="content-card" id="about">
+          <p class="section-kicker">About / Manifesto</p>
+          <h2 class="section-title">Un radar de señales editoriales</h2>
+          <p class="section-text">
+            ASTRAK ordena noticias, cultura, tecnología, cine, música e internacional dentro de una interfaz editorial directa y atmosférica. No intenta parecer un medio tradicional.
+          </p>
+          <p class="section-text">
+            El resultado es una home que presenta la marca y una app separada que opera como sistema vivo: titulares en tiempo real, resúmenes visuales, ritmo editorial y lectura contextual.
+          </p>
 
-      <section class="about-section faq-section">
-        <div>
-          <h2 class="section-title">FAQ</h2>
-          <div class="faq-item">
-            <h3 class="faq-question">Que es ASTRAK?</h3>
-            <p class="section-copy">ASTRAK es una web de descubrimiento de noticias y cultura con una capa visual experimental. Su foco es ordenar señales externas y mostrarlas con una identidad propia.</p>
+          <div class="feature-list">
+            <div class="feature">
+              <strong>Visual</strong>
+              <p>Gradientes de cielo, halos, ruido analógico y contraste fuerte para que la identidad sea inconfundible.</p>
+            </div>
+            <div class="feature">
+              <strong>Editorial</strong>
+              <p>Señales recientes organizadas por categoría, con prioridad a lectura rápida y jerarquía clara.</p>
+            </div>
+            <div class="feature">
+              <strong>Sistema</strong>
+              <p>Landing para presentar la marca. `index.html` es el app operativo donde sucede la experiencia dinámica.</p>
+            </div>
           </div>
-          <div class="faq-item">
-            <h3 class="faq-question">De donde salen las noticias?</h3>
-            <p class="section-copy">La portada consulta feeds públicos por categorías como global, política, tecnología, cine, música, economía, internacional y cultura, y luego muestra fuente, sincronización y enlace de lectura.</p>
-          </div>
-          <div class="faq-item">
-            <h3 class="faq-question">Por que cambia el ambiente?</h3>
-            <p class="section-copy">La experiencia visual incluye lluvia, relámpagos, ruido y variaciones entre día y noche. Esa capa convierte el feed en una transmisión más inmersiva, no solo en una lista de enlaces.</p>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="about-section blog-section" id="blog">
-        <div>
-          <h2 class="section-title blog-title">BLOG</h2>
-          <p class="section-copy">Archivo editorial de ASTRAK: notas propias, señales, contexto sobre cultura digital y registros del sistema visual.</p>
+        <section class="content-card" id="signals">
+          <p class="section-kicker">Signals / Scope</p>
+          <h2 class="section-title">Categorías activas</h2>
+          <p class="section-text">
+            El sistema cruza señales culturales y noticiosas con un lenguaje visual consistente. Cada bloque editorial mantiene tono, fuente y temporalidad.
+          </p>
+
+          <div class="signal-grid">
+            <div class="signal">
+              <strong>Política + Economía</strong>
+              <span>Contexto rápido para temas que mueven agenda y mercado.</span>
+            </div>
+            <div class="signal">
+              <strong>Tecnología + Cultura</strong>
+              <span>Señales digitales, industria creativa y piezas con circulación real.</span>
+            </div>
+            <div class="signal">
+              <strong>Cine + Música</strong>
+              <span>Entretenimiento curado como parte del mismo sistema editorial.</span>
+            </div>
+            <div class="signal">
+              <strong>Internacional</strong>
+              <span>Perspectiva global en tiempo real desde Buenos Aires.</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="content-grid">
+        <section class="content-card blog-section" id="blog">
+          <p class="section-kicker">Blog / Archive</p>
+          <h2 class="section-title">Notas y archivo</h2>
+          <p class="section-text">
+            Publicaciones propias: análisis editorial, notas sobre cultura digital, experimentación visual y registros del sistema.
+          </p>
+
           <div id="blogList" class="blog-list">
-            <div class="blog-loading">loading…</div>
+            <div class="blog-loading">Cargando archivo editorial…</div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
-      <footer class="about-section footer-section">
-        <div id="status-msg">Powered by dopple®, Buenos Aires - Argentina, 2026</div>
-      </footer>
+      <div class="content-grid">
+        <section class="content-card" id="faq">
+          <p class="section-kicker">FAQ</p>
+          <h2 class="section-title">Preguntas directas</h2>
+
+          <div class="faq-stack">
+            <article class="faq-item">
+              <span class="faq-label">01</span>
+              <h3 class="faq-question">Qué es ASTRAK?</h3>
+              <p class="faq-answer">Una interfaz editorial que convierte noticias y cultura en una experiencia visual reactiva, atmosférica y menos convencional que los portales tradicionales.</p>
+            </article>
+
+            <article class="faq-item">
+              <span class="faq-label">02</span>
+              <h3 class="faq-question">Dónde está la app principal?</h3>
+              <p class="faq-answer">En `index.html`. Esta landing existe para presentar el sistema. La app es donde sucede la experiencia completa: feeds en vivo, clima reactivo, navegación editorial.</p>
+            </article>
+
+            <article class="faq-item">
+              <span class="faq-label">03</span>
+              <h3 class="faq-question">Por qué el diseño se siente único?</h3>
+              <p class="faq-answer">Combinamos gradientes solares, halos, acentos ácidos, bordes suaves y ruido analógico con una jerarquía editorial limpia. El resultado es una interfaz que se siente viva.</p>
+            </article>
+
+            <article class="faq-item">
+              <span class="faq-label">04</span>
+              <h3 class="faq-question">De dónde salen las noticias?</h3>
+              <p class="faq-answer">Feeds RSS públicos organizados por categoría. Política, tecnología, cultura, cine, música, economía e internacional. El sistema los consume en tiempo real y los presenta con nuestra identidad visual.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="contact-card" id="contact">
+          <p class="section-kicker">Contact / Uplink</p>
+          <h2 class="section-title">Enviar una señal</h2>
+          <p class="section-text">
+            Para colaboraciones, ideas editoriales o desarrollo del sistema. Este formulario canaliza el contacto directo con ASTRAK.
+          </p>
+
+          <form class="contact-form" id="uplink-form">
+            <div class="form-row">
+              <label class="form-label" for="name">Name</label>
+              <input class="input" id="name" name="name" type="text" placeholder="Tu nombre" required />
+            </div>
+
+            <div class="form-row">
+              <label class="form-label" for="email">Email</label>
+              <input class="input" id="email" name="email" type="email" placeholder="tu@email.com" required />
+            </div>
+
+            <div class="form-row">
+              <label class="form-label" for="message">Mensaje</label>
+              <textarea class="textarea" id="message" name="message" placeholder="Cuéntanos tu idea o colaboración…" required></textarea>
+            </div>
+
+            <div class="submit-row">
+              <button class="submit-btn" type="submit">Send Signal</button>
+              <span class="microcopy" id="status-msg">Powered by dopple® — Buenos Aires, 2026</span>
+            </div>
+          </form>
+
+          <div class="contact-meta">
+            <span>Base de operaciones: Buenos Aires, Argentina</span>
+            <a href="index.html">→ Ir al App</a>
+          </div>
+        </section>
+      </div>
     </main>
+
+    <footer class="footer">
+      <span class="footer-copy">ASTRAK / Editorial Landing</span>
+      <div class="footer-links">
+        <a class="nav-link" href="#top">Top</a>
+        <a class="nav-link" href="#blog">Blog</a>
+        <a class="nav-link" href="index.html">App</a>
+      </div>
+    </footer>
   </div>
 
   <script>
-    const canvas = document.getElementById('weather-canvas');
-    const ctx = canvas.getContext('2d');
-    let drops = [];
-    let isNight = false;
-    let touchStartY = 0;
+    const uplinkForm = document.getElementById('uplink-form');
+    const statusMsg = document.getElementById('status-msg');
 
-    window.addEventListener('touchstart', (event) => {
-      touchStartY = event.touches[0].clientY;
-    }, { passive: true });
+    uplinkForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      statusMsg.textContent = 'ENVIANDO SEÑAL…';
 
-    window.addEventListener('touchmove', (event) => {
-      const isPullingPastHero = window.scrollY <= 0 && event.touches[0].clientY > touchStartY;
-      if (isPullingPastHero) event.preventDefault();
-    }, { passive: false });
-
-    // Sincronizar ciclo día/noche y clima
-    function updateEnvironment() {
-      const hour = new Date().getHours();
-      isNight = hour >= 19 || hour < 6;
-      const weatherTheme = isNight
-        ? {
-            base: '#ffffff',
-            haze: 'rgba(255,255,255,0.88)',
-            glow: 'rgba(0,0,0,0.08)',
-            rim: 'rgba(0,0,0,0.14)'
-          }
-        : {
-            base: '#f4f6f8',
-            haze: 'rgba(255,255,255,0.72)',
-            glow: 'rgba(0,0,0,0.12)',
-            rim: 'rgba(0,0,0,0.16)'
-          };
-
-      document.body.style.backgroundColor = weatherTheme.base;
-      document.documentElement.style.setProperty('--weather-base', weatherTheme.base);
-      document.documentElement.style.setProperty('--weather-haze', weatherTheme.haze);
-      document.documentElement.style.setProperty('--weather-glow', weatherTheme.glow);
-      document.documentElement.style.setProperty('--weather-rim', weatherTheme.rim);
-      
-      // Simulación de clima
-      if(Math.random() > 0.6) {
-        document.body.classList.add('storm-active');
-      }
-    }
-
-    function initCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      drops = Array.from({length: 40}, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        speed: Math.random() * 12 + 8,
-        len: Math.random() * 25 + 15
-      }));
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = isNight ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.18)';
-      ctx.lineWidth = 1;
-      
-      drops.forEach(d => {
-        ctx.beginPath();
-        ctx.moveTo(d.x, d.y);
-        ctx.lineTo(d.x + 1, d.y + d.len);
-        ctx.stroke();
+      window.setTimeout(() => {
+        statusMsg.textContent = 'TRANSMISIÓN COMPLETADA ✓';
+        uplinkForm.reset();
         
-        d.y += d.speed;
-        if (d.y > canvas.height) {
-          d.y = -20;
-          d.x = Math.random() * canvas.width;
-        }
-      });
-      requestAnimationFrame(animate);
-    }
-
-    window.onload = () => {
-      updateEnvironment();
-      initCanvas();
-      animate();
-    };
-
-    window.onresize = initCanvas;
+        setTimeout(() => {
+          statusMsg.textContent = 'Powered by dopple® — Buenos Aires, 2026';
+        }, 3000);
+      }, 1200);
+    });
 
     /* ── BLOG: fetch from dopple API ── */
     const DOPPLE_API = 'https://doppelganger-eta.vercel.app/api/entries';
@@ -733,7 +1064,7 @@
         if (!res.ok) throw new Error('api error');
         const all = await res.json();
 
-        // Filter: published + tagged for atlas
+        // Filter: published + tagged for astrak
         const entries = all.filter(e =>
           e.status === 'published' &&
           Array.isArray(e.sites) &&
@@ -741,7 +1072,7 @@
         );
 
         if (!entries.length) {
-          list.innerHTML = '<div class="blog-empty">No entries yet.</div>';
+          list.innerHTML = '<div class="blog-empty">No hay publicaciones aún en el archivo.</div>';
           return;
         }
 
@@ -757,12 +1088,11 @@
           </a>`).join('');
 
       } catch(err) {
-        list.innerHTML = '<div class="blog-empty">Could not load entries.</div>';
+        list.innerHTML = '<div class="blog-empty">No se pudo cargar el archivo editorial.</div>';
       }
     }
 
     loadBlog();
-
   </script>
 </body>
 </html>
