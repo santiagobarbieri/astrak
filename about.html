@@ -45,12 +45,60 @@
     a { color: inherit; text-decoration: none; }
     img { max-width: 100%; display: block; }
 
+    .page-atmosphere,
+    .page-atmosphere::before,
+    .page-atmosphere::after,
     .noise,
     .scanline,
     .hero-atmosphere,
     .hero-atmosphere::before,
     .hero-atmosphere::after {
       pointer-events: none;
+    }
+
+    .page-atmosphere {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 16% 18%, var(--sun), transparent 18%),
+        radial-gradient(circle at 82% 18%, var(--blue-rim), transparent 28%),
+        radial-gradient(circle at 50% 88%, rgba(255,255,255,0.22), transparent 30%),
+        linear-gradient(160deg, var(--sky-top) 0%, var(--sky-mid) 48%, var(--sky-bottom) 100%);
+    }
+
+    .page-atmosphere::before,
+    .page-atmosphere::after {
+      content: "";
+      position: absolute;
+      inset: -14%;
+    }
+
+    .page-atmosphere::before {
+      opacity: 0.78;
+      mix-blend-mode: screen;
+      background:
+        linear-gradient(115deg, rgba(255,255,255,0.1), transparent 28%),
+        radial-gradient(ellipse at 76% 32%, rgba(255,244,214,0.18), transparent 30%),
+        radial-gradient(ellipse at 24% 78%, rgba(120,160,255,0.12), transparent 38%);
+      animation: floatSlow 24s ease-in-out infinite alternate;
+    }
+
+    .page-atmosphere::after {
+      inset: auto;
+      top: 10%;
+      left: 67%;
+      width: clamp(72px, 7vw, 96px);
+      height: clamp(72px, 7vw, 96px);
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 36% 32%, rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.28) 12%, transparent 26%),
+        radial-gradient(circle, rgba(255,231,128,0.78) 0%, rgba(255,122,77,0.42) 42%, rgba(255,122,77,0) 72%);
+      box-shadow:
+        0 0 36px rgba(255, 214, 102, 0),
+        0 0 110px rgba(255,122,77,0.16);
+      animation: glowPulse 6s ease-in-out infinite;
     }
 
     .noise {
@@ -205,49 +253,20 @@
       border-radius: 0;
       overflow: hidden;
       isolation: isolate;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0) 24%),
-        linear-gradient(160deg, var(--sky-top) 0%, var(--sky-mid) 50%, var(--sky-bottom) 100%);
-      box-shadow: var(--shadow);
+      background: transparent;
+      box-shadow: none;
     }
 
     .hero-atmosphere {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 16% 18%, var(--sun), transparent 18%),
-        radial-gradient(circle at 82% 18%, var(--blue-rim), transparent 28%),
-        radial-gradient(circle at 50% 88%, rgba(255,255,255,0.24), transparent 30%);
+      display: none;
     }
 
     .hero-atmosphere::before {
-      content: "";
-      position: absolute;
-      inset: -12%;
-      opacity: 0.9;
-      mix-blend-mode: screen;
-      background:
-        radial-gradient(ellipse at 24% 30%, rgba(255,255,255,0.18), transparent 26%),
-        radial-gradient(ellipse at 62% 16%, rgba(255,244,214,0.16), transparent 30%),
-        radial-gradient(ellipse at 78% 32%, rgba(255,255,255,0.12), transparent 26%);
-      animation: floatSlow 24s ease-in-out infinite alternate;
+      display: none;
     }
 
     .hero-atmosphere::after {
-      content: "";
-      position: absolute;
-      top: 12%;
-      left: 67%;
-      width: clamp(72px, 7vw, 96px);
-      height: clamp(72px, 7vw, 96px);
-      border-radius: 999px;
-      background:
-        radial-gradient(circle at 36% 32%, rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.28) 12%, transparent 26%),
-        radial-gradient(circle, rgba(255,231,128,0.78) 0%, rgba(255,122,77,0.42) 42%, rgba(255,122,77,0) 72%);
-      box-shadow:
-        0 0 36px rgba(255, 214, 102, 0),
-        0 0 110px rgba(255,122,77,0.16);
-      animation: glowPulse 6s ease-in-out infinite;
+      display: none;
     }
 
     .hero-grid {
@@ -757,9 +776,14 @@
     }
 
     .footer {
-      margin-top: 40px;
-      padding-top: 24px;
-      border-top: 1px solid var(--line);
+      position: relative;
+      z-index: 8;
+      width: 100vw;
+      margin-top: 72px;
+      margin-left: calc(50% - 50vw);
+      padding: 42px clamp(16px, 4vw, 48px) 36px;
+      border-top: 1px solid rgba(5, 7, 11, 0.08);
+      background: #ffffff;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -829,6 +853,7 @@
   </style>
 </head>
 <body>
+  <div class="page-atmosphere"></div>
   <div class="noise"></div>
   <div class="scanline"></div>
 
