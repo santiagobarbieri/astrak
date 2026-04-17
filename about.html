@@ -340,15 +340,12 @@
     .hero-panel {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 28px;
     }
 
     .telemetry {
-      padding: 18px;
-      border-radius: 28px;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
     }
 
     .telemetry-grid {
@@ -376,14 +373,8 @@
     }
 
     .highlight-card {
-      padding: 20px;
-      border-radius: 28px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04)),
-        radial-gradient(circle at 18% 18%, rgba(226,255,0,0.22), transparent 22%),
-        linear-gradient(160deg, rgba(8,11,18,0.82), rgba(19,34,50,0.76));
-      border: 1px solid rgba(255,255,255,0.08);
-      backdrop-filter: blur(18px);
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -430,18 +421,35 @@
     .content-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
-      gap: 24px;
-      margin-top: 32px;
+      gap: 40px 28px;
+      margin-top: 56px;
     }
 
     .content-card,
     .contact-card {
-      padding: 34px;
-      border: 1px solid var(--line);
-      border-radius: 32px;
-      background: rgba(255, 255, 255, 0.56);
-      backdrop-filter: blur(18px);
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.06);
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      backdrop-filter: none;
+      box-shadow: none;
+    }
+
+    .content-card,
+    .contact-card,
+    .blog-section {
+      position: relative;
+    }
+
+    .content-card::before,
+    .contact-card::before,
+    .blog-section::before {
+      content: "";
+      display: block;
+      width: 100%;
+      height: 1px;
+      margin-bottom: 18px;
+      background: linear-gradient(90deg, rgba(5, 7, 11, 0.18), transparent 72%);
     }
 
     .section-kicker {
@@ -478,7 +486,7 @@
     .feature-list {
       display: grid;
       gap: 18px;
-      margin-top: 20px;
+      margin-top: 28px;
     }
 
     .feature {
@@ -486,6 +494,8 @@
       grid-template-columns: 120px 1fr;
       gap: 20px;
       align-items: start;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
     }
 
     .feature strong {
@@ -506,23 +516,20 @@
     .signal-grid {
       display: grid;
       gap: 14px;
-      margin-top: 18px;
+      margin-top: 28px;
     }
 
     .signal {
-      padding: 16px;
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.74);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+      padding: 14px 0 0;
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: minmax(170px, 0.7fr) minmax(0, 1.3fr);
+      gap: 12px 18px;
       transition: 180ms ease;
     }
 
     .signal:hover {
-      background: rgba(255, 255, 255, 0.5);
-      border-color: rgba(5,7,11,0.22);
+      border-color: rgba(5,7,11,0.28);
     }
 
     .signal strong {
@@ -547,24 +554,20 @@
     .blog-list {
       display: grid;
       gap: 16px;
-      margin-top: 20px;
+      margin-top: 28px;
     }
 
     .blog-item {
       display: grid;
       grid-template-columns: 48px 1fr 140px;
       gap: 18px;
-      padding: 14px 16px;
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.74);
+      padding: 16px 0;
+      border-top: 1px solid var(--line);
       transition: 180ms ease;
       align-items: center;
     }
 
     .blog-item:hover {
-      background: rgba(255, 255, 255, 0.5);
-      border-color: rgba(5,7,11,0.22);
       transform: translateX(2px);
     }
 
@@ -632,19 +635,16 @@
     .faq-stack {
       display: grid;
       gap: 16px;
-      margin-top: 18px;
+      margin-top: 28px;
     }
 
     .faq-item {
-      padding: 14px 16px;
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      background: rgba(255, 255, 255, 0.74);
+      padding: 16px 0 0;
+      border-top: 1px solid var(--line);
       transition: 180ms ease;
     }
 
     .faq-item:hover {
-      background: rgba(255, 255, 255, 0.5);
       border-color: rgba(5,7,11,0.22);
     }
 
@@ -675,7 +675,7 @@
     .contact-form {
       display: grid;
       gap: 16px;
-      margin-top: 18px;
+      margin-top: 28px;
     }
 
     .form-row {
@@ -746,7 +746,7 @@
     }
 
     .contact-meta {
-      margin-top: 20px;
+      margin-top: 28px;
       padding-top: 16px;
       border-top: 1px solid var(--line);
       display: flex;
@@ -792,6 +792,10 @@
         gap: 8px;
       }
 
+      .signal {
+        grid-template-columns: 1fr;
+      }
+
       .blog-item {
         grid-template-columns: 40px 1fr;
       }
@@ -804,12 +808,6 @@
     @media (max-width: 768px) {
       .content-grid {
         grid-template-columns: 1fr;
-      }
-
-      .hero,
-      .content-card,
-      .contact-card {
-        border-radius: 20px;
       }
 
       .hero-grid {
