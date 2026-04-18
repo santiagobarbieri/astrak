@@ -6,1622 +6,1036 @@
   <link rel="icon" type="image/png" href="img/favicon.png" />
   <title>ASTRAK — Editorial Signal Interface</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+    @font-face {
+      font-family: 'Garet';
+      src: url('./Garet-Book.woff2') format('woff2');
+      font-weight: 400;
+    }
+
+    @font-face {
+      font-family: 'Garet';
+      src: url('./Garet-Heavy.woff2') format('woff2');
+      font-weight: 900;
+    }
 
     :root {
-      --bg: #ffffff;
-      --dark: #000000;
-      --accent: #e2ff00;
-      --panel: rgba(255, 255, 255, 0.68);
-      --panel-strong: rgba(255, 255, 255, 0.84);
-      --text: #05070b;
-      --muted: rgba(5, 7, 11, 0.55);
-      --line: rgba(5, 7, 11, 0.12);
-      --acid: #e2ff00;
-      --sky-top: #0d111a;
-      --sky-mid: #243449;
-      --sky-bottom: #f5f0dd;
-      --sun: rgba(255, 231, 128, 0.58);
-      --flare: rgba(255, 122, 77, 0.18);
-      --blue-rim: rgba(77, 171, 255, 0.16);
-      --shadow: 0 30px 80px rgba(0, 0, 0, 0.08);
+      --bg: #000000;
+      --light: #ffffff;
+      --gray: #808080;
+      --accent: #e8e951;
+      --text: #ffffff;
     }
 
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; background: var(--bg); }
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: 'Inter', sans-serif;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      font-family: 'Garet', sans-serif;
       color: var(--text);
-      background:
-        radial-gradient(circle at 18% 12%, rgba(255, 231, 128, 0.18), transparent 18%),
-        radial-gradient(circle at 82% 18%, rgba(77, 171, 255, 0.1), transparent 26%),
-        radial-gradient(circle at 50% 88%, rgba(255, 122, 77, 0.08), transparent 22%),
-        linear-gradient(160deg, #f3f6f9 0%, #f7f1dc 45%, #ffffff 100%);
+      background: var(--bg);
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
-    }
-
-    a { color: inherit; text-decoration: none; }
-    img { max-width: 100%; display: block; }
-
-    .page-atmosphere,
-    .page-atmosphere::before,
-    .page-atmosphere::after,
-    .noise,
-    .scanline,
-    .hero-atmosphere,
-    .hero-atmosphere::before,
-    .hero-atmosphere::after {
-      pointer-events: none;
-    }
-
-    .page-atmosphere {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 16% 18%, var(--sun), transparent 18%),
-        radial-gradient(circle at 82% 18%, var(--blue-rim), transparent 28%),
-        radial-gradient(circle at 50% 88%, rgba(255,255,255,0.22), transparent 30%),
-        linear-gradient(160deg, var(--sky-top) 0%, var(--sky-mid) 48%, var(--sky-bottom) 100%);
-    }
-
-    .page-atmosphere::before,
-    .page-atmosphere::after {
-      content: "";
-      position: absolute;
-      inset: -14%;
-    }
-
-    .page-atmosphere::before {
-      opacity: 0.78;
-      mix-blend-mode: screen;
-      background:
-        linear-gradient(115deg, rgba(255,255,255,0.1), transparent 28%),
-        radial-gradient(ellipse at 76% 32%, rgba(255,244,214,0.18), transparent 30%),
-        radial-gradient(ellipse at 24% 78%, rgba(120,160,255,0.12), transparent 38%);
-      animation: floatSlow 24s ease-in-out infinite alternate;
-    }
-
-    .page-atmosphere::after {
-      inset: auto;
-      top: 10%;
-      left: 67%;
-      width: clamp(72px, 7vw, 96px);
-      height: clamp(72px, 7vw, 96px);
-      border-radius: 999px;
-      background:
-        radial-gradient(circle at 36% 32%, rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.28) 12%, transparent 26%),
-        radial-gradient(circle, rgba(255,231,128,0.78) 0%, rgba(255,122,77,0.42) 42%, rgba(255,122,77,0) 72%);
-      box-shadow:
-        0 0 36px rgba(255, 214, 102, 0),
-        0 0 110px rgba(255,122,77,0.16);
-      animation: glowPulse 6s ease-in-out infinite;
-    }
-
-    .noise {
-      position: fixed;
-      inset: 0;
-      z-index: 2;
-      opacity: 0.055;
-      mix-blend-mode: screen;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    }
-
-    .scanline {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 140px;
-      z-index: 3;
-      opacity: 1;
-      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.03), transparent);
-      animation: scanline 11s linear infinite;
-    }
-
-    @keyframes scanline {
-      0% { transform: translateY(-120%); }
-      100% { transform: translateY(100vh); }
-    }
-
-    @keyframes floatSlow {
-      0%, 100% { transform: translate3d(0, 0, 0); }
-      50% { transform: translate3d(-14px, 12px, 0); }
-    }
-
-    @keyframes glowPulse {
-      0%, 100% { opacity: 0.7; }
-      50% { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .site-shell {
       position: relative;
-      z-index: 5;
-      width: min(1240px, calc(100vw - 32px));
-      margin: 0 auto;
-      padding: 20px 0 48px;
     }
 
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+      height: auto;
+    }
+
+    /* ── TOPBAR STICKY NAVEGADOR PILL ── */
     .topbar {
-      position: sticky;
-      top: 18px;
-      z-index: 20;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .nav-pill {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 8px 12px;
+      border-radius: 999px;
+      transition: all 0.3s ease;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--text);
+      opacity: 0.6;
+    }
+
+    .nav-pill:hover,
+    .nav-pill.active {
+      background: var(--accent);
+      color: var(--bg);
+      opacity: 1;
+    }
+
+    /* ── HERO HEADER ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #2a2a2a 0%, #0a0a0a 100%);
+      background-attachment: fixed;
+      z-index: 1;
+    }
+
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        radial-gradient(circle at 20% 50%, rgba(232, 233, 81, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      width: min(90vw, 1400px);
+      max-width: 100%;
+      padding: 80px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .hero-nav {
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      padding: 10px 18px;
-      margin-bottom: 18px;
-      border: 1px solid rgba(5, 7, 11, 0.08);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(12px);
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.05);
+      padding: 0 40px;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
-
-    .brand-mark {
-      width: 28px;
-      height: 28px;
-      border-radius: 999px;
-      background:
-        radial-gradient(circle at 36% 36%, #fff 0 16%, rgba(255,255,255,0) 18%),
-        radial-gradient(circle, #000 0 46%, rgba(0,0,0,0) 48%);
-      border: 1px solid rgba(0, 0, 0, 0.08);
-      flex: 0 0 auto;
-    }
-
-    .brand-copy strong,
-    .nav-link,
-    .chip,
-    .eyebrow,
-    .stat-label,
-    .faq-label,
-    .form-label,
-    .microcopy,
-    .footer-copy,
-    .blog-label {
-      text-transform: uppercase;
+    .hero-brand {
+      font-size: 13px;
       font-weight: 900;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
     }
 
-    .brand-copy strong {
-      display: block;
-      font-size: 9px;
-      line-height: 1.1;
-    }
-
-    .brand-copy span {
-      display: block;
-      margin-top: 2px;
-      color: var(--muted);
-      font-size: 9px;
-      line-height: 1.2;
-    }
-
-    .topbar-nav {
+    .hero-nav-items {
       display: flex;
+      gap: 20px;
       align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
     }
 
-    .nav-link,
-    .app-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      font-size: 9px;
-      padding: 8px 14px;
-      border: 1px solid var(--line);
-      transition: 180ms ease;
-    }
-
-    .nav-link:hover,
-    .app-link:hover {
-      border-color: rgba(5, 7, 11, 0.28);
-      background: rgba(5, 7, 11, 0.04);
-    }
-
-    .app-link {
-      background: #000;
-      color: white;
-      border-color: #000;
-      box-shadow: none;
-    }
-
-    .hero {
-      position: relative;
-      min-height: calc(100vh - 110px);
-      border-radius: 0;
-      overflow: hidden;
-      isolation: isolate;
-      background: transparent;
-      box-shadow: none;
-    }
-
-    .hero-atmosphere {
-      display: none;
-    }
-
-    .hero-atmosphere::before {
-      display: none;
-    }
-
-    .hero-atmosphere::after {
-      display: none;
-    }
-
-    .hero-grid {
-      position: relative;
-      z-index: 2;
-      display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
-      align-items: end;
-      min-height: calc(100vh - 110px);
-      padding: clamp(44px, 8vw, 84px) 0 clamp(28px, 4vw, 44px);
-      gap: clamp(28px, 6vw, 80px);
-    }
-
-    .hero-copy {
-      display: flex;
-      flex-direction: column;
-      gap: 22px;
-      max-width: 760px;
-      padding-left: clamp(8px, 2vw, 16px);
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      width: fit-content;
+    .hero-nav-link {
       font-size: 10px;
-      letter-spacing: 0.18em;
-      color: rgba(255, 255, 255, 0.72);
-    }
-
-    .eyebrow::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: var(--acid);
-      box-shadow: 0 0 18px rgba(226,255,0,0.4);
-    }
-
-    .hero-title {
-      margin: 0;
-      font-size: clamp(4.6rem, 14vw, 11rem);
-      font-weight: 900;
-      line-height: 0.82;
-      letter-spacing: -0.08em;
-      color: white;
+      font-weight: 700;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      max-width: 7ch;
-      animation: slideUp 0.8s ease-out;
-    }
-
-    .hero-name {
-      display: block;
-      font-size: clamp(1rem, 1.7vw, 1.4rem);
-      letter-spacing: 0.22em;
-      color: rgba(255, 255, 255, 0.44);
-      text-transform: uppercase;
-      margin-bottom: 14px;
-    }
-
-    .hero-text {
-      margin: 0;
-      font-size: clamp(14px, 1.4vw, 18px);
-      line-height: 1.8;
-      color: rgba(255, 255, 255, 0.74);
-      max-width: 58ch;
-      animation: slideUp 0.8s ease-out 0.1s both;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      animation: slideUp 0.8s ease-out 0.2s both;
-    }
-
-    .hero-primary,
-    .hero-secondary,
-    .carousel-btn,
-    .footer-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 13px 20px;
-      border-radius: 999px;
-      font-weight: 900;
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      transition: 180ms ease;
+      color: var(--text);
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+      background: none;
+      border: none;
       cursor: pointer;
     }
 
-    .hero-primary,
-    .carousel-btn {
-      background: var(--acid);
-      color: #000;
-      border: 1px solid transparent;
-      box-shadow: 0 14px 34px rgba(226,255,0,0.22);
+    .hero-nav-link:hover {
+      opacity: 1;
+      color: var(--accent);
     }
 
-    .hero-primary:hover,
-    .carousel-btn:hover {
-      transform: translateY(-1px);
+    .hero-nav-link.cta {
+      background: var(--accent);
+      color: var(--bg);
+      padding: 8px 18px;
+      border-radius: 20px;
+      opacity: 1;
+      font-weight: 900;
     }
 
-    .hero-secondary,
-    .footer-link {
-      background: rgba(255, 255, 255, 0.06);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      backdrop-filter: blur(10px);
+    .hero-nav-link.cta:hover {
+      background: #d9dd41;
     }
 
-    .hero-secondary:hover,
-    .footer-link:hover {
-      background: rgba(255,255,255,0.12);
+    .hero-title {
+      font-size: clamp(48px, 11vw, 90px);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      max-width: 1000px;
+      text-align: center;
     }
 
-    .hero-panel {
-      display: grid;
-      gap: 18px;
-      align-self: stretch;
-      align-content: end;
-      padding-right: clamp(8px, 2vw, 16px);
+    .hero-title .accent {
+      color: var(--accent);
     }
 
-    .hero-figure {
-      position: relative;
-      margin: 0;
-      min-height: 540px;
+    .hero-image-container {
+      width: 100%;
+      max-width: 450px;
+      aspect-ratio: 1;
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
-      align-items: end;
-      justify-content: end;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
     }
 
-    .hero-figure::before {
-      content: "";
-      position: absolute;
-      inset: 10% 14% 6% 8%;
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 48px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)),
-        radial-gradient(circle at 20% 18%, rgba(226,255,0,0.16), transparent 24%);
-      backdrop-filter: blur(14px);
+    .hero-image-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(232, 233, 81, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 11px;
+      letter-spacing: 0.1em;
     }
 
-    .hero-image {
-      position: relative;
-      z-index: 1;
-      width: min(100%, 540px);
-      object-fit: contain;
-      filter: drop-shadow(0 28px 60px rgba(0,0,0,0.22));
-      animation: slideUp 1s ease-out 0.12s both;
-    }
-
-    .hero-detail-stack {
-      display: grid;
-      gap: 20px;
-    }
-
-    .hero-detail {
-      padding-top: 16px;
-      border-top: 1px solid rgba(255,255,255,0.16);
-    }
-
-    .hero-detail strong {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 10px;
-      color: rgba(255,255,255,0.48);
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-    }
-
-    .hero-detail p {
-      margin: 0;
-      color: rgba(255,255,255,0.82);
-      font-size: 13px;
-      line-height: 1.7;
-      max-width: 34ch;
-    }
-
-    .flow-section {
+    /* ── SECCIONES PRINCIPALES ── */
+    .section {
       position: relative;
       z-index: 5;
-      margin-top: 72px;
-      padding-left: clamp(8px, 2vw, 16px);
-      padding-right: clamp(8px, 2vw, 16px);
-    }
-
-    .flow-section::before {
-      content: "";
-      display: block;
+      min-height: auto;
       width: 100%;
-      height: 1px;
-      margin-bottom: 18px;
-      background: linear-gradient(90deg, rgba(5, 7, 11, 0.18), transparent 72%);
+      padding: 100px 32px;
+      background: var(--bg);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .section-kicker {
-      display: block;
-      font-size: 9px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: rgba(5, 7, 11, 0.34);
-      margin-bottom: 12px;
-    }
-
-    .section-head {
-      display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(260px, 0.95fr);
-      gap: 24px;
-      align-items: end;
-      margin-bottom: 26px;
+    .section-container {
+      width: min(90vw, 1200px);
+      margin: 0 auto;
     }
 
     .section-title {
-      margin: 0;
-      font-size: clamp(2.6rem, 6vw, 5.4rem);
+      font-size: clamp(32px, 9vw, 72px);
       font-weight: 900;
-      line-height: 0.9;
-      letter-spacing: -0.06em;
-      color: var(--text);
-      text-transform: uppercase;
-      max-width: 10ch;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 32px;
+    }
+
+    .section-title.accent {
+      color: var(--accent);
     }
 
     .section-text {
-      margin: 0;
-      font-size: 13px;
+      font-size: 15px;
       line-height: 1.8;
-      color: var(--muted);
-      max-width: 60ch;
+      color: rgba(255, 255, 255, 0.65);
+      max-width: 650px;
     }
 
-    .detail-band {
+    /* ── MANIFESTO ── */
+    .manifesto-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 20px;
-    }
-
-    .detail-item {
-      padding-top: 16px;
-      border-top: 1px solid var(--line);
-    }
-
-    .detail-value {
-      display: block;
-      font-size: clamp(1.8rem, 4vw, 3.6rem);
-      font-weight: 900;
-      line-height: 0.9;
-      letter-spacing: -0.05em;
-      text-transform: uppercase;
-    }
-
-    .detail-label {
-      display: block;
-      margin-top: 10px;
-      font-size: 9px;
-      text-transform: uppercase;
-      font-weight: 900;
-      letter-spacing: 0.14em;
-      color: rgba(5, 7, 11, 0.34);
-    }
-
-    .detail-copy {
-      margin: 10px 0 0;
-      font-size: 12px;
-      line-height: 1.6;
-      color: var(--muted);
-    }
-
-    .manifesto-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
-      gap: 30px;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
       align-items: start;
     }
 
-    .manifesto-pills {
+    .manifesto-left {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-content: flex-start;
-      padding-top: 6px;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 12px;
-      background: rgba(5, 7, 11, 0.05);
-      color: rgba(5, 7, 11, 0.7);
-      border-radius: 999px;
-      font-size: 9px;
-      width: fit-content;
-      border: 1px solid rgba(5, 7, 11, 0.08);
-    }
-
-    .chip::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--acid);
-      display: inline-block;
-      margin-right: 8px;
-    }
-
-    .manifesto-text {
-      display: grid;
-      gap: 16px;
-    }
-
-    .manifesto-paragraph {
-      margin: 0;
-      font-size: 14px;
-      line-height: 1.9;
-      color: var(--muted);
-      max-width: 60ch;
-    }
-
-    .categories-shell {
-      display: grid;
+      flex-direction: column;
       gap: 24px;
     }
 
-    .category-toolbar {
+    .manifesto-right {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 48px;
     }
 
-    .category-legend {
+    .stat-block {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .legend-pill {
-      display: inline-flex;
-      align-items: center;
+      flex-direction: column;
       gap: 8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(5, 7, 11, 0.08);
-      background: rgba(255,255,255,0.28);
+    }
+
+    .stat-number {
+      font-size: 42px;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
       font-size: 9px;
       font-weight: 900;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: rgba(5,7,11,0.62);
-      white-space: nowrap;
+      color: var(--text);
     }
 
-    .legend-pill::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: var(--pill-color, #000);
-      box-shadow: 0 0 0 3px rgba(5,7,11,0.04);
+    .stat-description {
+      font-size: 13px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.55);
     }
 
-    .category-controls {
+    @media (max-width: 768px) {
+      .manifesto-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+    }
+
+    /* ── CATEGORÍAS ── */
+    .categories-content {
       display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
       gap: 10px;
     }
 
-    .category-stage {
-      overflow: hidden;
-    }
-
-    .category-track {
-      display: grid;
-      grid-auto-flow: column;
-      grid-auto-columns: minmax(420px, 72%);
-      gap: 18px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: none;
-      padding-bottom: 10px;
-    }
-
-    .category-track::-webkit-scrollbar {
-      display: none;
-    }
-
-    .category-slide {
-      scroll-snap-align: start;
-      display: grid;
-      grid-template-columns: 10px minmax(0, 1fr);
-      gap: 18px;
-      padding-top: 12px;
-      border-top: 1px solid var(--line);
-    }
-
-    .category-color {
-      border-radius: 999px;
-      background: var(--cat-color, #000);
-      box-shadow: 0 0 26px color-mix(in srgb, var(--cat-color, #000) 35%, transparent);
-    }
-
-    .category-slide-inner {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-
-    .category-meta {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .category-label {
+    .category-badge {
+      padding: 9px 14px;
+      border-radius: 18px;
       font-size: 9px;
       font-weight: 900;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: rgba(5, 7, 11, 0.34);
+      text-align: center;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
 
-    .category-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 28px;
-      padding: 0 10px;
-      border-radius: 999px;
-      background: var(--cat-color, #000);
-      color: #fff;
-      font-size: 9px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
+    .category-badge:hover {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
     }
 
-    .category-title {
-      margin: 0;
-      font-size: clamp(1.9rem, 3vw, 3.2rem);
-      line-height: 0.94;
-      letter-spacing: -0.05em;
-      text-transform: uppercase;
-    }
-
-    .category-copy {
-      margin: 0;
-      max-width: 54ch;
-      font-size: 14px;
-      line-height: 1.8;
-      color: var(--muted);
-    }
-
-    .category-points {
-      display: grid;
-      gap: 12px;
-      margin-top: 4px;
-    }
-
-    .category-point {
-      display: grid;
-      grid-template-columns: 110px 1fr;
-      gap: 16px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(5, 7, 11, 0.08);
-    }
-
-    .category-point strong {
-      font-size: 9px;
-      color: rgba(5, 7, 11, 0.34);
-      text-transform: uppercase;
-      font-weight: 900;
-      letter-spacing: 0.14em;
-    }
-
-    .category-point span {
-      font-size: 12px;
-      line-height: 1.7;
-      color: var(--muted);
-    }
-
+    /* ── BLOG ── */
     .blog-list {
-      display: grid;
-      gap: 0;
-      margin-top: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
 
     .blog-item {
       display: grid;
-      grid-template-columns: 56px 1fr 160px;
-      gap: 18px;
-      padding: 18px 0;
-      border-top: 1px solid var(--line);
-      transition: 180ms ease;
+      grid-template-columns: 50px 1fr auto;
+      gap: 24px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      transition: all 0.3s ease;
+      cursor: pointer;
       align-items: start;
     }
 
     .blog-item:hover {
-      transform: translateX(2px);
+      border-color: var(--accent);
+      background: rgba(232, 233, 81, 0.04);
     }
 
-    .blog-item-num,
-    .faq-label {
-      font-size: 9px;
+    .blog-number {
+      font-size: 28px;
       font-weight: 900;
-      text-transform: uppercase;
-      color: rgba(5, 7, 11, 0.18);
-      letter-spacing: 0.1em;
+      color: var(--accent);
+      line-height: 1;
     }
 
-    .blog-item-body {
+    .blog-content {
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
 
-    .blog-item-type {
+    .blog-type {
       font-size: 8px;
       font-weight: 900;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: rgba(5, 7, 11, 0.25);
-      letter-spacing: 0.14em;
+      color: var(--gray);
     }
 
-    .blog-item-title {
-      font-size: clamp(1rem, 1.5vw, 1.4rem);
-      font-weight: 900;
-      text-transform: uppercase;
+    .blog-title {
+      font-size: 16px;
+      font-weight: 700;
       color: var(--text);
-      line-height: 1.2;
-      margin: 0;
+      line-height: 1.3;
     }
 
-    .blog-item-excerpt {
-      font-size: 12px;
-      font-weight: 400;
-      color: var(--muted);
-      line-height: 1.65;
-      margin: 0;
-      max-width: 58ch;
+    .blog-excerpt {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.55);
+      line-height: 1.5;
     }
 
-    .blog-item-meta {
-      font-size: 9px;
-      font-weight: 900;
-      text-transform: uppercase;
-      color: rgba(5, 7, 11, 0.18);
-      letter-spacing: 0.08em;
+    .blog-meta {
+      font-size: 11px;
+      color: var(--gray);
+      align-self: start;
       white-space: nowrap;
-      text-align: right;
-      padding-top: 4px;
     }
 
     .blog-loading,
     .blog-empty {
-      font-size: 9px;
-      font-weight: 900;
-      text-transform: uppercase;
-      color: var(--muted);
-      letter-spacing: 0.14em;
-      padding: 2rem 0;
+      text-align: center;
+      padding: 48px 24px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.4);
     }
 
-    .faq-stack {
+    /* ── FAQ ── */
+    .faq-grid {
       display: grid;
-      gap: 0;
-      margin-top: 28px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
     }
 
     .faq-item {
-      padding: 18px 0;
-      border-top: 1px solid var(--line);
-      display: grid;
-      grid-template-columns: 64px minmax(0, 1fr);
-      gap: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      border-color: var(--accent);
+      background: rgba(232, 233, 81, 0.04);
+      transform: translateY(-2px);
+    }
+
+    .faq-number {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
     }
 
     .faq-question {
-      margin: 0 0 8px 0;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 900;
       color: var(--text);
-      text-transform: uppercase;
-      line-height: 1.4;
+      line-height: 1.3;
     }
 
     .faq-answer {
-      margin: 0;
       font-size: 13px;
-      color: var(--muted);
-      line-height: 1.75;
-      max-width: 68ch;
+      color: rgba(255, 255, 255, 0.55);
+      line-height: 1.6;
     }
 
-    .contact-layout {
+    /* ── CONTACT ── */
+    .contact-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.8fr);
-      gap: 28px;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
       align-items: start;
     }
 
     .contact-form {
-      display: grid;
-      gap: 16px;
-      margin-top: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
     }
 
     .form-row {
-      display: grid;
+      display: flex;
+      flex-direction: column;
       gap: 6px;
     }
 
     .form-label {
-      display: block;
       font-size: 9px;
-      color: var(--muted);
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text);
     }
 
     .input,
     .textarea {
-      padding: 12px 0;
+      padding: 10px 0;
       border: none;
-      border-bottom: 1px solid rgba(5, 7, 11, 0.16);
-      border-radius: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
       background: transparent;
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Garet', sans-serif;
       font-size: 13px;
-      transition: 180ms ease;
-      outline: none;
+      color: var(--text);
+      transition: all 0.3s ease;
+    }
+
+    .input::placeholder,
+    .textarea::placeholder {
+      color: rgba(255, 255, 255, 0.3);
     }
 
     .input:focus,
     .textarea:focus {
-      border-bottom-color: rgba(5, 7, 11, 0.8);
+      outline: none;
+      border-color: var(--accent);
     }
 
     .textarea {
+      min-height: 90px;
       resize: vertical;
-      min-height: 100px;
-    }
-
-    .submit-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-top: 8px;
-      flex-wrap: wrap;
     }
 
     .submit-btn {
-      padding: 13px 22px;
-      background: #05070b;
-      color: white;
-      border: none;
-      border-radius: 999px;
+      align-self: flex-start;
+      padding: 9px 22px;
+      border: 2px solid var(--accent);
+      border-radius: 18px;
+      background: var(--accent);
+      color: var(--bg);
+      font-family: 'Garet', sans-serif;
+      font-size: 10px;
       font-weight: 900;
-      font-size: 9px;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      letter-spacing: 0.14em;
       cursor: pointer;
-      transition: 180ms ease;
-      box-shadow: none;
+      transition: all 0.3s ease;
+      margin-top: 6px;
     }
 
     .submit-btn:hover {
-      transform: translateY(-1px);
+      background: transparent;
+      color: var(--accent);
     }
 
-    .microcopy {
-      font-size: 8px;
-      color: var(--muted);
+    .status-msg {
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 0.05em;
     }
 
     .contact-side {
-      display: grid;
-      gap: 18px;
-      padding-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
     }
 
     .contact-note {
-      padding-top: 16px;
-      border-top: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .contact-note strong {
-      display: block;
-      margin-bottom: 8px;
       font-size: 9px;
-      text-transform: uppercase;
       font-weight: 900;
-      letter-spacing: 0.14em;
-      color: rgba(5, 7, 11, 0.34);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text);
     }
 
     .contact-note p,
     .contact-note a {
-      margin: 0;
       font-size: 13px;
-      line-height: 1.75;
-      color: var(--muted);
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.55);
     }
 
-    .footer {
-      position: relative;
-      z-index: 8;
-      width: 100vw;
-      min-height: 100vh;
-      margin-top: 84px;
-      margin-left: calc(50% - 50vw);
-      padding: clamp(28px, 4vw, 42px) clamp(18px, 4vw, 48px);
-      border-top: 1px solid rgba(5, 7, 11, 0.08);
-      background: #ffffff;
-      display: grid;
-      align-content: space-between;
-      gap: 36px;
+    .contact-note a {
+      text-decoration: underline;
+      cursor: pointer;
+      transition: color 0.3s ease;
     }
 
-    .footer-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .footer-copy {
-      font-size: 9px;
-      color: var(--muted);
-    }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
-      gap: 36px;
-      align-items: end;
-      flex: 1 1 auto;
-    }
-
-    .footer-panel {
-      display: grid;
-      gap: 18px;
-      align-content: start;
-    }
-
-    .footer-title {
-      margin: 0;
-      font-size: clamp(3rem, 8vw, 8rem);
-      line-height: 0.84;
-      letter-spacing: -0.08em;
-      text-transform: uppercase;
-    }
-
-    .footer-text {
-      margin: 0;
-      max-width: 40ch;
-      font-size: 14px;
-      line-height: 1.8;
-      color: var(--muted);
-    }
-
-    .footer-list {
-      display: grid;
-      gap: 12px;
-      margin-top: 6px;
-    }
-
-    .footer-list a {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      width: fit-content;
-      font-size: clamp(1.2rem, 2vw, 1.8rem);
-      line-height: 1;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: -0.03em;
-    }
-
-    .footer-list a::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: #000;
-    }
-
-    .footer-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .footer-link {
-      color: #000;
-      border-color: rgba(5, 7, 11, 0.12);
-      background: transparent;
-      backdrop-filter: none;
-    }
-
-    @media (max-width: 1024px) {
-      .hero-grid {
-        grid-template-columns: 1fr;
-        min-height: auto;
-        padding: clamp(30px, 8vw, 60px) 0 20px;
-      }
-
-      .hero-panel {
-        padding-right: 0;
-      }
-
-      .hero-figure {
-        min-height: 420px;
-      }
-
-      .section-head,
-      .manifesto-layout,
-      .contact-layout,
-      .footer-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .blog-item {
-        grid-template-columns: 40px 1fr;
-      }
-
-      .blog-item-meta {
-        display: none;
-      }
-
-      .detail-band {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .category-track {
-        grid-auto-columns: 88%;
-      }
+    .contact-note a:hover {
+      color: var(--accent);
     }
 
     @media (max-width: 768px) {
-      .site-shell {
-        width: min(100vw - 18px, 1240px);
-        padding-top: 10px;
-      }
-
-      .topbar {
-        top: 10px;
-        border-radius: 28px;
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .topbar-nav {
-        width: 100%;
-        justify-content: flex-start;
-      }
-
-      .hero-grid {
-        padding: 32px 0 8px;
-        gap: 24px;
-      }
-
-      .hero-title {
-        font-size: clamp(3.4rem, 18vw, 5.6rem);
-      }
-
-      .hero-figure {
-        min-height: 320px;
-      }
-
-      .hero-figure::before {
-        inset: 8% 6% 4%;
-        border-radius: 30px;
-      }
-
-      .detail-band {
+      .contact-grid {
         grid-template-columns: 1fr;
+        gap: 48px;
       }
+    }
 
-      .section-title,
-      .footer-title {
-        max-width: none;
-      }
+    /* ── INDEX MODAL OVERLAY FULLSCREEN ── */
+    .index-modal {
+      position: fixed;
+      bottom: -100vh;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: 200;
+      background: var(--bg);
+      overflow: hidden;
+      transition: bottom 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+    }
 
-      .category-track {
-        grid-auto-columns: 100%;
-      }
+    .index-modal.open {
+      bottom: 0;
+    }
 
-      .category-point,
-      .faq-item {
-        grid-template-columns: 1fr;
-        gap: 8px;
-      }
+    .index-close {
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+      background: none;
+      border: none;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+      z-index: 201;
+    }
 
-      .submit-row,
-      .footer-head {
-        align-items: flex-start;
-        flex-direction: column;
-      }
+    .index-close:hover {
+      opacity: 1;
+      color: var(--accent);
+    }
 
-      .footer {
-        min-height: auto;
-        padding-bottom: 28px;
+    .index-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 120px 32px;
+      overflow-y: auto;
+    }
+
+    .index-header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .index-title {
+      font-size: clamp(72px, 18vw, 140px);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+    }
+
+    .index-subtitle {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 20px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .index-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 60px;
+      max-width: 1200px;
+      margin: 0 auto 80px;
+    }
+
+    .index-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .index-section-title {
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .index-link {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.75);
+      line-height: 2;
+      opacity: 0.75;
+      transition: opacity 0.3s ease;
+    }
+
+    .index-link:hover {
+      opacity: 1;
+      color: var(--accent);
+    }
+
+    .index-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 32px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer-text {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .open-app-btn {
+      padding: 10px 26px;
+      border: 2px solid var(--accent);
+      border-radius: 18px;
+      background: var(--accent);
+      color: var(--bg);
+      font-family: 'Garet', sans-serif;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .open-app-btn:hover {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
       }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .section {
+      animation: fadeIn 0.6s ease-out;
     }
   </style>
 </head>
 <body>
-  <div class="page-atmosphere"></div>
-  <div class="noise"></div>
-  <div class="scanline"></div>
 
-  <div class="site-shell">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true"></div>
-        <div class="brand-copy">
-          <strong>ASTRAK</strong>
-          <span>Editorial Signals / Buenos Aires</span>
+  <!-- NAVEGADOR PILL FIJO -->
+  <div class="topbar">
+    <button class="nav-pill active" onclick="scrollToSection('hero')">Manifesto</button>
+    <button class="nav-pill" onclick="scrollToSection('contact')">Contacto</button>
+    <button class="nav-pill" onclick="scrollToSection('blog')">Blog</button>
+    <button class="nav-pill" onclick="scrollToSection('faq')">FQA</button>
+    <button class="nav-pill" onclick="openIndex()">OpenApp</button>
+  </div>
+
+  <!-- HERO HEADER CON FONDO -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-nav">
+        <div class="hero-brand">astrak</div>
+        <div class="hero-nav-items">
+          <button class="hero-nav-link" onclick="scrollToSection('manifesto')">Manifesto</button>
+          <button class="hero-nav-link" onclick="scrollToSection('contact')">Contacto</button>
+          <button class="hero-nav-link" onclick="scrollToSection('blog')">Blog</button>
+          <button class="hero-nav-link" onclick="scrollToSection('faq')">FQA</button>
+          <button class="hero-nav-link cta" onclick="openIndex()">OpenApp</button>
         </div>
       </div>
 
-      <nav class="topbar-nav">
-        <a class="nav-link" href="#top">Top</a>
-        <a class="nav-link" href="#details">Details</a>
-        <a class="nav-link" href="#manifesto">Manifesto</a>
-        <a class="nav-link" href="#categories">Categories</a>
-        <a class="nav-link" href="#blog">Blog</a>
-        <a class="nav-link" href="#faq">FAQ</a>
-        <a class="nav-link" href="#contact">Contact</a>
-        <a class="app-link" href="index.html">Open App</a>
-      </nav>
-    </header>
+      <h1 class="hero-title">
+        <span class="accent">Un sistema visual</span> para leer señales sin parecer un portal
+      </h1>
 
-    <main>
-      <section class="hero" id="top">
-        <div class="hero-atmosphere"></div>
-
-        <div class="hero-grid">
-          <div class="hero-copy">
-            <div class="eyebrow">Editorial Signal Interface / Buenos Aires</div>
-            <h1 class="hero-title"><span class="hero-name">ASTRAK</span>Transmision editorial viva</h1>
-            <p class="hero-text">
-              ASTRAK convierte noticias, cultura y clima en un sistema visual con jerarquía fuerte. La landing presenta la visión; el app ejecuta la experiencia en tiempo real.
-            </p>
-
-            <div class="hero-actions">
-              <a class="hero-primary" href="index.html">Open App</a>
-              <a class="hero-secondary" href="#manifesto">Leer sistema</a>
-            </div>
-          </div>
-
-          <aside class="hero-panel">
-            <figure class="hero-figure">
-              <img class="hero-image" src="img/holder.png" alt="Visual principal de ASTRAK" />
-            </figure>
-
-            <div class="hero-detail-stack">
-              <div class="hero-detail">
-                <strong>Signal</strong>
-                <p>Una home imponente para explicar el proyecto antes de entrar al sistema operativo en vivo.</p>
-              </div>
-              <div class="hero-detail">
-                <strong>Atmosphere</strong>
-                <p>Gradiente continuo, scanline, ruido y glow para mantener la misma familia visual que `index.html`.</p>
-              </div>
-            </div>
-          </aside>
+      <div class="hero-image-container">
+        <div class="hero-image-placeholder">
+          [Imagen Placeholder]
         </div>
-      </section>
+      </div>
+    </div>
+  </section>
 
-      <section class="flow-section" id="details">
-        <span class="section-kicker">Important Details</span>
-        <div class="detail-band">
-          <article class="detail-item">
-            <span class="detail-value">24H</span>
-            <span class="detail-label">Ciclo visual</span>
-            <p class="detail-copy">La experiencia está pensada como una transmisión continua, no como una grilla fija.</p>
-          </article>
-          <article class="detail-item">
-            <span class="detail-value">RSS</span>
-            <span class="detail-label">Feeds activos</span>
-            <p class="detail-copy">La app reúne señales externas y las vuelve legibles dentro de una jerarquía propia.</p>
-          </article>
-          <article class="detail-item">
-            <span class="detail-value">07</span>
-            <span class="detail-label">Categorías núcleo</span>
-            <p class="detail-copy">Cada frente editorial tiene color, tono y prioridad visual consistentes en el sistema.</p>
-          </article>
-          <article class="detail-item">
-            <span class="detail-value">AR</span>
-            <span class="detail-label">Base editorial</span>
-            <p class="detail-copy">La lectura del mundo parte desde Buenos Aires y ordena la señal con mirada local.</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="flow-section" id="manifesto">
-        <div class="section-head">
-          <div>
-            <span class="section-kicker">Manifesto</span>
-            <h2 class="section-title">Un sistema visual para leer señales sin parecer un portal</h2>
-          </div>
+  <!-- MANIFESTO -->
+  <section class="section" id="manifesto">
+    <div class="section-container">
+      <div class="manifesto-grid">
+        <div class="manifesto-left">
+          <h2 class="section-title accent">
+            Un sistema visual para leer señales sin parecer un portal
+          </h2>
+          <p class="section-text">
+            La jerarquía no se apoya en cajas. Se apoya en contraste, escala, aire y secuencia. Cada bloque abre el siguiente con claridad para que la navegación se sienta editorial y no administrativa.
+          </p>
+          <p class="section-text">
+            El objetivo es simple: que ASTRAK tenga una voz propia antes de que el usuario entre al app. Una home con peso, y un sistema operativo detrás.
+          </p>
           <p class="section-text">
             ASTRAK no compite por volumen. Compite por criterio, ritmo y presencia. La landing explica la visión y el app la pone en movimiento con titulares, clima y tiempo real.
           </p>
         </div>
 
-        <div class="manifesto-layout">
-          <div class="manifesto-text">
-            <p class="manifesto-paragraph">La jerarquía no se apoya en cajas. Se apoya en contraste, escala, aire y secuencia. Cada bloque abre el siguiente con claridad para que la navegación se sienta editorial y no administrativa.</p>
-            <p class="manifesto-paragraph">El objetivo es simple: que ASTRAK tenga una voz propia antes de que el usuario entre al app. Una home con peso, y un sistema operativo detrás.</p>
+        <div class="manifesto-right">
+          <div class="stat-block">
+            <div class="stat-number">24HS</div>
+            <div class="stat-label">Ciclo Visual</div>
+            <div class="stat-description">La experiencia está pensada como una transmisión continua, no como una grilla fija.</div>
           </div>
 
-          <div class="manifesto-pills">
-            <span class="chip">Clima + Hora</span>
-            <span class="chip">Headline First</span>
-            <span class="chip">Signals Ordered</span>
-            <span class="chip">Visual Tension</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="flow-section" id="categories">
-        <div class="section-head">
-          <div>
-            <span class="section-kicker">Categories</span>
-            <h2 class="section-title">Color, tono y función para cada frente editorial</h2>
-          </div>
-          <p class="section-text">
-            Cada categoría usa el mismo código cromático de `index.html`. El color no decora: orienta la lectura y organiza la transmisión.
-          </p>
-        </div>
-
-        <div class="categories-shell">
-          <div class="category-toolbar">
-            <div class="category-legend">
-              <span class="legend-pill" style="--pill-color:#e2ff00;">Global</span>
-              <span class="legend-pill" style="--pill-color:#4dabff;">Política</span>
-              <span class="legend-pill" style="--pill-color:#c084fc;">Tecnología</span>
-              <span class="legend-pill" style="--pill-color:#ff7a4d;">Cine / Música</span>
-              <span class="legend-pill" style="--pill-color:#34d399;">Economía</span>
-              <span class="legend-pill" style="--pill-color:#fbbf24;">Internacional</span>
-              <span class="legend-pill" style="--pill-color:#f472b6;">Cultura</span>
-            </div>
-            <div class="category-controls">
-              <button class="carousel-btn" type="button" data-carousel="categories" data-dir="-1">Prev</button>
-              <button class="carousel-btn" type="button" data-carousel="categories" data-dir="1">Next</button>
-            </div>
+          <div class="stat-block">
+            <div class="stat-number">RSS</div>
+            <div class="stat-label">Feeds Activos</div>
+            <div class="stat-description">La app reúne señales externas y las vuelve legibles dentro de una jerarquía propia.</div>
           </div>
 
-          <div class="category-stage">
-            <div class="category-track" id="categories-carousel">
-              <article class="category-slide" style="--cat-color:#e2ff00;">
-                <div class="category-color"></div>
-                <div class="category-slide-inner">
-                  <div class="category-meta">
-                    <span class="category-label">Señal 00</span>
-                    <span class="category-pill">Global</span>
-                  </div>
-                  <h3 class="category-title">La capa madre del sistema</h3>
-                  <p class="category-copy">Global sintetiza lo que define el pulso del día. No funciona como “todo mezclado”, sino como una puerta de entrada con criterio.</p>
-                  <div class="category-points">
-                    <div class="category-point"><strong>Rol</strong><span>Abre la portada y fija el tono general del feed.</span></div>
-                    <div class="category-point"><strong>Uso</strong><span>Sirve para detectar lo imprescindible sin perder la identidad visual.</span></div>
-                  </div>
-                </div>
-              </article>
-
-              <article class="category-slide" style="--cat-color:#4dabff;">
-                <div class="category-color"></div>
-                <div class="category-slide-inner">
-                  <div class="category-meta">
-                    <span class="category-label">Señal 01</span>
-                    <span class="category-pill">Política</span>
-                  </div>
-                  <h3 class="category-title">Agenda, poder y fricción pública</h3>
-                  <p class="category-copy">Política organiza las señales institucionales, partidarias y de conflicto con una lectura seca y priorizada.</p>
-                  <div class="category-points">
-                    <div class="category-point"><strong>Color</strong><span>Azul para lectura fría, urgente y clara dentro del sistema.</span></div>
-                    <div class="category-point"><strong>Función</strong><span>Separar agenda política del resto sin volverla un bloque burocrático.</span></div>
-                  </div>
-                </div>
-              </article>
-
-              <article class="category-slide" style="--cat-color:#c084fc;">
-                <div class="category-color"></div>
-                <div class="category-slide-inner">
-                  <div class="category-meta">
-                    <span class="category-label">Señal 02</span>
-                    <span class="category-pill">Tecnología</span>
-                  </div>
-                  <h3 class="category-title">Cambio técnico con lectura cultural</h3>
-                  <p class="category-copy">Tecnología no se limita a producto o lanzamiento: cruza plataformas, IA, consumo y desplazamientos de hábito.</p>
-                  <div class="category-points">
-                    <div class="category-point"><strong>Enfoque</strong><span>Lee la innovación como infraestructura cultural, no solo como novedad.</span></div>
-                    <div class="category-point"><strong>Tono</strong><span>Más señal que hype. Más criterio que catálogo.</span></div>
-                  </div>
-                </div>
-              </article>
-
-              <article class="category-slide" style="--cat-color:#ff7a4d;">
-                <div class="category-color"></div>
-                <div class="category-slide-inner">
-                  <div class="category-meta">
-                    <span class="category-label">Señal 03</span>
-                    <span class="category-pill">Cine / Música</span>
-                  </div>
-                  <h3 class="category-title">La capa pop dentro del radar</h3>
-                  <p class="category-copy">Cine y música agregan circulación cultural, industria y conversación masiva sin perder la lógica editorial del sistema.</p>
-                  <div class="category-points">
-                    <div class="category-point"><strong>Color</strong><span>Naranja para energía, lanzamiento y alto nivel de visibilidad.</span></div>
-                    <div class="category-point"><strong>Uso</strong><span>Conecta la agenda pop con el resto de la transmisión.</span></div>
-                  </div>
-                </div>
-              </article>
-
-              <article class="category-slide" style="--cat-color:#34d399;">
-                <div class="category-color"></div>
-                <div class="category-slide-inner">
-                  <div class="category-meta">
-                    <span class="category-label">Señal 04</span>
-                    <span class="category-pill">Economía</span>
-                  </div>
-                  <h3 class="category-title">Mercado, macro y lectura inmediata</h3>
-                  <p class="category-copy">Economía ordena variables, anuncios y movimientos con foco en legibilidad rápida y contexto básico suficiente.</p>
-                  <div class="category-points">
-                    <div class="category-point"><strong>Rol</strong><span>Traducir complejidad sin diluir tensión informativa.</span></div>
-                    <div class="category-point"><strong>Color</strong><span>Verde para asociar finanzas, flujo y variación.</span></div>
-                  </div>
-                </div>
-              </article>
-
-              <article class="category-slide" style="--cat-color:#fbbf24;">
-                <div class="category-color"></div>
-                <div class="category-slide-inner">
-                  <div class="category-meta">
-                    <span class="category-label">Señal 05</span>
-                    <span class="category-pill">Internacional</span>
-                  </div>
-                  <h3 class="category-title">Perspectiva global desde una base local</h3>
-                  <p class="category-copy">Internacional prioriza conflictos, desplazamientos y hechos que alteran el contexto desde afuera hacia la lectura local.</p>
-                  <div class="category-points">
-                    <div class="category-point"><strong>Enfoque</strong><span>No es relleno de agenda externa: es contexto útil para entender el presente.</span></div>
-                    <div class="category-point"><strong>Tono</strong><span>Amarillo para atención y señal de alcance amplio.</span></div>
-                  </div>
-                </div>
-              </article>
-
-              <article class="category-slide" style="--cat-color:#f472b6;">
-                <div class="category-color"></div>
-                <div class="category-slide-inner">
-                  <div class="category-meta">
-                    <span class="category-label">Señal 06</span>
-                    <span class="category-pill">Cultura</span>
-                  </div>
-                  <h3 class="category-title">Archivo vivo, arte y lenguaje contemporáneo</h3>
-                  <p class="category-copy">Cultura recoge literatura, arte, pensamiento y escenas híbridas para completar la identidad del proyecto.</p>
-                  <div class="category-points">
-                    <div class="category-point"><strong>Función</strong><span>Expandir el radar más allá de la noticia dura.</span></div>
-                    <div class="category-point"><strong>Color</strong><span>Rosa para marcar sensibilidad, desvío y registro editorial propio.</span></div>
-                  </div>
-                </div>
-              </article>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="flow-section" id="blog">
-        <div class="section-head">
-          <div>
-            <span class="section-kicker">Blog / Archive</span>
-            <h2 class="section-title">Notas y archivo</h2>
-          </div>
-          <p class="section-text">
-            Publicaciones propias, análisis cultural y registros del sistema visual. El archivo funciona como memoria editorial y laboratorio.
-          </p>
-        </div>
-
-        <div id="blogList" class="blog-list">
-          <div class="blog-loading">Cargando archivo editorial…</div>
-        </div>
-      </section>
-
-      <section class="flow-section" id="faq">
-        <div class="section-head">
-          <div>
-            <span class="section-kicker">FAQ</span>
-            <h2 class="section-title">Preguntas directas</h2>
-          </div>
-          <p class="section-text">
-            Respuestas cortas para entender cómo se organiza la landing y dónde empieza el sistema dinámico.
-          </p>
-        </div>
-
-        <div class="faq-stack">
-          <article class="faq-item">
-            <span class="faq-label">01</span>
-            <div>
-              <h3 class="faq-question">Qué es ASTRAK?</h3>
-              <p class="faq-answer">Una interfaz editorial que convierte noticias y cultura en una experiencia visual reactiva, atmosférica y menos convencional que los portales tradicionales.</p>
-            </div>
-          </article>
-
-          <article class="faq-item">
-            <span class="faq-label">02</span>
-            <div>
-              <h3 class="faq-question">Dónde está la app principal?</h3>
-              <p class="faq-answer">En `index.html`. Esta landing presenta la lógica del sistema; el app es donde sucede la experiencia completa con feeds en vivo, clima y headline reactivo.</p>
-            </div>
-          </article>
-
-          <article class="faq-item">
-            <span class="faq-label">03</span>
-            <div>
-              <h3 class="faq-question">Por qué el diseño se siente distinto?</h3>
-              <p class="faq-answer">Porque el sistema prioriza tensión visual, jerarquía tipográfica, gradiente atmosférico y una lectura menos genérica de la información.</p>
-            </div>
-          </article>
-
-          <article class="faq-item">
-            <span class="faq-label">04</span>
-            <div>
-              <h3 class="faq-question">De dónde salen las noticias?</h3>
-              <p class="faq-answer">De feeds RSS públicos organizados por categoría. Política, tecnología, cultura, cine, música, economía e internacional entran al sistema y se reordenan con identidad propia.</p>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="flow-section" id="contact">
-        <div class="section-head">
-          <div>
-            <span class="section-kicker">Contact / Uplink</span>
-            <h2 class="section-title">Enviar una señal</h2>
-          </div>
-          <p class="section-text">
-            Para colaboraciones, ideas editoriales o desarrollo del sistema visual. Este bloque concentra el contacto sin romper la secuencia de lectura.
-          </p>
-        </div>
-
-        <div class="contact-layout">
-          <div>
-            <form class="contact-form" id="uplink-form">
-              <div class="form-row">
-                <label class="form-label" for="name">Name</label>
-                <input class="input" id="name" name="name" type="text" placeholder="Tu nombre" required />
-              </div>
-
-              <div class="form-row">
-                <label class="form-label" for="email">Email</label>
-                <input class="input" id="email" name="email" type="email" placeholder="tu@email.com" required />
-              </div>
-
-              <div class="form-row">
-                <label class="form-label" for="message">Mensaje</label>
-                <textarea class="textarea" id="message" name="message" placeholder="Cuéntanos tu idea o colaboración…" required></textarea>
-              </div>
-
-              <div class="submit-row">
-                <button class="submit-btn" type="submit">Send Signal</button>
-                <span class="microcopy" id="status-msg">Powered by dopple® — Buenos Aires, 2026</span>
-              </div>
-            </form>
+          <div class="stat-block">
+            <div class="stat-number">06</div>
+            <div class="stat-label">Categorías Núcleo</div>
+            <div class="stat-description">Cada frente editorial tiene color, tono y prioridad visual consistentes en el sistema.</div>
           </div>
 
-          <aside class="contact-side">
-            <div class="contact-note">
-              <strong>Base</strong>
-              <p>Buenos Aires, Argentina. ASTRAK ordena la señal global desde una lectura local.</p>
-            </div>
-            <div class="contact-note">
-              <strong>Scope</strong>
-              <p>Colaboraciones editoriales, diseño de sistemas visuales, curaduría cultural y herramientas de lectura en tiempo real.</p>
-            </div>
-            <div class="contact-note">
-              <strong>App</strong>
-              <a href="index.html">Abrir `index.html` y entrar al sistema operativo →</a>
-            </div>
-          </aside>
+          <div class="stat-block">
+            <div class="stat-number">AR</div>
+            <div class="stat-label">Base Editorial</div>
+            <div class="stat-description">La lectura del mundo parte desde Buenos Aires y ordena la señal con mirada local.</div>
+          </div>
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
+  </section>
 
-    <footer class="footer">
-      <div class="footer-head">
-        <span class="footer-copy">ASTRAK / Footer Index + Guide</span>
-        <div class="footer-actions">
-          <a class="footer-link" href="index.html">Open Index</a>
-          <a class="footer-link" href="#manifesto">Open Guide</a>
+  <!-- CATEGORÍAS -->
+  <section class="section" id="categories">
+    <div class="section-container">
+      <h2 class="section-title">No nos especializamos en noticias de todo tipo...</h2>
+      <p class="section-text">
+        Cada categoría usa un código cromático específico, con el color orientando la lectura y organizando la transmisión.
+      </p>
+
+      <div class="categories-content" style="margin-top: 48px;">
+        <div class="categories-grid">
+          <div class="category-badge">Política</div>
+          <div class="category-badge">Tecnología</div>
+          <div class="category-badge">Cine / Música</div>
+          <div class="category-badge">Economía</div>
+          <div class="category-badge">Internacional</div>
+          <div class="category-badge">Cultura</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOG -->
+  <section class="section" id="blog">
+    <div class="section-container">
+      <h2 class="section-title">Notas y archivos</h2>
+      <p class="section-text" style="margin-bottom: 48px;">
+        Publicaciones propias, análisis cultural y registros del sistema visual. El archivo funciona como memoria editorial.
+      </p>
+
+      <div id="blogList" class="blog-list">
+        <div class="blog-loading">Cargando archivo editorial…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq">
+    <div class="section-container">
+      <h2 class="section-title">Preguntas directas</h2>
+      <p class="section-text" style="margin-bottom: 48px;">
+        Respuestas cortas para entender cómo se organiza la landing y dónde empieza el sistema dinámico.
+      </p>
+
+      <div class="faq-grid">
+        <article class="faq-item">
+          <div class="faq-number">01</div>
+          <h3 class="faq-question">Qué es ASTRAK?</h3>
+          <p class="faq-answer">Una interfaz editorial que convierte noticias y cultura en una experiencia visual reactiva, atmosférica y menos convencional que los portales tradicionales.</p>
+        </article>
+
+        <article class="faq-item">
+          <div class="faq-number">02</div>
+          <h3 class="faq-question">Por qué el diseño se siente distinto?</h3>
+          <p class="faq-answer">Porque el sistema prioriza tensión visual, jerarquía tipográfica, gradiente atmosférico y una lectura menos genérica de la información.</p>
+        </article>
+
+        <article class="faq-item">
+          <div class="faq-number">03</div>
+          <h3 class="faq-question">De dónde salen las noticias?</h3>
+          <p class="faq-answer">De feeds RSS públicos organizados por categoría. Política, tecnología, cultura, cine, música, economía e internacional entran al sistema.</p>
+        </article>
+
+        <article class="faq-item">
+          <div class="faq-number">04</div>
+          <h3 class="faq-question">Dónde está la app principal?</h3>
+          <p class="faq-answer">En `index.html`. Esta landing presenta la lógica del sistema; el app es donde sucede la experiencia completa con feeds en vivo.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section" id="contact">
+    <div class="section-container">
+      <h2 class="section-title">Enviar una señal</h2>
+      <p class="section-text" style="margin-bottom: 64px;">
+        Para colaboraciones, ideas editoriales o desarrollo del sistema visual. Contactanos y contanos tus ideas o problemas con Astrak.
+      </p>
+
+      <div class="contact-grid">
+        <div>
+          <form class="contact-form" id="uplink-form">
+            <div class="form-row">
+              <label class="form-label" for="name">Nombre</label>
+              <input class="input" id="name" name="name" type="text" placeholder="Tu nombre" required />
+            </div>
+
+            <div class="form-row">
+              <label class="form-label" for="email">Email</label>
+              <input class="input" id="email" name="email" type="email" placeholder="tu@email.com" required />
+            </div>
+
+            <div class="form-row">
+              <label class="form-label" for="message">Mensaje</label>
+              <textarea class="textarea" id="message" name="message" placeholder="Cuéntanos tu idea o colaboración…" required></textarea>
+            </div>
+
+            <button class="submit-btn" type="submit">Send Signal</button>
+            <span class="status-msg" id="status-msg">Powered by dopple® — Buenos Aires, 2026</span>
+          </form>
+        </div>
+
+        <div class="contact-side">
+          <div class="contact-note">
+            <strong>Base</strong>
+            <p>Buenos Aires, Argentina. ASTRAK ordena la señal global desde una lectura local.</p>
+          </div>
+          <div class="contact-note">
+            <strong>Scope</strong>
+            <p>Colaboraciones editoriales, diseño de sistemas visuales, curaduría cultural y herramientas de lectura en tiempo real.</p>
+          </div>
+          <div class="contact-note">
+            <strong>Más información</strong>
+            <a href="index.html" target="_blank">Abrir el app y entrar al sistema operativo →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INDEX MODAL FULLSCREEN -->
+  <div class="index-modal" id="indexModal">
+    <button class="index-close" onclick="closeIndex()">close X</button>
+    
+    <div class="index-content">
+      <div class="index-header">
+        <div class="index-title">INDEX</div>
+        <div class="index-subtitle">Acceso rápido a la estructura de la landing</div>
+      </div>
+
+      <div class="index-grid">
+        <div class="index-section">
+          <div class="index-section-title">Navegación</div>
+          <a class="index-link" href="#hero" onclick="scrollAndCloseIndex('hero')">Hero</a>
+          <a class="index-link" href="#manifesto" onclick="scrollAndCloseIndex('manifesto')">Manifesto</a>
+          <a class="index-link" href="#categories" onclick="scrollAndCloseIndex('categories')">Categorías</a>
+          <a class="index-link" href="#blog" onclick="scrollAndCloseIndex('blog')">Blog</a>
+          <a class="index-link" href="#faq" onclick="scrollAndCloseIndex('faq')">Preguntas</a>
+          <a class="index-link" href="#contact" onclick="scrollAndCloseIndex('contact')">Contacto</a>
+        </div>
+
+        <div class="index-section">
+          <div class="index-section-title">Otros Proyectos</div>
+          <a class="index-link" href="https://doppelganger-eta.vercel.app" target="_blank">dopple®</a>
+          <a class="index-link" href="#">infinitydisk</a>
+          <a class="index-link" href="#">sphinx</a>
+          <a class="index-link" href="#">secondera</a>
+        </div>
+
+        <div class="index-section">
+          <div class="index-section-title">Redes Sociales</div>
+          <a class="index-link" href="https://instagram.com" target="_blank">Instagram</a>
+          <a class="index-link" href="https://tiktok.com" target="_blank">TikTok</a>
+          <a class="index-link" href="https://linkedin.com" target="_blank">LinkedIn</a>
         </div>
       </div>
 
-      <div class="footer-grid">
-        <section class="footer-panel">
-          <span class="section-kicker">Indice</span>
-          <h2 class="footer-title">Indice</h2>
-          <p class="footer-text">Accesos rápidos a la estructura de la landing y a la app principal.</p>
-          <div class="footer-list">
-            <a href="#top">Header</a>
-            <a href="#details">Details</a>
-            <a href="#manifesto">Manifesto</a>
-            <a href="#categories">Categories</a>
-            <a href="#blog">Blog</a>
-            <a href="#faq">FAQ</a>
-            <a href="#contact">Contact</a>
-            <a href="index.html">Index App</a>
-          </div>
-        </section>
-
-        <section class="footer-panel">
-          <span class="section-kicker">Guide</span>
-          <h2 class="footer-title">Guide</h2>
-          <p class="footer-text">La secuencia correcta es simple: la landing explica el sistema, las categorías muestran su lógica cromática y `index.html` ejecuta la experiencia dinámica.</p>
-          <div class="footer-list">
-            <a href="#manifesto">Leer manifiesto</a>
-            <a href="#categories">Ver carousel de categorías</a>
-            <a href="#blog">Abrir archivo editorial</a>
-            <a href="index.html">Entrar al app en vivo</a>
-          </div>
-        </section>
+      <div class="index-footer">
+        <div class="footer-text">Buenos Aires — Argentina — Live since 2026</div>
+        <button class="open-app-btn" onclick="window.open('index.html', '_blank')">Open App →</button>
       </div>
-    </footer>
+    </div>
   </div>
 
   <script>
     const uplinkForm = document.getElementById('uplink-form');
     const statusMsg = document.getElementById('status-msg');
-    const categoryCarousel = document.getElementById('categories-carousel');
+    const indexModal = document.getElementById('indexModal');
 
-    document.querySelectorAll('[data-carousel="categories"]').forEach((button) => {
-      button.addEventListener('click', () => {
-        if (!categoryCarousel) return;
-        const direction = Number(button.dataset.dir || 1);
-        const firstSlide = categoryCarousel.querySelector('.category-slide');
-        const slideWidth = firstSlide ? firstSlide.getBoundingClientRect().width : categoryCarousel.getBoundingClientRect().width;
-        categoryCarousel.scrollBy({
-          left: direction * (slideWidth + 18),
-          behavior: 'smooth'
-        });
-      });
-    });
+    function scrollToSection(id) {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    function openIndex() {
+      indexModal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeIndex() {
+      indexModal.classList.remove('open');
+      document.body.style.overflow = 'auto';
+    }
+
+    function scrollAndCloseIndex(id) {
+      closeIndex();
+      setTimeout(() => {
+        scrollToSection(id);
+      }, 100);
+    }
 
     uplinkForm.addEventListener('submit', (event) => {
       event.preventDefault();
@@ -1664,21 +1078,42 @@
 
         list.innerHTML = entries.map((e, i) => `
           <a class="blog-item" href="${DOPPLE_ARTICLE}?id=${e.id}" target="_blank">
-            <div class="blog-item-num">${String(i + 1).padStart(2, '0')}</div>
-            <div class="blog-item-body">
-              <div class="blog-item-type">${TYPE_LABEL[e.postType] || e.postType || 'article'}</div>
-              <div class="blog-item-title">${e.title}</div>
-              ${e.excerpt ? `<div class="blog-item-excerpt">${e.excerpt}</div>` : ''}
+            <div class="blog-number">${String(i + 1).padStart(2, '0')}</div>
+            <div class="blog-content">
+              <div class="blog-type">${TYPE_LABEL[e.postType] || e.postType || 'article'}</div>
+              <div class="blog-title">${e.title}</div>
+              ${e.excerpt ? `<div class="blog-excerpt">${e.excerpt}</div>` : ''}
             </div>
-            <div class="blog-item-meta">${e.year || ''} ${e.author ? '— ' + e.author : ''}</div>
+            <div class="blog-meta">${e.year || ''} ${e.author ? '— ' + e.author : ''}</div>
           </a>`).join('');
 
       } catch(err) {
+        console.error('Blog load error:', err);
         list.innerHTML = '<div class="blog-empty">No se pudo cargar el archivo editorial.</div>';
       }
     }
 
     loadBlog();
+
+    // Update active nav pill on scroll
+    window.addEventListener('scroll', () => {
+      const sections = ['hero', 'manifesto', 'categories', 'blog', 'faq', 'contact'];
+      const scrollPos = window.scrollY + 200;
+
+      sections.forEach(id => {
+        const section = document.getElementById(id);
+        if (section) {
+          const sectionTop = section.offsetTop;
+          const sectionBottom = sectionTop + section.offsetHeight;
+          
+          if (scrollPos >= sectionTop && scrollPos < sectionBottom) {
+            document.querySelectorAll('.nav-pill').forEach(pill => pill.classList.remove('active'));
+            document.querySelector(`.nav-pill[onclick*="${id}"]`)?.classList.add('active');
+          }
+        }
+      });
+    });
   </script>
+
 </body>
 </html>
