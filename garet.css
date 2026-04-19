@@ -1,0 +1,46 @@
+/* ─────────────────────────────────────────────────────────
+   GARET FONT FAMILY
+   Importá este archivo en cualquier proyecto con:
+   <link rel="stylesheet" href="path/to/garet.css" />
+   o
+   @import url('path/to/garet.css');
+
+   Los archivos .otf/.ttf deben estar en Garet-Font/fonts/
+   relativo a donde esté este CSS.
+───────────────────────────────────────────────────────── */
+
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Hairline.otf') format('opentype'); font-weight: 100; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Hairline-Italic.otf') format('opentype'); font-weight: 100; font-style: italic; font-display: swap; }
+
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Thin.otf') format('opentype'); font-weight: 200; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Thin-italic.otf') format('opentype'); font-weight: 200; font-style: italic; font-display: swap; }
+
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Light.otf') format('opentype'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Light-Italic.otf') format('opentype'); font-weight: 300; font-style: italic; font-display: swap; }
+
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Book.otf') format('opentype'); font-weight: 350; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Book-Italic.otf') format('opentype'); font-weight: 350; font-style: italic; font-display: swap; }
+
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Regular.otf') format('opentype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Regular-Italic.otf') format('opentype'); font-weight: 400; font-style: italic; font-display: swap; }
+
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Medium.otf') format('opentype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Medium-Italic.otf') format('opentype'); font-weight: 500; font-style: italic; font-display: swap; }
+
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Bold.otf') format('opentype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Bold-Italic.otf') format('opentype'); font-weight: 700; font-style: italic; font-display: swap; }
+
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Extra-Bold.otf') format('opentype'); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Extra-Bold-Italic.otf') format('opentype'); font-weight: 800; font-style: italic; font-display: swap; }
+
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Heavy.otf') format('opentype'); font-weight: 900; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Heavy-Italic.otf') format('opentype'); font-weight: 900; font-style: italic; font-display: swap; }
+
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Black.otf') format('opentype'); font-weight: 950; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Black-Italic.otf') format('opentype'); font-weight: 950; font-style: italic; font-display: swap; }
+
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Fat.otf') format('opentype'); font-weight: 1000; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Fat-Italic.otf') format('opentype'); font-weight: 1000; font-style: italic; font-display: swap; }
+
+/* Variable — cubre todo el rango si el browser lo soporta */
+@font-face { font-family: 'Garet'; src: url('Garet-Font/fonts/Garet-Variable-Regular.ttf') format('truetype'); font-weight: 100 1000; font-style: normal; font-display: swap; }
