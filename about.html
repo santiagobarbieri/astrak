@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20fill%3D%27white%27/%3E%3Ccircle%20cx%3D%2732%27%20cy%3D%2732%27%20r%3D%2714%27%20fill%3D%27black%27%20opacity%3D%270.9%27/%3E%3C/svg%3E" />
   <title>astrak</title>
   <link rel="stylesheet" href="garet.css" />
   <style>
@@ -38,70 +38,125 @@
     ═══════════════════════════════════════════════ */
     .navbar {
       position: fixed;
-      top: 24px;
-      left: 50%;
-      transform: translateX(-50%);
+      top: 0;
+      left: 0;
+      right: 0;
       z-index: 100;
       display: flex;
       align-items: center;
-      gap: 4px;
-      border-radius: 999px;
-      padding: 5px 5px;
-      /* fondo sutil siempre visible para legibilidad */
-      background: rgba(20, 20, 20, 0.55);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255,255,255,0.10);
-      transition: background 0.4s ease, border-color 0.4s ease;
+      justify-content: space-between;
+      padding: 10px 24px;
+      background: #ffffff;
+      border-bottom: 1px solid rgba(0,0,0,0.10);
       white-space: nowrap;
     }
 
-    /* sobre sección clara */
-    .navbar.on-light {
-      background: rgba(230, 228, 220, 0.75);
-      border-color: rgba(0,0,0,0.08);
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 32px;
     }
 
-    .navbar a {
-      text-decoration: none;
-      color: rgba(255,255,255,0.85);
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: -0.05em;
-      padding: 7px 22px;
-      border-radius: 999px;
-      transition: background 0.2s ease, color 0.2s ease;
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
       cursor: pointer;
+      text-decoration: none;
     }
 
-    .navbar.on-light a { color: rgba(0,0,0,0.75); }
+    .navbar-logo svg { display: block; }
 
-    .navbar a.active {
-      background: #fff;
-      color: #111;
+    .navbar-version {
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.5);
     }
 
-    .navbar.on-light a.active {
-      background: #111;
-      color: #fff;
+    .navbar-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    .navbar a.cta {
-      background: var(--accent);
-      color: #111;
-      font-weight: 700;
-      padding: 7px 22px;
+    .navbar-links a {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.10);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.6);
+      text-decoration: none;
+      transition: background 0.15s ease, color 0.15s ease;
     }
 
-    .navbar a.cta:hover { background: #c8ec2e; }
-    .navbar.on-light a.cta { background: var(--accent); color: #111; }
+    .navbar-links a:hover { background: rgba(0,0,0,0.05); color: #000; }
+    .navbar-links a.active { background: #000; color: #fff; border-color: #000; }
+
+    .navbar-time {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.70);
+      background: rgba(0,0,0,0.08);
+      padding: 4px 12px;
+      border-radius: 4px;
+    }
+
+    .navbar-sections {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: rgba(0,0,0,0.05);
+      padding: 4px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .navbar-sections a {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.6);
+      text-decoration: none;
+      border: none;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .navbar-sections a:hover { background: rgba(0,0,0,0.08); color: #000; }
+    .navbar-sections a.active { background: #000; color: #fff; }
+
+    @media (max-width: 900px) { .navbar-sections { display: none; } }
+
+    @media (max-width: 600px) {
+      .navbar { padding: 8px 16px; }
+      .navbar-version { display: none; }
+    }
 
     /* ═══════════════════════════════════════════════
        HERO — sticky bajo todo lo que sube
     ═══════════════════════════════════════════════ */
+    .hero-spacer {
+      width: 100%;
+      height: 100vh;
+    }
+
     .hero {
-      position: sticky;
+      position: fixed;
       top: 0;
+      left: 0;
       width: 100vw;
       height: 100vh;
       background-image: url('./img/bg.png');
@@ -124,9 +179,9 @@
 
     .hero-wordmark {
       position: absolute;
-      left: 48px;
+      left: 50%;
       top: 50%;
-      transform: translateY(-50%);
+      transform: translate(-50%, -50%);
       font-size: 106px;
       font-weight: 1000;
       color: var(--accent);
@@ -175,7 +230,7 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 110px 72px 80px;
+      padding: 90px 72px 80px;
     }
 
     .section-inner {
@@ -336,11 +391,11 @@
     .faq { background: var(--bg-about); }
     .faq .section-heading { color: var(--text-dark); }
     .faq .section-sub { color: rgba(0,0,0,0.45); }
-    .faq .section-label { color: #888; }
+    .faq .section-label { color: #000000; }
 
     .faq-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(1, 1fr);
       gap: 2px;
     }
 
@@ -349,18 +404,14 @@
       flex-direction: column;
       gap: 14px;
       padding: 36px;
-      background: rgba(0,0,0,0.03);
-      border: 1px solid rgba(0,0,0,0.07);
+      background: rgb(255, 255, 255);
       transition: background 0.2s ease;
     }
-
-    .faq-item:hover { background: rgba(0,0,0,0.06); }
 
     .faq-number {
       font-size: 28px;
       font-weight: 900;
       color: var(--text-dark);
-      opacity: 0.15;
       line-height: 1;
     }
 
@@ -381,8 +432,8 @@
 
     /* ── CONTACT ── */
     .contact { background: var(--bg-dark); min-height: auto; padding-bottom: 100px; }
-    .contact .section-heading { color: #fff; }
-    .contact .section-sub { color: rgb(255, 255, 255); }
+    .contact .section-heading { color: #000000; }
+    .contact .section-sub { color: rgb(0, 0, 0); }
 
     .contact-grid {
       display: grid;
@@ -400,48 +451,48 @@
       font-weight: 700;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.55);
+      color: rgba(0, 0, 0, 0.55);
     }
 
     .input, .textarea {
       padding: 10px 0;
       border: none;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.15);
       background: transparent;
       font-family: 'Garet', sans-serif;
       font-size: 14px;
-      color: #fff;
+      color: #000000;
       letter-spacing: -0.04em;
       transition: border-color 0.3s ease;
     }
 
     .input::placeholder, .textarea::placeholder { color: rgba(255,255,255,0.2); }
-    .input:focus, .textarea:focus { outline: none; border-color: var(--accent); }
+    .input:focus, .textarea:focus { outline: none; border-color: var(--text-dark); }
 
     .textarea { min-height: 90px; resize: vertical; }
 
     .submit-btn {
       align-self: flex-start;
       padding: 10px 24px;
-      border: 1.5px solid var(--accent);
+      border: 1.5px solid var(--text-dark);
       border-radius: 999px;
-      background: var(--accent);
+      background: var(--bg-about);
       color: #111;
       font-family: 'Garet', sans-serif;
       font-size: 12px;
       font-weight: 700;
-      letter-spacing: 0.06em;
+      letter-spacing: -0.06em;
       text-transform: uppercase;
       cursor: pointer;
       transition: background 0.2s ease, color 0.2s ease;
       margin-top: 4px;
     }
 
-    .submit-btn:hover { background: transparent; color: var(--accent); }
+    .submit-btn:hover { background: var(--text-dark); color: var(--bg-dark); }
 
     .status-msg {
       font-size: 10px;
-      color: rgba(255,255,255,0.3);
+      color: rgba(0, 0, 0, 0.3);
       letter-spacing: 0.04em;
     }
 
@@ -454,17 +505,17 @@
       font-weight: 700;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.9);
+      color: rgba(0, 0, 0, 0.9);
     }
 
     .contact-note p, .contact-note a {
       font-size: 14px;
       line-height: 1.6;
-      color: rgba(255,255,255,0.4);
+      color: rgba(0, 0, 0, 0.4);
       letter-spacing: -0.04em;
     }
 
-    .contact-note a:hover { color: var(--accent); }
+    .contact-note a:hover { color: var(--text-dark); }
 
     /* ── FOOTER BAR ── */
     .site-footer {
@@ -501,7 +552,7 @@
       .contact-grid { grid-template-columns: 1fr; gap: 48px; }
       .faq-grid { grid-template-columns: 1fr; }
 
-      .hero-wordmark { left: 24px; font-size: 20px; }
+      .hero-wordmark { left: 50%; transform: translate(-50%, -50%); font-size: 56px; white-space: nowrap; }
       .hero-powered { right: 24px; font-size: 12px; }
       .hero-powered .brand { font-size: 16px; }
 
@@ -540,14 +591,27 @@
 
   <!-- ── NAVBAR FIJO ── -->
   <nav class="navbar" id="navbar">
-    <a href="#" id="link-manifesto" onclick="scrollToSection('about'); return false;">Manifesto</a>
-    <a href="#" class="hide-mobile" onclick="scrollToSection('contact'); return false;">Contacto</a>
-    <a href="#" class="hide-mobile" onclick="scrollToSection('blog'); return false;">Blog</a>
-    <a href="#" class="hide-mobile" onclick="scrollToSection('faq'); return false;">FQA</a>
-    <a href="index.html" class="cta">Open App</a>
+    <div class="navbar-left">
+      <a href="#" class="navbar-brand">
+            <span class="navbar-version">ASTRAK</span>
+      </a>
+      <div class="navbar-links">
+        <a href="index.html">Home</a>
+      </div>
+      <nav class="navbar-sections">
+        <a href="#" onclick="scrollToSection('about'); return false;">Manifesto</a>
+        <a href="#" onclick="scrollToSection('blog'); return false;">Blog</a>
+        <a href="#" onclick="scrollToSection('faq'); return false;">FAQ</a>
+        <a href="#" onclick="scrollToSection('contact'); return false;">Contacto</a>
+      </nav>
+    </div>
+    <div class="navbar-time" id="navbar-time">--:--:--</div>
   </nav>
 
-  <!-- ── HERO sticky ── -->
+  <!-- ── HERO spacer (ocupa el lugar del hero fixed) ── -->
+  <div class="hero-spacer"></div>
+
+  <!-- ── HERO fixed ── -->
   <section class="hero" id="hero">
     <div class="hero-wordmark">ASTRAK</div>
     <div class="hero-powered">
@@ -613,11 +677,6 @@
           <h3 class="faq-question">¿De dónde salen las noticias?</h3>
           <p class="faq-answer">De feeds RSS públicos organizados por categoría. Política, tecnología, cultura, cine, música, economía e internacional entran al sistema.</p>
         </article>
-        <article class="faq-item">
-          <div class="faq-number">04</div>
-          <h3 class="faq-question">¿Dónde está la app principal?</h3>
-          <p class="faq-answer">En index.html. Esta landing presenta la lógica del sistema; el app es donde sucede la experiencia completa con feeds en vivo.</p>
-        </article>
       </div>
     </div>
   </section>
@@ -676,47 +735,16 @@
       if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
 
-    /* ── Navbar: detectar sección activa ── */
-    const navbar        = document.getElementById('navbar');
-    const linkManifesto = document.getElementById('link-manifesto');
-
-    const sections = [
-      { id: 'about',   light: true  },
-      { id: 'blog',    light: false },
-      { id: 'faq',     light: true  },
-      { id: 'contact', light: false },
-    ];
-
-    function onScroll() {
-      const scrollY   = window.scrollY;
-      const winH      = window.innerHeight;
-      const heroEl    = document.getElementById('hero');
-      const heroBot   = heroEl.offsetTop + heroEl.offsetHeight;
-
-      // ¿Estamos fuera del hero?
-      const pastHero = scrollY + 80 >= heroBot;
-
-      // Encontrar sección activa
-      let activeSec = null;
-      let isLight = false;
-      for (const s of sections) {
-        const el = document.getElementById(s.id);
-        if (!el) continue;
-        if (scrollY + 80 >= el.offsetTop) {
-          activeSec = s.id;
-          isLight   = s.light;
-        }
-      }
-
-      // Pill activa
-      linkManifesto.classList.toggle('active', pastHero);
-
-      // Tono del navbar
-      navbar.classList.toggle('on-light', pastHero && isLight);
+    /* ── Reloj ── */
+    function updateClock() {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('navbar-time').textContent = `${hh}:${mm}:${ss}`;
     }
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+    updateClock();
+    setInterval(updateClock, 1000);
 
     /* ── Formulario de contacto ── */
     const uplinkForm = document.getElementById('uplink-form');
