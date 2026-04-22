@@ -162,7 +162,7 @@
       background-image: url('./img/bg.png');
       background-size: cover;
       background-position: center center;
-      z-index: 1;
+      z-index: -1;
     }
 
     .hero::after {
@@ -562,16 +562,24 @@
     @media (max-width: 600px) {
       /* Navbar compacta en mobile */
       .navbar {
-        top: 16px;
-        gap: 2px;
-        padding: 4px 4px;
-        max-width: calc(100vw - 24px);
+        padding: 8px 12px;
+        gap: 8px;
+        overflow: hidden;
       }
 
-      .navbar a {
-        font-size: 11px;
-        padding: 6px 10px;
-        letter-spacing: -0.04em;
+      .navbar-left {
+        gap: 8px;
+        min-width: 0;
+        flex: 1;
+      }
+
+      .navbar-links a {
+        font-size: 9px;
+        padding: 5px 8px;
+      }
+
+      .navbar-time {
+        display: none;
       }
 
       /* Ocultar links del medio en mobile, mantener Manifesto y CTA */
