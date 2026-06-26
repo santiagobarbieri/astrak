@@ -266,11 +266,42 @@
   </style>
 </head>
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fff;color:#000;font-family:Arial,sans-serif;text-align:center;padding:24px;">
+      <div>
+        <div style="font-size:14px;font-weight:900;letter-spacing:0.08em;">ASTRAK</div>
+        <div style="margin-top:12px;font-size:11px;font-weight:700;text-transform:uppercase;color:rgba(0,0,0,0.45);">Cargando interfaz...</div>
+      </div>
+    </div>
+  </div>
 
   <script type="text/babel">
-    const { useState, useEffect, useMemo, useRef } = React;
     const MotionLib = window.FramerMotion || window.Motion;
+    const dependencyStatus = {
+      React: Boolean(window.React),
+      ReactDOM: Boolean(window.ReactDOM),
+      Motion: Boolean(MotionLib)
+    };
+    const missingDependencies = Object.entries(dependencyStatus)
+      .filter(([, isLoaded]) => !isLoaded)
+      .map(([name]) => name);
+
+    if (missingDependencies.length) {
+      document.getElementById('root').innerHTML = `
+        <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fff;color:#000;font-family:Arial,sans-serif;text-align:center;padding:24px;">
+          <div style="max-width:420px;">
+            <div style="font-size:14px;font-weight:900;letter-spacing:0.08em;">ASTRAK</div>
+            <div style="margin-top:14px;font-size:12px;font-weight:700;line-height:1.7;color:rgba(0,0,0,0.62);">
+              No se pudieron cargar dependencias externas: ${missingDependencies.join(', ')}.
+              Abrí la página con conexión a internet o revisá bloqueadores de CDN.
+            </div>
+          </div>
+        </div>
+      `;
+      throw new Error(`Missing dependencies: ${missingDependencies.join(', ')}`);
+    }
+
+    const { useState, useEffect, useMemo, useRef } = React;
     const { motion, AnimatePresence } = MotionLib;
 
     const RSS_TO_JSON_API = 'https://api.rss2json.com/v1/api.json?rss_url=';
@@ -420,6 +451,27 @@
           Protocolo Inicial _
         </motion.span>
       </div>
+    );
+
+    const EmptyNewsState = ({ activeCat }) => (
+      <section className="min-h-screen px-6 md:px-16 pt-36 pb-20 bg-white flex items-center justify-center text-center">
+        <div className="max-w-md">
+          <AstrakLogo className="w-12 h-12 mx-auto mb-8" />
+          <div className="text-[10px] font-black uppercase text-black/35 mb-5">Sin transmision disponible</div>
+          <h1 className="text-2xl md:text-3xl font-black uppercase leading-tight mb-6">
+            No se pudieron cargar noticias de {activeCat.name}
+          </h1>
+          <p className="text-sm leading-7 text-neutral-600 mb-8">
+            La interfaz cargo, pero las fuentes externas no devolvieron contenido. Puede ser un bloqueo de red, una cuota de rss2json o un fallo temporal del proveedor.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-5 py-3 rounded-full bg-black text-white text-[10px] font-black uppercase hover:opacity-80 transition-opacity"
+          >
+            Reintentar
+          </button>
+        </div>
+      </section>
     );
 
     const getWeatherState = ({ date = new Date(), weatherCode = 0, isDay = null, temperature = null } = {}) => {
@@ -863,7 +915,7 @@
               ) : (
                 <motion.div key={activeCat.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   
-                  {headline && (
+                  {headline ? (
                     <section className="sticky top-0 h-screen z-0 flex flex-col justify-end px-6 md:px-16 pb-28 overflow-hidden text-white">
                       <Atmosphere weather={weather} />
                       
@@ -904,42 +956,46 @@
                         </div>
                       </div>
                     </section>
+                  ) : (
+                    <EmptyNewsState activeCat={activeCat} />
                   )}
 
-                  <section className="news-transition px-6 md:px-16 pt-24 pb-20">
-                    <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16">
-                      {news.map((item, i) => (
-                        <motion.article 
-                          key={item.id + i} 
-                          initial={{ opacity: 0, y: 20 }} 
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true, margin: "-50px" }}
-                          transition={{ delay: (i % 3) * 0.1 }}
-                          className="group cursor-pointer border-t border-black/10 pt-10"
-                          onClick={() => setSelectedArticle(item)}
-                        >
-                          <div className="flex items-center justify-between mb-5">
-                            <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-sm bg-black/5" style={{color: item.color}}>{item.category}</span>
-                            <span className="text-[9px] font-bold text-black/20 uppercase">{item.timeAgo}</span>
-                          </div>
-                          
-                          <h3 className="text-xl font-black uppercase leading-[1.28] tracking-[-0.01em] mb-4 group-hover:text-black/70 transition-colors">
-                            {item.title}
-                          </h3>
-                          
-                          {item.excerpt && (
-                            <p className="text-[12px] leading-[1.75] text-neutral-600 font-medium italic line-clamp-3 opacity-70 group-hover:opacity-100 transition-opacity">
-                              {item.excerpt}
-                            </p>
-                          )}
-                          
-                          <div className="mt-7 text-[9px] font-black uppercase tracking-[0.14em] text-black/20 group-hover:text-black transition-colors">
-                            Quick Read →
-                          </div>
-                        </motion.article>
-                      ))}
-                    </div>
-                  </section>
+                  {news.length > 0 && (
+                    <section className="news-transition px-6 md:px-16 pt-24 pb-20">
+                      <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16">
+                        {news.map((item, i) => (
+                          <motion.article 
+                            key={item.id + i} 
+                            initial={{ opacity: 0, y: 20 }} 
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: "-50px" }}
+                            transition={{ delay: (i % 3) * 0.1 }}
+                            className="group cursor-pointer border-t border-black/10 pt-10"
+                            onClick={() => setSelectedArticle(item)}
+                          >
+                            <div className="flex items-center justify-between mb-5">
+                              <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-sm bg-black/5" style={{color: item.color}}>{item.category}</span>
+                              <span className="text-[9px] font-bold text-black/20 uppercase">{item.timeAgo}</span>
+                            </div>
+                            
+                            <h3 className="text-xl font-black uppercase leading-[1.28] tracking-[-0.01em] mb-4 group-hover:text-black/70 transition-colors">
+                              {item.title}
+                            </h3>
+                            
+                            {item.excerpt && (
+                              <p className="text-[12px] leading-[1.75] text-neutral-600 font-medium italic line-clamp-3 opacity-70 group-hover:opacity-100 transition-opacity">
+                                {item.excerpt}
+                              </p>
+                            )}
+                            
+                            <div className="mt-7 text-[9px] font-black uppercase tracking-[0.14em] text-black/20 group-hover:text-black transition-colors">
+                              Quick Read →
+                            </div>
+                          </motion.article>
+                        ))}
+                      </div>
+                    </section>
+                  )}
 
                   <AnimatePresence>
                     {selectedArticle && (
