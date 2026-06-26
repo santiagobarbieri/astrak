@@ -328,6 +328,7 @@
     const MotionLib = window.FramerMotion || window.Motion || createMotionFallback();
     const { motion, AnimatePresence } = MotionLib;
 
+    const BY_ASTRAK_STORAGE_KEY = 'astrak_by_astrak_articles';
     const RSS_TO_JSON_API = 'https://api.rss2json.com/v1/api.json?rss_url=';
     const REQUEST_TIMEOUT_MS = 8000;
     const BUENOS_AIRES_TIMEZONE = 'America/Argentina/Buenos_Aires';
@@ -470,7 +471,47 @@
       { id: 'ECONOMY', name: 'Economía', color: '#34d399', query: 'https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=es-419&gl=AR&ceid=AR:es-419' },
       { id: 'WORLD', name: 'Internacional', color: '#fbbf24', query: 'https://news.google.com/rss/headlines/section/topic/WORLD?hl=es-419&gl=AR&ceid=AR:es-419' },
       { id: 'CULTURE', name: 'Cultura', color: '#f472b6', query: 'https://news.google.com/rss/search?q=cultura%20arte%20literatura%20Argentina&hl=es-419&gl=AR&ceid=AR:es-419' },
+      { id: 'BY_ASTRAK', name: 'By Astrak', color: '#111111', internal: true },
+      { id: 'ABOUT', name: 'About', color: '#111111', internal: true },
     ];
+
+    const DEFAULT_BY_ASTRAK_ARTICLES = [
+      {
+        id: 'seed-signal-001',
+        title: 'La señal no es el volumen',
+        category: 'By Astrak',
+        source: 'ASTRAK',
+        color: '#111111',
+        pubDate: new Date().toISOString(),
+        timeAgo: 'Now',
+        excerpt: 'Una lectura breve sobre cómo separar ruido, prioridad y presencia en un flujo de noticias constante.',
+        quickRead: 'ASTRAK entiende la información como una señal: algo que debe ser filtrado, jerarquizado y puesto en escena. El objetivo no es sumar más contenido, sino darle forma a lo que ya está sucediendo.',
+        url: ''
+      }
+    ];
+
+    const getStoredByAstrakArticles = () => {
+      try {
+        const stored = JSON.parse(localStorage.getItem(BY_ASTRAK_STORAGE_KEY) || '[]');
+        if (!Array.isArray(stored) || stored.length === 0) return DEFAULT_BY_ASTRAK_ARTICLES;
+
+        return stored.map((item, index) => ({
+          id: item.id || `astrak-${index}`,
+          title: item.title || 'Sin título',
+          category: 'By Astrak',
+          source: 'ASTRAK',
+          color: '#111111',
+          pubDate: item.pubDate || new Date().toISOString(),
+          timeAgo: item.timeAgo || 'Now',
+          excerpt: item.excerpt || '',
+          quickRead: item.body || item.quickRead || item.excerpt || 'Sin texto disponible.',
+          url: item.url || ''
+        }));
+      } catch (e) {
+        console.error(e);
+        return DEFAULT_BY_ASTRAK_ARTICLES;
+      }
+    };
 
     const AstrakLogo = ({ className }) => (
       <svg className={className} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -510,6 +551,75 @@
           >
             Reintentar
           </button>
+        </div>
+      </section>
+    );
+
+    const AboutView = () => (
+      <section className="min-h-screen bg-white px-6 md:px-16 pt-36 pb-24">
+        <div className="max-w-[1180px] mx-auto">
+          <div className="text-[10px] font-black uppercase text-black/35 mb-8">About / Sistema</div>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black uppercase leading-[0.95] max-w-5xl mb-16">
+            Una interfaz editorial para leer señales sin parecer un portal.
+          </h1>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 border-t border-black/10 pt-10">
+            <p className="text-sm md:text-base leading-8 text-neutral-700 font-medium">
+              ASTRAK ordena noticias, cultura y clima en una experiencia visual de tiempo real. La jerarquía se apoya en contraste, escala y ritmo.
+            </p>
+            <p className="text-sm md:text-base leading-8 text-neutral-700 font-medium">
+              No compite por volumen. Compite por criterio: mostrar qué importa, cómo se mueve y desde dónde conviene leerlo.
+            </p>
+            <p className="text-sm md:text-base leading-8 text-neutral-700 font-medium">
+              Base Buenos Aires. Señal global. Una home viva para noticias externas y un espacio propio para publicaciones By Astrak.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+
+    const ByAstrakView = ({ articles, onSelectArticle }) => (
+      <section className="min-h-screen bg-white px-6 md:px-16 pt-36 pb-24">
+        <div className="max-w-[1400px] mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+            <div>
+              <div className="text-[10px] font-black uppercase text-black/35 mb-6">Editorial propio</div>
+              <h1 className="text-4xl md:text-6xl font-black uppercase leading-[0.96]">
+                By Astrak
+              </h1>
+            </div>
+            <a
+              href="admin.html"
+              className="inline-flex w-fit px-4 py-2 rounded-full border border-black/10 text-[10px] font-black uppercase text-black/50 hover:bg-black hover:text-white transition-colors"
+            >
+              Admin
+            </a>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16">
+            {articles.map((item, i) => (
+              <article
+                key={item.id + i}
+                className="group cursor-pointer border-t border-black/10 pt-10"
+                onClick={() => onSelectArticle(item)}
+              >
+                <div className="flex items-center justify-between mb-5">
+                  <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-sm bg-black text-white">{item.category}</span>
+                  <span className="text-[9px] font-bold text-black/20 uppercase">{item.timeAgo}</span>
+                </div>
+                <h2 className="text-xl md:text-2xl font-black uppercase leading-[1.18] mb-5 group-hover:text-black/70 transition-colors">
+                  {item.title}
+                </h2>
+                {item.excerpt && (
+                  <p className="text-[12px] leading-[1.75] text-neutral-600 font-medium italic opacity-75 group-hover:opacity-100 transition-opacity">
+                    {item.excerpt}
+                  </p>
+                )}
+                <div className="mt-7 text-[9px] font-black uppercase tracking-[0.14em] text-black/20 group-hover:text-black transition-colors">
+                  Leer Astrak →
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
     );
@@ -675,16 +785,10 @@
               <div className="flex items-center gap-3">
                 <div 
                   className="cursor-pointer flex items-center gap-3 group"
-                  onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}
+                  onClick={() => onSelect(CATEGORIES[0])}
                 >
                   <span className="hidden sm:block text-[9px] font-black uppercase text-black/50">ASTRAK</span>
                 </div>
-                <a
-                  href="about.html"
-                  className="hidden md:inline-flex items-center justify-center px-3 py-1.5 rounded-full border border-black/10 text-[9px] font-black uppercase text-black/60 hover:text-black hover:bg-black/5 transition-all"
-                >
-                  About
-                </a>
               </div>
               
               <nav className="hidden lg:flex gap-1 items-center bg-black/5 p-1 rounded-full border border-black/5 overflow-x-auto no-scrollbar max-w-[60vw]">
@@ -722,12 +826,12 @@
                 <div className="flex justify-between items-center mb-16">
                   <span className="text-[10px] font-black uppercase text-black/30">Protocol Selector</span>
                   <div className="flex items-center gap-3">
-                    <a
-                      href="about.html"
+                    <button
+                      onClick={() => { onSelect(CATEGORIES.find(cat => cat.id === 'ABOUT')); setIsOpen(false); }}
                       className="px-4 py-2 rounded-full border border-black/10 text-[9px] font-black uppercase text-black/60"
                     >
                       About
-                    </a>
+                    </button>
                     <button onClick={() => setIsOpen(false)} className="w-10 h-10 flex items-center justify-center rounded-full border border-black/10 text-xl font-light">&times;</button>
                   </div>
                 </div>
@@ -758,6 +862,7 @@
       const [activeCat, setActiveCat] = useState(CATEGORIES[0]);
       const [selectedArticle, setSelectedArticle] = useState(null);
       const [loading, setLoading] = useState(true);
+      const [byAstrakArticles, setByAstrakArticles] = useState(() => getStoredByAstrakArticles());
       const [weather, setWeather] = useState(() => getWeatherState());
       const [timeLabel, setTimeLabel] = useState(() => {
         const parts = getBuenosAiresTimeParts();
@@ -828,6 +933,24 @@
         const requestId = requestSeq.current + 1;
         requestSeq.current = requestId;
         const controller = new AbortController();
+
+        if (activeCat.id === 'ABOUT') {
+          setHeadline(null);
+          setNews([]);
+          setLoading(false);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return () => controller.abort();
+        }
+
+        if (activeCat.id === 'BY_ASTRAK') {
+          const articles = getStoredByAstrakArticles();
+          setByAstrakArticles(articles);
+          setHeadline(null);
+          setNews([]);
+          setLoading(false);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return () => controller.abort();
+        }
 
         setLoading(true);
         const load = async () => {
@@ -952,6 +1075,10 @@
             <AnimatePresence mode="wait">
               {loading ? (
                 <LoadingScreen key="loader" />
+              ) : activeCat.id === 'ABOUT' ? (
+                <AboutView />
+              ) : activeCat.id === 'BY_ASTRAK' ? (
+                <ByAstrakView articles={byAstrakArticles} onSelectArticle={setSelectedArticle} />
               ) : (
                 <motion.div key={activeCat.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   
@@ -1086,15 +1213,76 @@
                               href={selectedArticle.url}
                               target="_blank"
                               rel="noreferrer"
-                              className="px-4 py-2 rounded-full bg-black text-white text-[10px] font-black uppercase hover:opacity-80 transition-opacity"
+                              className={`px-4 py-2 rounded-full bg-black text-white text-[10px] font-black uppercase hover:opacity-80 transition-opacity ${selectedArticle.url ? '' : 'pointer-events-none opacity-30'}`}
                             >
-                              Abrir Nota
+                              {selectedArticle.url ? 'Abrir Nota' : 'Nota Interna'}
                             </a>
                           </div>
                         </motion.div>
                       </motion.div>
                     )}
                   </AnimatePresence>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {selectedArticle && activeCat.id === 'BY_ASTRAK' && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 z-[220] bg-black/35 backdrop-blur-sm p-6 md:p-10 flex items-end md:items-center justify-center"
+                  onClick={() => setSelectedArticle(null)}
+                >
+                  <motion.div
+                    initial={{ y: 32, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: 24, opacity: 0 }}
+                    transition={{ duration: 0.22, ease: 'easeOut' }}
+                    className="w-full max-w-3xl bg-white text-black rounded-[32px] border border-black/10 shadow-[0_24px_80px_rgba(0,0,0,0.18)] p-6 md:p-8"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="flex items-start justify-between gap-6 mb-8">
+                      <div>
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-sm bg-black text-white">
+                            {selectedArticle.category}
+                          </span>
+                          <span className="text-[9px] font-bold uppercase text-black/30">{selectedArticle.timeAgo}</span>
+                        </div>
+                        <h3 className="text-2xl md:text-3xl font-black uppercase leading-[1.16] tracking-[-0.01em]">
+                          {selectedArticle.title}
+                        </h3>
+                      </div>
+                      <button
+                        onClick={() => setSelectedArticle(null)}
+                        className="w-11 h-11 rounded-full border border-black/10 text-xl flex items-center justify-center hover:bg-black hover:text-white transition-colors"
+                      >
+                        &times;
+                      </button>
+                    </div>
+
+                    <p className="text-[13px] md:text-[14px] leading-[1.9] text-neutral-700 mb-8 max-w-[62ch] whitespace-pre-line">
+                      {selectedArticle.quickRead}
+                    </p>
+
+                    <div className="flex items-center justify-between gap-4 pt-6 border-t border-black/10">
+                      <div className="text-[10px] font-black uppercase text-black/35">
+                        {selectedArticle.source}
+                      </div>
+                      {selectedArticle.url && (
+                        <a
+                          href={selectedArticle.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-4 py-2 rounded-full bg-black text-white text-[10px] font-black uppercase hover:opacity-80 transition-opacity"
+                        >
+                          Abrir Link
+                        </a>
+                      )}
+                    </div>
+                  </motion.div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -1106,8 +1294,8 @@
               <span className="text-[8px] font-black uppercase">Terminal V.4.0.2</span>
             </div>
             <div className="flex gap-8 text-[9px] font-black uppercase text-black/50">
-              <a href="about.html" className="hover:text-black">About</a>
-              <a href="#" className="hover:text-black">Home</a>
+              <button onClick={() => setActiveCat(CATEGORIES.find(cat => cat.id === 'ABOUT'))} className="hover:text-black">About</button>
+              <button onClick={() => setActiveCat(CATEGORIES[0])} className="hover:text-black">Home</button>
             </div>
           </footer>
         </div>

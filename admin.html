@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASTRAK Admin</title>
+  <link rel="stylesheet" href="garet.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-black font-['Garet',sans-serif] antialiased selection:bg-black selection:text-white">
+  <main class="min-h-screen px-6 md:px-16 py-10">
+    <header class="flex items-center justify-between gap-6 border-b border-black/10 pb-6 mb-10">
+      <div>
+        <div class="text-[10px] font-black uppercase text-black/35 mb-2">Admin externo</div>
+        <h1 class="text-3xl md:text-5xl font-black uppercase leading-none">By Astrak</h1>
+      </div>
+      <a href="index.html" class="px-4 py-2 rounded-full border border-black/10 text-[10px] font-black uppercase text-black/60 hover:bg-black hover:text-white transition-colors">
+        Volver
+      </a>
+    </header>
+
+    <section class="grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-10">
+      <form id="articleForm" class="border-t border-black/10 pt-8">
+        <input id="articleId" type="hidden" />
+
+        <label class="block mb-6">
+          <span class="block text-[9px] font-black uppercase text-black/35 mb-2">Título</span>
+          <input id="title" required class="w-full border border-black/10 px-4 py-3 text-sm font-bold outline-none focus:border-black" />
+        </label>
+
+        <label class="block mb-6">
+          <span class="block text-[9px] font-black uppercase text-black/35 mb-2">Bajada</span>
+          <textarea id="excerpt" rows="3" class="w-full border border-black/10 px-4 py-3 text-sm leading-6 outline-none focus:border-black"></textarea>
+        </label>
+
+        <label class="block mb-6">
+          <span class="block text-[9px] font-black uppercase text-black/35 mb-2">Texto</span>
+          <textarea id="body" required rows="9" class="w-full border border-black/10 px-4 py-3 text-sm leading-6 outline-none focus:border-black"></textarea>
+        </label>
+
+        <label class="block mb-8">
+          <span class="block text-[9px] font-black uppercase text-black/35 mb-2">Link opcional</span>
+          <input id="url" type="url" class="w-full border border-black/10 px-4 py-3 text-sm outline-none focus:border-black" />
+        </label>
+
+        <div class="flex items-center gap-3">
+          <button type="submit" class="px-5 py-3 rounded-full bg-black text-white text-[10px] font-black uppercase hover:opacity-80 transition-opacity">
+            Guardar
+          </button>
+          <button id="resetBtn" type="button" class="px-5 py-3 rounded-full border border-black/10 text-[10px] font-black uppercase text-black/50 hover:text-black transition-colors">
+            Nuevo
+          </button>
+        </div>
+      </form>
+
+      <section>
+        <div class="flex items-center justify-between border-t border-black/10 pt-8 mb-8">
+          <div class="text-[9px] font-black uppercase text-black/35">Archivo local</div>
+          <button id="clearBtn" type="button" class="text-[9px] font-black uppercase text-black/30 hover:text-black">
+            Borrar todo
+          </button>
+        </div>
+        <div id="articleList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'astrak_by_astrak_articles';
+    const form = document.getElementById('articleForm');
+    const articleId = document.getElementById('articleId');
+    const title = document.getElementById('title');
+    const excerpt = document.getElementById('excerpt');
+    const body = document.getElementById('body');
+    const url = document.getElementById('url');
+    const list = document.getElementById('articleList');
+
+    const loadArticles = () => {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      } catch (e) {
+        return [];
+      }
+    };
+
+    const saveArticles = (articles) => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(articles));
+      render();
+    };
+
+    const escapeHtml = (value = '') => String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
+    const resetForm = () => {
+      articleId.value = '';
+      form.reset();
+      title.focus();
+    };
+
+    const render = () => {
+      const articles = loadArticles();
+
+      if (!articles.length) {
+        list.innerHTML = '<div class="text-sm leading-7 text-black/45 border border-black/10 p-6">Todavía no hay notas guardadas. La home usará una nota de muestra hasta que publiques la primera.</div>';
+        return;
+      }
+
+      list.innerHTML = articles.map((item) => `
+        <article class="border-t border-black/10 pt-6">
+          <div class="text-[9px] font-black uppercase text-black/25 mb-4">${new Date(item.pubDate).toLocaleString('es-AR')}</div>
+          <h2 class="text-xl font-black uppercase leading-tight mb-4">${escapeHtml(item.title)}</h2>
+          <p class="text-sm leading-7 text-black/55 mb-6">${escapeHtml(item.excerpt || item.body.slice(0, 140))}</p>
+          <div class="flex gap-3">
+            <button data-edit="${item.id}" class="editBtn px-4 py-2 rounded-full border border-black/10 text-[9px] font-black uppercase text-black/60">Editar</button>
+            <button data-delete="${item.id}" class="deleteBtn px-4 py-2 rounded-full bg-black text-white text-[9px] font-black uppercase">Borrar</button>
+          </div>
+        </article>
+      `).join('');
+    };
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const articles = loadArticles();
+      const id = articleId.value || `astrak-${Date.now()}`;
+      const nextArticle = {
+        id,
+        title: title.value.trim(),
+        excerpt: excerpt.value.trim(),
+        body: body.value.trim(),
+        url: url.value.trim(),
+        pubDate: articleId.value
+          ? articles.find((item) => item.id === id)?.pubDate || new Date().toISOString()
+          : new Date().toISOString(),
+        timeAgo: 'Now'
+      };
+      const nextArticles = articleId.value
+        ? articles.map((item) => item.id === id ? nextArticle : item)
+        : [nextArticle, ...articles];
+
+      saveArticles(nextArticles);
+      resetForm();
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', resetForm);
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      if (confirm('¿Borrar todas las notas By Astrak de este navegador?')) {
+        saveArticles([]);
+        resetForm();
+      }
+    });
+
+    list.addEventListener('click', (event) => {
+      const editId = event.target.dataset.edit;
+      const deleteId = event.target.dataset.delete;
+      const articles = loadArticles();
+
+      if (editId) {
+        const item = articles.find((article) => article.id === editId);
+        if (!item) return;
+        articleId.value = item.id;
+        title.value = item.title || '';
+        excerpt.value = item.excerpt || '';
+        body.value = item.body || '';
+        url.value = item.url || '';
+        title.focus();
+      }
+
+      if (deleteId) {
+        saveArticles(articles.filter((article) => article.id !== deleteId));
+        resetForm();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
