@@ -12,7 +12,6 @@
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://unpkg.com/framer-motion@10.12.4/dist/framer-motion.js"></script>
 
   <style>
     :root {
@@ -275,12 +274,11 @@
     </div>
   </div>
 
-  <script type="text/babel">
-    const MotionLib = window.FramerMotion || window.Motion;
+  <script type="text/babel" data-presets="env" data-plugins="transform-react-jsx">
+    /** @jsxRuntime classic */
     const dependencyStatus = {
       React: Boolean(window.React),
-      ReactDOM: Boolean(window.ReactDOM),
-      Motion: Boolean(MotionLib)
+      ReactDOM: Boolean(window.ReactDOM)
     };
     const missingDependencies = Object.entries(dependencyStatus)
       .filter(([, isLoaded]) => !isLoaded)
@@ -302,9 +300,36 @@
     }
 
     const { useState, useEffect, useMemo, useRef } = React;
+    const createMotionFallback = () => {
+      const motionProps = new Set([
+        'animate',
+        'exit',
+        'initial',
+        'layout',
+        'layoutId',
+        'transition',
+        'viewport',
+        'whileInView'
+      ]);
+      const renderTag = (tag) => ({ children, ...props }) => {
+        const domProps = Object.fromEntries(
+          Object.entries(props).filter(([key]) => !motionProps.has(key))
+        );
+        return React.createElement(tag, domProps, children);
+      };
+
+      return {
+        motion: new Proxy({}, {
+          get: (_, tag) => renderTag(tag)
+        }),
+        AnimatePresence: ({ children }) => <>{children}</>
+      };
+    };
+    const MotionLib = window.FramerMotion || window.Motion || createMotionFallback();
     const { motion, AnimatePresence } = MotionLib;
 
     const RSS_TO_JSON_API = 'https://api.rss2json.com/v1/api.json?rss_url=';
+    const REQUEST_TIMEOUT_MS = 8000;
     const BUENOS_AIRES_TIMEZONE = 'America/Argentina/Buenos_Aires';
     const BUENOS_AIRES_COORDS = {
       latitude: -34.6037,
@@ -373,6 +398,21 @@
     const stripHtml = (value = '') => value.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim();
     const normalizeText = (value = '') => stripHtml(value).toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, '').trim();
     const escapeRegExp = (value = '') => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const fetchWithTimeout = (url, { signal, timeout = REQUEST_TIMEOUT_MS } = {}) => {
+      const controller = new AbortController();
+      const abort = () => controller.abort();
+      const timeoutId = setTimeout(abort, timeout);
+
+      if (signal) {
+        if (signal.aborted) abort();
+        signal.addEventListener('abort', abort, { once: true });
+      }
+
+      return fetch(url, { signal: controller.signal }).finally(() => {
+        clearTimeout(timeoutId);
+        if (signal) signal.removeEventListener('abort', abort);
+      });
+    };
     const removeTitleFromText = (text, title) => {
       const cleanText = stripHtml(text);
       const cleanTitle = stripHtml(title);
@@ -748,7 +788,7 @@
 
         const loadWeather = async () => {
           try {
-            const res = await fetch(WEATHER_API_URL, { signal: controller.signal });
+            const res = await fetchWithTimeout(WEATHER_API_URL, { signal: controller.signal });
             if (!res.ok) throw new Error(`weather status ${res.status}`);
             const data = await res.json();
             const current = data.current || {};
@@ -851,7 +891,7 @@
             const fetchCategory = async (cat) => {
               const queryResults = await Promise.all(getQueries(cat).map(async (query) => {
                 try {
-                  const res = await fetch(`${RSS_TO_JSON_API}${encodeURIComponent(query)}`, { signal: controller.signal });
+                  const res = await fetchWithTimeout(`${RSS_TO_JSON_API}${encodeURIComponent(query)}`, { signal: controller.signal });
                   if (!res.ok) throw new Error(`rss status ${res.status}`);
                   const data = await res.json();
                   return Array.isArray(data.items)
