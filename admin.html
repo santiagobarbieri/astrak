@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ASTRAK Admin</title>
+  <title>THE HERALD Admin / CRUSADE</title>
   <link rel="stylesheet" href="garet.css" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -11,8 +11,8 @@
   <main class="min-h-screen px-6 md:px-16 py-10">
     <header class="flex items-center justify-between gap-6 border-b border-black/10 pb-6 mb-10">
       <div>
-        <div class="text-[10px] font-black uppercase text-black/35 mb-2">Admin externo</div>
-        <h1 class="text-3xl md:text-5xl font-black uppercase leading-none">By Astrak</h1>
+        <div class="text-[10px] font-black uppercase text-black/35 mb-2">Admin externo / CRUSADE</div>
+        <h1 class="text-3xl md:text-5xl font-black uppercase leading-none">By The Herald</h1>
       </div>
       <a href="index.html" class="px-4 py-2 rounded-full border border-black/10 text-[10px] font-black uppercase text-black/60 hover:bg-black hover:text-white transition-colors">
         Volver
@@ -66,7 +66,7 @@
   </main>
 
   <script>
-    const STORAGE_KEY = 'astrak_by_astrak_articles';
+    const STORAGE_KEY = 'the_herald_by_crusade_articles';
     const form = document.getElementById('articleForm');
     const articleId = document.getElementById('articleId');
     const title = document.getElementById('title');
@@ -125,7 +125,7 @@
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       const articles = loadArticles();
-      const id = articleId.value || `astrak-${Date.now()}`;
+      const id = articleId.value || `herald-${Date.now()}`;
       const nextArticle = {
         id,
         title: title.value.trim(),
@@ -147,7 +147,7 @@
 
     document.getElementById('resetBtn').addEventListener('click', resetForm);
     document.getElementById('clearBtn').addEventListener('click', () => {
-      if (confirm('¿Borrar todas las notas By Astrak de este navegador?')) {
+      if (confirm('¿Borrar todas las notas By The Herald de este navegador?')) {
         saveArticles([]);
         resetForm();
       }

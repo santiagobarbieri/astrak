@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20fill%3D%27white%27/%3E%3Ccircle%20cx%3D%2732%27%20cy%3D%2732%27%20r%3D%2714%27%20fill%3D%27black%27%20opacity%3D%270.9%27/%3E%3C/svg%3E" />
-  <title>ASTRAK</title>
+  <title>THE HERALD</title>
   <link rel="stylesheet" href="garet.css" />
 
   <!-- Dependencias -->
@@ -15,9 +15,9 @@
 
   <style>
     :root {
-      --astrak-black: #ffffff;
-      --astrak-white: #000000;
-      --astrak-accent: #e2ff00;
+      --herald-black: #ffffff;
+      --herald-white: #000000;
+      --herald-accent: #e2ff00;
     }
 
     * { box-sizing: border-box; }
@@ -25,8 +25,8 @@
     body {
       margin: 0;
       overflow-x: hidden;
-      background-color: var(--astrak-black);
-      color: var(--astrak-white);
+      background-color: var(--herald-black);
+      color: var(--herald-white);
       font-family: 'Garet', sans-serif;
       -webkit-font-smoothing: antialiased;
     }
@@ -260,15 +260,15 @@
       filter: blur(18px);
     }
 
-    .astrak-font-black { font-weight: 900; }
-    .astrak-leading-tightest { line-height: 1.05; }
+    .herald-font-black { font-weight: 900; }
+    .herald-leading-tightest { line-height: 1.05; }
   </style>
 </head>
 <body>
   <div id="root">
     <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fff;color:#000;font-family:Arial,sans-serif;text-align:center;padding:24px;">
       <div>
-        <div style="font-size:14px;font-weight:900;letter-spacing:0.08em;">ASTRAK</div>
+        <div style="font-size:14px;font-weight:900;letter-spacing:0.08em;">THE HERALD</div>
         <div style="margin-top:12px;font-size:11px;font-weight:700;text-transform:uppercase;color:rgba(0,0,0,0.45);">Cargando interfaz...</div>
       </div>
     </div>
@@ -288,7 +288,7 @@
       document.getElementById('root').innerHTML = `
         <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fff;color:#000;font-family:Arial,sans-serif;text-align:center;padding:24px;">
           <div style="max-width:420px;">
-            <div style="font-size:14px;font-weight:900;letter-spacing:0.08em;">ASTRAK</div>
+            <div style="font-size:14px;font-weight:900;letter-spacing:0.08em;">THE HERALD</div>
             <div style="margin-top:14px;font-size:12px;font-weight:700;line-height:1.7;color:rgba(0,0,0,0.62);">
               No se pudieron cargar dependencias externas: ${missingDependencies.join(', ')}.
               Abrí la página con conexión a internet o revisá bloqueadores de CDN.
@@ -328,7 +328,7 @@
     const MotionLib = window.FramerMotion || window.Motion || createMotionFallback();
     const { motion, AnimatePresence } = MotionLib;
 
-    const BY_ASTRAK_STORAGE_KEY = 'astrak_by_astrak_articles';
+    const BY_HERALD_STORAGE_KEY = 'the_herald_by_crusade_articles';
     const RSS_TO_JSON_API = 'https://api.rss2json.com/v1/api.json?rss_url=';
     const REQUEST_TIMEOUT_MS = 8000;
     const BUENOS_AIRES_TIMEZONE = 'America/Argentina/Buenos_Aires';
@@ -471,35 +471,35 @@
       { id: 'ECONOMY', name: 'Economía', color: '#34d399', query: 'https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=es-419&gl=AR&ceid=AR:es-419' },
       { id: 'WORLD', name: 'Internacional', color: '#fbbf24', query: 'https://news.google.com/rss/headlines/section/topic/WORLD?hl=es-419&gl=AR&ceid=AR:es-419' },
       { id: 'CULTURE', name: 'Cultura', color: '#f472b6', query: 'https://news.google.com/rss/search?q=cultura%20arte%20literatura%20Argentina&hl=es-419&gl=AR&ceid=AR:es-419' },
-      { id: 'BY_ASTRAK', name: 'By Astrak', color: '#111111', internal: true },
+      { id: 'BY_HERALD', name: 'By The Herald', color: '#111111', internal: true },
       { id: 'ABOUT', name: 'About', color: '#111111', internal: true },
     ];
 
-    const DEFAULT_BY_ASTRAK_ARTICLES = [
+    const DEFAULT_BY_HERALD_ARTICLES = [
       {
         id: 'seed-signal-001',
         title: 'La señal no es el volumen',
-        category: 'By Astrak',
-        source: 'ASTRAK',
+        category: 'By The Herald',
+        source: 'THE HERALD',
         color: '#111111',
         pubDate: new Date().toISOString(),
         timeAgo: 'Now',
         excerpt: 'Una lectura breve sobre cómo separar ruido, prioridad y presencia en un flujo de noticias constante.',
-        quickRead: 'ASTRAK entiende la información como una señal: algo que debe ser filtrado, jerarquizado y puesto en escena. El objetivo no es sumar más contenido, sino darle forma a lo que ya está sucediendo.',
+        quickRead: 'THE HERALD entiende la información como una señal: algo que debe ser filtrado, jerarquizado y puesto en escena. Es desarrollado por CRUSADE, una plataforma de curación de diseño pensada para organizar referencias, cultura visual y lectura editorial con más profundidad que un tablero tradicional.',
         url: ''
       }
     ];
 
-    const getStoredByAstrakArticles = () => {
+    const getStoredByHeraldArticles = () => {
       try {
-        const stored = JSON.parse(localStorage.getItem(BY_ASTRAK_STORAGE_KEY) || '[]');
-        if (!Array.isArray(stored) || stored.length === 0) return DEFAULT_BY_ASTRAK_ARTICLES;
+        const stored = JSON.parse(localStorage.getItem(BY_HERALD_STORAGE_KEY) || '[]');
+        if (!Array.isArray(stored) || stored.length === 0) return DEFAULT_BY_HERALD_ARTICLES;
 
         return stored.map((item, index) => ({
-          id: item.id || `astrak-${index}`,
+          id: item.id || `herald-${index}`,
           title: item.title || 'Sin título',
-          category: 'By Astrak',
-          source: 'ASTRAK',
+          category: 'By The Herald',
+          source: 'THE HERALD',
           color: '#111111',
           pubDate: item.pubDate || new Date().toISOString(),
           timeAgo: item.timeAgo || 'Now',
@@ -509,11 +509,11 @@
         }));
       } catch (e) {
         console.error(e);
-        return DEFAULT_BY_ASTRAK_ARTICLES;
+        return DEFAULT_BY_HERALD_ARTICLES;
       }
     };
 
-    const AstrakLogo = ({ className }) => (
+    const HeraldLogo = ({ className }) => (
       <svg className={className} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="100" height="100" fill="white"/>
         <circle cx="50" cy="50" r="22" stroke="black" strokeWidth="12"/>
@@ -523,7 +523,7 @@
 
     const LoadingScreen = () => (
       <div className="fixed inset-0 z-[300] bg-white flex flex-col items-center justify-center">
-        <AstrakLogo className="w-12 h-12 mb-8 animate-pulse" />
+        <HeraldLogo className="w-12 h-12 mb-8 animate-pulse" />
         <motion.span 
           animate={{ opacity: [0.3, 1, 0.3] }}
           transition={{ duration: 1.5, repeat: Infinity }}
@@ -537,7 +537,7 @@
     const EmptyNewsState = ({ activeCat }) => (
       <section className="min-h-screen px-6 md:px-16 pt-36 pb-20 bg-white flex items-center justify-center text-center">
         <div className="max-w-md">
-          <AstrakLogo className="w-12 h-12 mx-auto mb-8" />
+          <HeraldLogo className="w-12 h-12 mx-auto mb-8" />
           <div className="text-[10px] font-black uppercase text-black/35 mb-5">Sin transmision disponible</div>
           <h1 className="text-2xl md:text-3xl font-black uppercase leading-tight mb-6">
             No se pudieron cargar noticias de {activeCat.name}
@@ -564,27 +564,27 @@
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 border-t border-black/10 pt-10">
             <p className="text-sm md:text-base leading-8 text-neutral-700 font-medium">
-              ASTRAK ordena noticias, cultura y clima en una experiencia visual de tiempo real. La jerarquía se apoya en contraste, escala y ritmo.
+              THE HERALD ordena noticias, cultura y clima en una experiencia visual de tiempo real. La jerarquía se apoya en contraste, escala y ritmo.
             </p>
             <p className="text-sm md:text-base leading-8 text-neutral-700 font-medium">
-              No compite por volumen. Compite por criterio: mostrar qué importa, cómo se mueve y desde dónde conviene leerlo.
+              Es desarrollado por CRUSADE, una web de curación de diseño más completa que un tablero visual: referencias, contexto, lectura y sistema.
             </p>
             <p className="text-sm md:text-base leading-8 text-neutral-700 font-medium">
-              Base Buenos Aires. Señal global. Una home viva para noticias externas y un espacio propio para publicaciones By Astrak.
+              Base Buenos Aires. Señal global. Una home viva para noticias externas y un espacio propio para publicaciones By The Herald.
             </p>
           </div>
         </div>
       </section>
     );
 
-    const ByAstrakView = ({ articles, onSelectArticle }) => (
+    const ByHeraldView = ({ articles, onSelectArticle }) => (
       <section className="min-h-screen bg-white px-6 md:px-16 pt-36 pb-24">
         <div className="max-w-[1400px] mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
             <div>
               <div className="text-[10px] font-black uppercase text-black/35 mb-6">Editorial propio</div>
               <h1 className="text-4xl md:text-6xl font-black uppercase leading-[0.96]">
-                By Astrak
+                By The Herald
               </h1>
             </div>
             <a
@@ -615,7 +615,7 @@
                   </p>
                 )}
                 <div className="mt-7 text-[9px] font-black uppercase tracking-[0.14em] text-black/20 group-hover:text-black transition-colors">
-                  Leer Astrak →
+                  Leer The Herald →
                 </div>
               </article>
             ))}
@@ -787,7 +787,7 @@
                   className="cursor-pointer flex items-center gap-3 group"
                   onClick={() => onSelect(CATEGORIES[0])}
                 >
-                  <span className="hidden sm:block text-[9px] font-black uppercase text-black/50">ASTRAK</span>
+                  <span className="hidden sm:block text-[9px] font-black uppercase text-black/50">THE HERALD</span>
                 </div>
               </div>
               
@@ -862,7 +862,7 @@
       const [activeCat, setActiveCat] = useState(CATEGORIES[0]);
       const [selectedArticle, setSelectedArticle] = useState(null);
       const [loading, setLoading] = useState(true);
-      const [byAstrakArticles, setByAstrakArticles] = useState(() => getStoredByAstrakArticles());
+      const [byHeraldArticles, setByHeraldArticles] = useState(() => getStoredByHeraldArticles());
       const [weather, setWeather] = useState(() => getWeatherState());
       const [timeLabel, setTimeLabel] = useState(() => {
         const parts = getBuenosAiresTimeParts();
@@ -942,9 +942,9 @@
           return () => controller.abort();
         }
 
-        if (activeCat.id === 'BY_ASTRAK') {
-          const articles = getStoredByAstrakArticles();
-          setByAstrakArticles(articles);
+        if (activeCat.id === 'BY_HERALD') {
+          const articles = getStoredByHeraldArticles();
+          setByHeraldArticles(articles);
           setHeadline(null);
           setNews([]);
           setLoading(false);
@@ -1077,8 +1077,8 @@
                 <LoadingScreen key="loader" />
               ) : activeCat.id === 'ABOUT' ? (
                 <AboutView />
-              ) : activeCat.id === 'BY_ASTRAK' ? (
-                <ByAstrakView articles={byAstrakArticles} onSelectArticle={setSelectedArticle} />
+              ) : activeCat.id === 'BY_HERALD' ? (
+                <ByHeraldView articles={byHeraldArticles} onSelectArticle={setSelectedArticle} />
               ) : (
                 <motion.div key={activeCat.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   
@@ -1097,7 +1097,7 @@
                             </span>
                           </div>
                           
-                          <h2 className="astrak-font-black text-3xl md:text-3xl lg:text-4xl uppercase astrak-leading-tightest mb-10">
+                          <h2 className="herald-font-black text-3xl md:text-3xl lg:text-4xl uppercase herald-leading-tightest mb-10">
                             {headline.title}
                           </h2>
                           
@@ -1227,7 +1227,7 @@
             </AnimatePresence>
 
             <AnimatePresence>
-              {selectedArticle && activeCat.id === 'BY_ASTRAK' && (
+              {selectedArticle && activeCat.id === 'BY_HERALD' && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -1290,8 +1290,8 @@
 
           <footer className="px-6 md:px-16 py-24 border-t border-black/5 bg-white flex flex-col md:flex-row justify-between items-center gap-10 opacity-30 hover:opacity-100 transition-opacity duration-700">
             <div className="flex flex-col items-center md:items-start gap-4">
-              <AstrakLogo className="w-10 h-10 grayscale" />
-              <span className="text-[8px] font-black uppercase">Terminal V.4.0.2</span>
+              <HeraldLogo className="w-10 h-10 grayscale" />
+              <span className="text-[8px] font-black uppercase">Developed by CRUSADE</span>
             </div>
             <div className="flex gap-8 text-[9px] font-black uppercase text-black/50">
               <button onClick={() => setActiveCat(CATEGORIES.find(cat => cat.id === 'ABOUT'))} className="hover:text-black">About</button>

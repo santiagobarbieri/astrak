@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20fill%3D%27white%27/%3E%3Ccircle%20cx%3D%2732%27%20cy%3D%2732%27%20r%3D%2714%27%20fill%3D%27black%27%20opacity%3D%270.9%27/%3E%3C/svg%3E" />
-  <title>astrak</title>
+  <title>THE HERALD</title>
   <link rel="stylesheet" href="garet.css" />
   <style>
     :root {
@@ -601,7 +601,7 @@
   <nav class="navbar" id="navbar">
     <div class="navbar-left">
       <a href="#" class="navbar-brand">
-            <span class="navbar-version">ASTRAK</span>
+            <span class="navbar-version">THE HERALD</span>
       </a>
       <div class="navbar-links">
         <a href="index.html">Home</a>
@@ -621,10 +621,10 @@
 
   <!-- ── HERO fixed ── -->
   <section class="hero" id="hero">
-    <div class="hero-wordmark">ASTRAK</div>
+    <div class="hero-wordmark">THE HERALD</div>
     <div class="hero-powered">
-      <span class="by">powered by</span>
-      <span class="brand">dopple®</span>
+      <span class="by">developed by</span>
+      <span class="brand">CRUSADE</span>
     </div>
     <div class="hero-footer">Buenos Aires – Argentina – Live since 2026</div>
   </section>
@@ -638,11 +638,11 @@
       <div class="about__body">
         <div class="about__col">
           <p>La jerarquía no se apoya en cajas. Se apoya en contraste, escala, aire y secuencia. Cada bloque abre el siguiente con claridad para que la navegación se sienta editorial y no administrativa.</p>
-          <p>El objetivo es simple: que ASTRAK tenga una voz propia antes de que el usuario entre al app. Una home con peso, y un sistema operativo detrás.</p>
+          <p>El objetivo es simple: que THE HERALD tenga una voz propia antes de que el usuario entre al app. Una home con peso, desarrollada por CRUSADE.</p>
         </div>
         <div class="about__divider"></div>
         <div class="about__col">
-          <p>ASTRAK no compite por volumen. Compite por criterio, ritmo y presencia. La landing explica la visión y el app la pone en movimiento con titulares, clima y tiempo real.</p>
+          <p>THE HERALD no compite por volumen. Compite por criterio, ritmo y presencia. CRUSADE aporta el sistema de curación visual detrás de la experiencia.</p>
           <div class="about__cta">
             <a href="index.html">Open App →</a>
           </div>
@@ -667,18 +667,18 @@
   <section class="section faq" id="faq">
     <div class="section-inner">
       <div class="section-label">Preguntas directas</div>
-      <h2 class="section-heading">Qué es ASTRAK</h2>
+      <h2 class="section-heading">Qué es THE HERALD</h2>
       <p class="section-sub">Respuestas cortas para entender cómo se organiza la landing y dónde empieza el sistema dinámico.</p>
       <div class="faq-grid">
         <article class="faq-item">
           <div class="faq-number">01</div>
-          <h3 class="faq-question">¿Qué es ASTRAK?</h3>
-          <p class="faq-answer">Una interfaz editorial que convierte noticias y cultura en una experiencia visual reactiva, atmosférica y menos convencional que los portales tradicionales.</p>
+          <h3 class="faq-question">¿Qué es THE HERALD?</h3>
+          <p class="faq-answer">Una interfaz editorial desarrollada por CRUSADE que convierte noticias y cultura en una experiencia visual reactiva, atmosférica y menos convencional que los portales tradicionales.</p>
         </article>
         <article class="faq-item">
           <div class="faq-number">02</div>
           <h3 class="faq-question">¿Por qué el diseño se siente distinto?</h3>
-          <p class="faq-answer">Porque el sistema prioriza tensión visual, jerarquía tipográfica, gradiente atmosférico y una lectura menos genérica de la información.</p>
+          <p class="faq-answer">Porque CRUSADE la piensa como curación de diseño: referencias, contexto, jerarquía tipográfica y una lectura menos genérica de la información.</p>
         </article>
         <article class="faq-item">
           <div class="faq-number">03</div>
@@ -710,12 +710,12 @@
             <textarea class="textarea" id="message" name="message" placeholder="Cuéntanos tu idea o colaboración…" required></textarea>
           </div>
           <button class="submit-btn" type="submit">Send Signal</button>
-          <span class="status-msg" id="status-msg">Powered by dopple® — Buenos Aires, 2026</span>
+          <span class="status-msg" id="status-msg">Developed by CRUSADE — Buenos Aires, 2026</span>
         </form>
         <div class="contact-side">
           <div class="contact-note">
             <strong>Base</strong>
-            <p>Buenos Aires, Argentina. ASTRAK ordena la señal global desde una lectura local.</p>
+            <p>Buenos Aires, Argentina. THE HERALD ordena la señal global desde una lectura local.</p>
           </div>
           <div class="contact-note">
             <strong>Scope</strong>
@@ -732,8 +732,8 @@
 
   <!-- ── FOOTER ── -->
   <footer class="site-footer">
-    <span>astrak — Buenos Aires, Argentina — Live since 2026</span>
-    <span>powered by dopple®</span>
+    <span>THE HERALD — Buenos Aires, Argentina — Live since 2026</span>
+    <span>developed by CRUSADE</span>
   </footer>
 
   <script>
@@ -765,28 +765,18 @@
         statusMsg.textContent = 'Transmisión completada ✓';
         uplinkForm.reset();
         setTimeout(() => {
-          statusMsg.textContent = 'Powered by dopple® — Buenos Aires, 2026';
+          statusMsg.textContent = 'Developed by CRUSADE — Buenos Aires, 2026';
         }, 3000);
       }, 1200);
     });
 
-    /* ── Blog: fetch desde dopple API ── */
-    const DOPPLE_API     = 'https://doppelganger-eta.vercel.app/api/entries';
-    const DOPPLE_ARTICLE = 'https://doppelganger-eta.vercel.app/article.html';
-    const TYPE_LABEL     = { articulo: 'article', resena: 'review', archivo: 'archive' };
+    /* ── Blog: archivo local de THE HERALD / CRUSADE ── */
+    const HERALD_STORAGE_KEY = 'the_herald_by_crusade_articles';
 
     async function loadBlog() {
       const list = document.getElementById('blogList');
       try {
-        const res = await fetch(DOPPLE_API);
-        if (!res.ok) throw new Error('api error');
-        const all = await res.json();
-
-        const entries = all.filter(e =>
-          e.status === 'published' &&
-          Array.isArray(e.sites) &&
-          e.sites.includes('astrak')
-        );
+        const entries = JSON.parse(localStorage.getItem(HERALD_STORAGE_KEY) || '[]');
 
         if (!entries.length) {
           list.innerHTML = '<div class="blog-empty">No hay publicaciones aún en el archivo.</div>';
@@ -794,15 +784,15 @@
         }
 
         list.innerHTML = entries.map((e, i) => `
-          <a class="blog-item" href="${DOPPLE_ARTICLE}?id=${e.id}" target="_blank">
+          <article class="blog-item">
             <div class="blog-number">${String(i + 1).padStart(2, '0')}</div>
             <div class="blog-content">
-              <div class="blog-type">${TYPE_LABEL[e.postType] || e.postType || 'article'}</div>
+              <div class="blog-type">CRUSADE / THE HERALD</div>
               <div class="blog-title">${e.title}</div>
               ${e.excerpt ? `<div class="blog-excerpt">${e.excerpt}</div>` : ''}
             </div>
-            <div class="blog-meta">${e.year || ''}${e.author ? ' — ' + e.author : ''}</div>
-          </a>`).join('');
+            <div class="blog-meta">${e.pubDate ? new Date(e.pubDate).getFullYear() : ''}</div>
+          </article>`).join('');
 
       } catch(err) {
         list.innerHTML = '<div class="blog-empty">No se pudo cargar el archivo editorial.</div>';
